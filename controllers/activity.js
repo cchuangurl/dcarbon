@@ -9,6 +9,7 @@ async list(ctx,next){
     console.log("found route /base4dcarbon/activity !!");
     var statusreport=ctx.query.statusreport;
     console.log("gotten query:"+statusreport);
+    var personID=ctx.params.id;
     await Activity.find({}).then(async activitys=>{
         //console.log("found activitys:"+activitys);
         console.log("type of activitys:"+typeof(activitys));
@@ -22,8 +23,9 @@ async list(ctx,next){
         }
         await ctx.render("activity/listpage",{
         //ctx.response.send({
-            activitylist:activitylist,
-            statusreport:statusreport
+            activitylist,
+            personID,
+            statusreport
         })
     })
     .catch(err=>{

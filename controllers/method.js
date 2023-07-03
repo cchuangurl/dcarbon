@@ -6,6 +6,7 @@ async list(ctx,next){
     console.log("found route /base4dcarbon/method !!");
     var statusreport=ctx.query.statusreport;
     console.log("gotten query:"+statusreport);
+    var personID=ctx.params.id;
     await Method.find({}).then(async methods=>{
         //console.log("found methods:"+methods);
         console.log("type of methods:"+typeof(methods));
@@ -19,8 +20,9 @@ async list(ctx,next){
         }
         await ctx.render("method/listpage",{
         //ctx.response.send({
-            methodlist:methodlist,
-            statusreport:statusreport
+            methodlist,
+            personID,
+            statusreport
         })
     })
     .catch(err=>{

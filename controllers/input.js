@@ -23,7 +23,7 @@ async list(ctx,next){
         //ctx.response.send({
             inputlist:inputlist,
             personID,
-            statusreport:statusreport
+            statusreport
         })
     })
     .catch(err=>{

@@ -8,6 +8,7 @@ async list(ctx,next){
     console.log("found route /base4dcarbon/subact !!");
     var statusreport=ctx.query.statusreport;
     console.log("gotten query:"+statusreport);
+    var personID=ctx.params.id;
     await Subact.find({}).then(async subacts=>{
         //console.log("found subacts:"+subacts);
         console.log("type of subacts:"+typeof(subacts));
@@ -21,8 +22,9 @@ async list(ctx,next){
         }
         await ctx.render("subact/listpage",{
         //ctx.response.send({
-            subactlist:subactlist,
-            statusreport:statusreport
+            subactlist,
+            personID,
+            statusreport
         })
     })
     .catch(err=>{

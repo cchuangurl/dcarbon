@@ -7,6 +7,7 @@ async list(ctx,next){
     console.log("found route /base4dcarbon/loyalist !!");
     var statusreport=ctx.query.statusreport;
     console.log("gotten query:"+statusreport);
+    var personID=ctx.params.id;
     await Loyalist.find({}).then(async loyalists=>{
         //console.log("found loyalists:"+loyalists);
         console.log("type of loyalists:"+typeof(loyalists));
@@ -20,8 +21,9 @@ async list(ctx,next){
         }
         await ctx.render("loyalist/listpage",{
         //ctx.response.send({
-            loyalistlist:loyalistlist,
-            statusreport:statusreport
+            loyalistlist,
+            personID,
+            statusreport
         })
     })
     .catch(err=>{

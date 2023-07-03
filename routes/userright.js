@@ -2,7 +2,7 @@ var router = require('@koa/router')();
 
 const userrightController = require('../controllers/index').userright;
 //列出清單
-router.get('/', async (ctx, next)=> {
+router.get('/:id', async (ctx, next)=> {
 	await userrightController.list(ctx)
 });
 //到新增資料頁

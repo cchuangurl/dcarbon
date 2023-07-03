@@ -2,7 +2,7 @@ var router = require('@koa/router')();
 
 const termController = require('../controllers/index').term;
 //列出清單
-router.get('/', async (ctx, next)=> {
+router.get('/:id', async (ctx, next)=> {
 	await termController.list(ctx)
 });
 //到新增資料頁
@@ -45,7 +45,7 @@ router.get('/codetest', async (ctx, next)=> {
     console.log("gotten query:"+statusreport);
     if(statusreport===undefined){
         statusreport="status未傳成功!"
-    }    
+    }
 	await ctx.render("term/codetest",{
 		statusreport:statusreport
 	})

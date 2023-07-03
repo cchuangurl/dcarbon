@@ -6,6 +6,7 @@ async list(ctx,next){
     console.log("found route /base4dcarbon/coefficient !!");
     var statusreport=ctx.query.statusreport;
     console.log("got query:"+statusreport);
+    var personID=ctx.params.id;
     await Coefficient.find({}).then(async coefficients=>{
         //console.log("found coefficients:"+coefficients);
         console.log("type of coefficients:"+typeof(coefficients));
@@ -19,8 +20,9 @@ async list(ctx,next){
         }
         await ctx.render("coefficient/listpage",{
         //ctx.response.send({
-            coefficientlist:coefficientlist,
-            statusreport:statusreport
+            coefficientlist,
+            personID,
+            statusreport
         })
     })
     .catch(err=>{

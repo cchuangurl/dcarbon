@@ -2,7 +2,7 @@ var router = require('@koa/router')();
 
 const sourceController = require('../controllers/index').source;
 //列出清單
-router.get('/', async (ctx, next)=> {
+router.get('/:id', async (ctx, next)=> {
 	await sourceController.list(ctx)
 });
 //到新增資料頁

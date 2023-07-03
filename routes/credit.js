@@ -2,7 +2,7 @@ var router = require('@koa/router')();
 
 const creditController = require('../controllers/index').credit;
 //列出清單
-router.get('/', async (ctx, next)=> {
+router.get('/:id', async (ctx, next)=> {
 	await creditController.list(ctx)
 });
 //到新增資料頁

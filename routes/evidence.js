@@ -2,7 +2,7 @@ var router = require('@koa/router')();
 
 const evidenceController = require('../controllers/index').evidence;
 //列出清單
-router.get('/', async (ctx, next)=> {
+router.get('/:id', async (ctx, next)=> {
 	await evidenceController.list(ctx)
 });
 //到新增資料頁

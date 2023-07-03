@@ -2,7 +2,7 @@ var router = require('@koa/router')();
 
 const coefficientController = require('../controllers/index').coefficient;
 //列出清單
-router.get('/', async (ctx, next)=> {
+router.get('/:id', async (ctx, next)=> {
 	await coefficientController.list(ctx)
 });
 //到新增資料頁

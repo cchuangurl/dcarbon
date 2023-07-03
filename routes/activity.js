@@ -2,7 +2,7 @@ var router = require('@koa/router')();
 
 const activityController = require('../controllers/index').activity;
 //列出清單
-router.get('/', async (ctx, next)=> {
+router.get('/:id', async (ctx, next)=> {
 	await activityController.list(ctx)
 });
 //到新增活動資料頁

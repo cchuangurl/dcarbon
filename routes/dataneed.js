@@ -2,7 +2,7 @@ var router = require('@koa/router')();
 
 const dataneedController = require('../controllers/index').dataneed;
 //列出清單
-router.get('/', async (ctx, next)=> {
+router.get('/:id', async (ctx, next)=> {
 	await dataneedController.list(ctx)
 });
 //到新增資料頁
