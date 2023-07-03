@@ -1,11 +1,13 @@
 //載入相對應的model
 const Input = require('../models/index').input;
+const Term = require('../models/index').term;
 module.exports = {
 //列出清單list(req,res)
 async list(ctx,next){
     console.log("found route /base4dcarbon/input !!");
     var statusreport=ctx.query.statusreport;
     console.log("gotten query:"+statusreport);
+    var personID=ctx.params.id;
     await Input.find({}).then(async inputs=>{
         //console.log("found inputs:"+inputs);
         console.log("type of inputs:"+typeof(inputs));
@@ -20,6 +22,7 @@ async list(ctx,next){
         await ctx.render("input/listpage",{
         //ctx.response.send({
             inputlist:inputlist,
+            personID,
             statusreport:statusreport
         })
     })
@@ -28,8 +31,49 @@ async list(ctx,next){
         console.log(err)
     })
 },
-
-
+//到生產資材管理
+async operate(ctx,next){
+  console.log("found route /base4dcarbon/input/operate !!");
+  var statusreport=ctx.query.statusreport;
+  console.log("gotten statusreport:"+statusreport);
+  var status=ctx.query.status;
+  console.log("gotten status:"+status);
+  var subactID=ctx.query.subactID;
+  console.log("gotten subactID:"+subactID);
+  var caseID=ctx.query.caseID;
+  console.log("gotten caseID:"+caseID);
+  var personID=ctx.params.id;
+  console.log("gotten personID:"+personID);
+  await Input.find({a05subactID:subactID}).then(async inputs=>{
+      //console.log("found inputs:"+inputs);
+      console.log("type of inputs:"+typeof(inputs));
+      console.log("type of 1st input:"+typeof(inputs[0]));
+      //console.log("1st input:"+inputs[0].a15nickname)
+      console.log("No. of input:"+inputs.length)
+      let inputlist=encodeURIComponent(JSON.stringify(inputs));
+      console.log("type of inputs:"+typeof(inputlist));
+      if(status=="0"){
+        await ctx.render("input/listpage",{
+          //ctx.response.send({
+              inputlist:inputlist,
+              statusreport:statusreport
+          })
+      }else{
+      await ctx.render("input/operate",{
+      //ctx.response.send({
+          inputlist,
+          statusreport,
+          subactID,
+          caseID,
+          personID
+      })
+    }
+  })
+  .catch(err=>{
+      console.log("Input.find({}) failed !!");
+      console.log(err)
+  })
+},
 //到新增資料頁
 async inputpage(ctx, next) {
     var {statusreport}=ctx.request.body;
@@ -40,6 +84,47 @@ async inputpage(ctx, next) {
 	await ctx.render("input/inputpage",{
 		statusreport:ctx.request.body.statusreport
 	})
+},
+//到新增單筆資料頁
+async inputpage1(ctx, next) {
+  var statusreport=ctx.query.statusreport;
+  console.log("gotten statusreport:"+statusreport);
+  if(statusreport===undefined){
+      statusreport="status未傳成功!"
+    };
+  var status=ctx.query.status;
+  console.log("gotten status:"+status);
+  var subactID=ctx.query.subactID;
+  console.log("gotten subactID:"+subactID);
+  var caseID=ctx.query.caseID;
+  console.log("gotten caseID:"+caseID);
+  var personID=ctx.params.id;
+  console.log("gotten personID:"+personID);
+  await Term.find({a15model:"input"}).then(async terms=>{
+    console.log("type of terms:"+typeof(terms));
+    console.log("type of 1st term:"+typeof(terms[0]));
+    console.log("1st term:"+terms[0])
+    console.log("No. of term:"+terms.length)
+    termlist=encodeURIComponent(JSON.stringify(terms));
+    console.log("type of termlist:"+typeof(termlist));
+    })
+    .catch(err=>{
+        console.log("Term.find({}) failed !!");
+        console.log(err)
+    })
+  if(status=="0"){
+    await ctx.render("input/inputpage",{
+      statusreport
+      })
+  }else{
+    await ctx.render("input/inputpage1",{
+        statusreport,
+        caseID,
+        subactID,
+        personID,
+        termlist
+    })
+  }
 },
 //到修正單筆資料頁
 async editpage(ctx, next) {
@@ -78,13 +163,31 @@ findByNo(req,res){
 
 //寫入一筆資料
 async create(ctx,next){
-    var new_input = new Input(ctx.request.body);
+  console.log("found route /base4dcarbon/input/inputadd1 !!");
+  var new_input = new Input(ctx.request.body);
     console.log("got new_input:"+new_input.a15nickname);
+    console.log("gotten query:"+statusreport);
+    if(statusreport===undefined){
+        statusreport="status未傳成功!"
+      };
+    var {status}=ctx.request.body;
+    console.log("gotten status:"+status);
+    var {subactID}=ctx.request.body;
+    console.log("gotten subactID:"+subactID);
+    var {caseID}=ctx.request.body;
+    console.log("gotten caseID:"+caseID);
+    var personID=ctx.params.id;
+    console.log("gotten personID:"+personID);
     await new_input.save()
-    .then(()=>{
+    .then(async ()=>{
         console.log("Saving new_input....");
     statusreport="儲存單筆客戶資料後進入本頁";
-    ctx.redirect("/base4dcarbon/input/?statusreport="+statusreport)
+    if(status=="0"){
+        await ctx.redirect("/base4dcarbon/input/:id?statusreport="+statusreport)
+    }else{
+      let querytext="?statusreport="+statusreport+"&status=1&subactID="+subactID+"&caseID="+caseID;
+      await ctx.redirect("/base4dcarbon/input/operate/"+personID+querytext)
+    }
     })
     .catch((err)=>{
         console.log("Input.save() failed !!")
@@ -94,6 +197,10 @@ async create(ctx,next){
 //批次新增資料
 async batchinput(ctx, next){
     var statusreport=ctx.query.statusreport;
+    console.log("gotten statusreport:"+statusreport);
+    var status=ctx.query.status;
+    console.log("gotten status:"+status);
+    var personID=ctx.params.id;
     var datafile=ctx.query.datafile;
     console.log("got the name of datafile:"+datafile)
     // 引用需要的模組
@@ -158,12 +265,12 @@ async batchinput(ctx, next){
         inputArray.forEach(function(inputj){
             sequence=sequence.then(function(){
                 var new_input = new Input({
-                  a05subactID:subactj[0],
-                  a10inputtype:subactj[1],
-                  a15nickname:subactj[2],
-                  a20describe:subactj[3],
-                  a25loyalistID:subactj[4],
-                  a99footnote:subactj[5]
+                  a05subactID:inputj[0],
+                  a10inputtype:inputj[1],
+                  a15nickname:inputj[2],
+                  a20describe:inputj[3],
+                  a25loyalistID:inputj[4],
+                  a99footnote:inputj[5]
                 });//EOF new input
                     saveone(new_input)
                 .catch(err=>{
@@ -175,17 +282,10 @@ async batchinput(ctx, next){
         })//EOF promise
         })//EOF savedata
     await readfile()
-    .then(()=>{
-        setTimeout(savedata,3000)
-    })
-    .then(async ()=>{
-        //console.log("going to list prject....");
-        //ctx.redirect("/base4dcarbon/project/?statusreport="+statusreport)
-        console.log("go back to datamanage1.ejs");
+    .then(async()=>{
+        setTimeout(savedata,3000);
         statusreport="完成input批次輸入";
-        await ctx.render("innerweb/datamanage/datamanagetemp",{
-            statusreport
-        })
+        await ctx.redirect("/base4dcarbon/input/"+personID)
     })
     .catch((err)=>{
         console.log("ctx.redirect failed !!")

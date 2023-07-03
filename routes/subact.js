@@ -5,9 +5,13 @@ const subactController = require('../controllers/index').subact;
 router.get('/', async (ctx, next)=> {
 	await subactController.list(ctx)
 });
-//到新增資料頁
+//到新增細部流程資料頁
 router.get('/inputpage', async (ctx, next)=> {
     await subactController.inputpage(ctx,next)
+});
+//到新增細部流程資料頁
+router.get('/inputpage1/:id', async (ctx, next)=> {
+  await subactController.inputpage1(ctx,next)
 });
 //到修正單筆資料頁
 router.get('/editpage/:id', async (ctx, next)=> {
@@ -15,7 +19,7 @@ router.get('/editpage/:id', async (ctx, next)=> {
     await subactController.editpage(ctx,next)
 });
 //批次新增資料
-router.get('/inputbatch', async (ctx, next)=> {
+router.get('/inputbatch/:id', async (ctx, next)=> {
     await subactController.batchinput(ctx,next)
 });
 //依參數id取得資料
@@ -26,8 +30,8 @@ router.get('/:id', async(ctx, next)=> {
 router.get('/find/:no', async(ctx, next)=> {
 	await subactController.findByNo(ctx)
 });
-//寫入一筆資料
-router.post('/add', async (ctx, next)=> {
+//由作業區單筆輸入寫入一筆資料
+router.post('/add1/:id', async (ctx, next)=> {
 	console.log(ctx.request.body);
 	await subactController.create(ctx)
 });

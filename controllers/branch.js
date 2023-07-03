@@ -1,5 +1,7 @@
 //載入相對應的model
 const User = require('../models/index').user;
+const Loyalist = require('../models/index').loyalist;
+const Case = require('../models/index').case;
 module.exports = {
 //依帳號決定轉頁
 async dispatch(ctx, next) {
@@ -7,12 +9,13 @@ async dispatch(ctx, next) {
   statusreport="由系統的暫用統一入口進入本頁";
   var {account}=ctx.request.body;
   var group;
-  var pwaroute;
+  var pwaroute, personID;
   console.log("the account :"+account)
   await User.findOne({a15account:account}).then(async userx=>{
       console.log("userx:"+userx.a15account);
       console.log("group:"+userx.a25group);
       group=userx.a25group;
+      personID=userx.a10personID;
       switch(group){
         case "applicant":pwaroute="/base4dcarbon/branch/app4applicant";break;
         case "decomposer":pwaroute="/base4dcarbon/branch/pwa4decomposer";break;
@@ -24,7 +27,7 @@ async dispatch(ctx, next) {
         case "tester":pwaroute="/base4dcarbon/branch/collecter";break;
         default:pwarouter="/base4dcarbon";
       }
-      await ctx.redirect(pwaroute+"/"+account);
+      await ctx.redirect(pwaroute+"/"+personID)
   })
   .catch(err=>{
       console.log("User.findOne() failed !!");
@@ -34,34 +37,62 @@ async dispatch(ctx, next) {
 //到Applicantweb
 async goapplicant(ctx, next) {
   console.log("進入branch controller的goapplicant");
-  var account=ctx.params.id;
-  console.log("account:"+account);
-  await User.findOne({a15account:account}).then(async userx=>{
-      console.log("userx ID:"+userx.a10personID);
-      statusreport="以認證申請人身分進入本頁";
-      console.log("type of userx:"+typeof(userx));
-      console.log("userx:"+userx)
-      let user1=encodeURIComponent(JSON.stringify(userx));
-      console.log("type of user1:"+typeof(user1));
-      console.log("user1:"+user1)
-      await ctx.render("branch/app4applicant" ,{
-        statusreport,
-        user1
-          })
-    })
-    .catch(err=>{
-      console.log("User.findOne() failed !!");
-      console.log(err)
-  })
+  var personID=ctx.params.id;
+  var statusreport="以認證申請人身分進入本頁";
+  await ctx.render("branch/app4applicant" ,{
+    statusreport,
+    personID
+      })
 },
 //到decomposerweb
 async godecomposer(ctx, next) {
   console.log("進入branch controller的godecomposer");
-  statusreport="以活動解構士身分進入本頁";
-  await ctx.render("branch/pwa4decomposer" ,{
-    statusreport
-})
+  var personID=ctx.params.id;
+  console.log("personID:"+personID);
+  var caselist;
+  var loyalist1;
+  await Case.find({}).then(async cases=>{
+    //console.log("found cases:"+cases);
+    console.log("type of cases:"+typeof(cases));
+    console.log("1st case:"+cases[0]);
+    //console.log("1st case:"+cases[0].a15casename)
+    console.log("No. of case:"+cases.length)
+    caselist=encodeURIComponent(JSON.stringify(cases));
+    console.log("type of caselist:"+typeof(caselist))
+    })
+    .catch(err=>{
+      console.log("Case.find({}) failed !!");
+      console.log(err)
+    })
+statusreport="以活動解構士身分進入本頁";
+await Loyalist.findOne({_id:personID})
+    .then(async loyalistx=>{
+      console.log("type of loyalistx:"+typeof(loyalistx));
+      console.log("loyalistx:"+loyalistx)
+      loyalist1=encodeURIComponent(JSON.stringify(loyalistx));
+      console.log("type of loyalist1:"+typeof(loyalist1));
+      console.log("loyalist1:"+loyalist1)
+      await ctx.render("branch/pwa4decomposer" ,{
+        loyalist1,
+        caselist,
+        personID,
+        statusreport
+          })
+    })
+    .catch(err=>{
+      console.log("Loyalist.findOne() failed !!");
+      console.log(err)
+    })
 },
+//到Decomposerr的findcase
+
+
+//到Decomposerr的operate
+
+
+
+
+
 //到Methodorweb
 async gomehtodor(ctx, next) {
 
@@ -82,6 +113,7 @@ async goreceiver(ctx, next) {
 async gomaintainer(ctx, next) {
   console.log("進入branch controller的maintainer");
   statusreport="以資料管理權限進入本頁";
+  var personID=ctx.params.id;
   var tablesjson=[
     {"route":"/base4dcarbon/user",
     "label":"使用者帳戶資料表維管"
@@ -151,7 +183,8 @@ async gomaintainer(ctx, next) {
     console.log("type of tables:"+typeof(tables));
   await ctx.render("innerweb/datamanage" ,{
       statusreport,
-      tables
+      tables,
+      personID
   })
 }
 }//EOF export

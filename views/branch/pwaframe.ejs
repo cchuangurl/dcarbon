@@ -365,13 +365,13 @@ Vue.component("bander",{
       },
       methods:{
         viewone:function(id){
-          let querytext="?statusreport=由case資料清單頁的活動解構鈕進入本頁&status=1&caseID="+id;
-          let url2='/base4dcarbon/case/viewpage1/'+id+querytext;
+          let querytext="?statusreport=由case資料清單頁的檢視按鈕進入本頁"+"&loyalist="+this.personID;
+          let url2='/base4dcarbon/case/viewpage/'+id+querytext;
           window.location=url2;
         },
         decompose:function(id){
-          let querytext="?statusreport=由case資料清單頁的活動解構鈕進入本頁&status=1&caseID="+id;
-          let url3='/base4dcarbon/branch/decomposer/operate/'+this.personID+querytext;
+          let querytext="?statusreport=由case資料清單頁的活動解構鈕進入本頁"+"&loyalist="+this.peronID;
+          let url3='/base4dcarbon/branch/decomposer/operate'+id+querytext;
           window.location=url3
            },
 

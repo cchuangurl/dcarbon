@@ -137,19 +137,18 @@ background-color: rgb(205, 226, 253);
             </tr>
             </thead>
             <tbody id="caselist">
-              <!-- <tr v-for="case of caseshow" :key="case._id"> -->
-                <tr v-for="case of caseShow" :key="case._id">
-                <td>{{case.a15casename}}</td>
-                <td>{{case.a20caseaddress}}</td>
-                <td>{{case.a30caseunit}}</td>
-                <td>{{case.a35scale}}</td>
+                <tr v-for="casex of caseShow" :key="casex._id">
+                <td>{{casex.a15casename}}</td>
+                <td>{{casex.a20caseaddress}}</td>
+                <td>{{casex.a30caseunit}}</td>
+                <td>{{casex.a35scale}}</td>
                 <!-- statusreport="由已擷取資料組清單頁進入本頁"> -->
 
                   <td>
-                    <input type="submit" value="檢視或編輯" @click="editone(case._id)">
+                    <input type="submit" value="檢視或編輯" @click="editone(casex._id)">
                   </td>
                   <td>
-                    <input type="submit" value="刪除" @click="deleteone(case._id)">
+                    <input type="submit" value="刪除" @click="deleteone(casex._id)">
                   </td>
                 </tr>
             </tbody>

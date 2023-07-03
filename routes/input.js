@@ -2,20 +2,28 @@ var router = require('@koa/router')();
 
 const inputController = require('../controllers/index').input;
 //列出清單
-router.get('/', async (ctx, next)=> {
+router.get('/:id', async (ctx, next)=> {
 	await inputController.list(ctx)
+});
+//到生產資材管理
+router.get('/operate/:id', async (ctx, next)=> {
+	await inputController.operate(ctx)
 });
 //到新增資料頁
 router.get('/inputpage', async (ctx, next)=> {
     await inputController.inputpage(ctx,next)
 });
+//到新增單筆資料頁
+router.get('/inputpage1/:id', async (ctx, next)=> {
+  await inputController.inputpage1(ctx,next)
+});
 //到修正單筆資料頁
-router.get('/editpage/:id', async (ctx, next)=> {
+router.get('/editpage1/:id', async (ctx, next)=> {
     console.log("get id:"+ctx.params.id)
-    await inputController.editpage(ctx,next)
+    await inputController.editpage1(ctx,next)
 });
 //批次新增資料
-router.get('/inputbatch', async (ctx, next)=> {
+router.get('/inputbatch/:id', async (ctx, next)=> {
     await inputController.batchinput(ctx,next)
 });
 //依參數id取得資料
@@ -27,7 +35,7 @@ router.get('/find/:no', async(ctx, next)=> {
 	await inputController.findByNo(ctx)
 });
 //寫入一筆資料
-router.post('/add', async (ctx, next)=> {
+router.post('/add/:id', async (ctx, next)=> {
 	console.log(ctx.request.body);
 	await inputController.create(ctx)
 });

@@ -86,16 +86,17 @@ async inputpage(ctx, next) {
 //到申請人新增申請案頁
 async inputpage1(ctx, next) {
   var statusreport=ctx.query.statusreport;
-  console.log("gotten statusreport:"+statusreport);
+  console.log("got statusreport:"+statusreport);
+  var status=ctx.query.status;
+  console.log("got status:"+status);
   var activityID=ctx.query.activityID;
-  console.log("gotten activityID:"+activityID);
+  console.log("got activityID:"+activityID);
   var actname=ctx.query.actname;
-  console.log("gotten actname:"+actname);
+  console.log("got actname:"+actname);
   var personID=ctx.params.id;
-  var status=1;
-  if(status==0){
+  if(status=="0"){
       await ctx.render("case/inputpage",{
-          statusreport:ctx.request.body.statusreport,
+          statusreport,
           activitylist
       })
       }else{
@@ -162,19 +163,15 @@ async create(ctx,next){
 },
 //寫入申請人填寫資料
 async create1(ctx,next){
+  var statusreport=ctx.query.statusreport;
+  console.log("got statusreport:"+statusreport);
+  var status=ctx.query.status;
+  console.log("got status:"+status);
   var new_case = new Case(ctx.request.body);
     var personID=ctx.params.id;
     console.log("got personID:"+personID);
-    var account, caseID;
+    var caseID;
   console.log("got new_case:"+new_case.a15casename);
-  await User.findOne({a10personID:personID})
-    .then(userx=>{
-      account=userx.a15account
-    })
-    .catch((err)=>{
-      console.log("User.findOne() failed !!")
-      console.log(err)
-    })
   await new_case.save()
   .then(async casex=>{
       console.log("Saving new_case....");
@@ -190,7 +187,12 @@ async create1(ctx,next){
             .then(async ()=>{
               console.log("Saving new_progress....");
               statusreport="儲存申請案資料及新進度後回到本頁";
-              await ctx.redirect("/base4dcarbon/branch/app4applicant/"+account+"?statusreport="+statusreport)
+              if(status=="0"){
+                await ctx.redirect("/base4dcarbon/case/?statusreport="+statusreport)
+              }else{
+                let querytxt="?statusreport="+statusreport;
+              await ctx.redirect("/base4dcarbon/branch/app4applicant/"+personID+querytxt)
+              }
             })
             .catch((err)=>{
               console.log("Progress.save() failed !!")

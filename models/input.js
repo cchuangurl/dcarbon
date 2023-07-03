@@ -4,8 +4,8 @@ var Schema = mongoose.Schema;
 
 var InputSchema = new Schema(
   {
-    a05activityID:{type:Schema.Types.ObjectID,required:false},
-    a10type:{type:String,required:false},
+    a05subactID:{type:Schema.Types.ObjectID,required:false},
+    a10inputtype:{type:String,required:false},
     a15nickname:{type:String,required:false},
     a20describe:{type:String,required:false},
     a25loyalistID:{type:Schema.Types.ObjectID,required:false},

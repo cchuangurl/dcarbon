@@ -33,7 +33,7 @@ background-color: rgb(205, 226, 253);
 }
 </style>
 
-  <title>名詞對照資料管理</title>
+  <title>細部活動分解作業</title>
   </head>
   <body>
     <div id="show_div">
@@ -51,22 +51,17 @@ background-color: rgb(205, 226, 253);
         <div class="collapse navbar-collapse" id="navbarText">
           <ul class="navbar-nav mr-auto">
             <li class="nav-item">
-                <a class="nav-link" href="/base4dcarbon/briefing/">{{introduction}}</a>
+              <a class="nav-link  active" href="#">{{decompose}}<span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" :href="previousurl">{{previouspage}}</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="/base4dcarbon/innerweb/datamanage">{{otherdata}}</a>
+                <a class="nav-link" :href="outcomeurl">{{outcomepage}}</a>
               </li>
-              <li class="nav-item">
-                <a class="nav-link" href="/base4dcarbon/">{{entry}}</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link  active" href="#">{{modeltype}}<span class="sr-only">(current)</span></a>
-              </li>
-              <li class="nav-item">
-                  <a class="nav-link" href="/base4dcarbon/role/">{{startuse}}</a>
           </ul>
           <span class="navbar-text">
-            <font size="1">{{statusreport}}</font>
+            <font size="2">{{statusreport}}</font>
           </span>
         </div>
       </nav>
@@ -77,15 +72,19 @@ background-color: rgb(205, 226, 253);
           <table>
             <tr>
             <td>
-            <form  action="/base4dcarbon/term/inputpage" method="get" >
-            <input type="hidden" name="statusreport" value="由單筆手動新增按鈕進來">
+            <form  :action="inputoneurl" method="get" >
+            <input type="hidden" name="statusreport" class="form-control" id="msg1" value="由單筆手動新增按鈕進來">
+            <input type="hidden" name="caseID" class="form-control" id="msg3" :value="caseID">
+            <input type="hidden" name="status" class="form-control" id="msg2" value="1">
             <input type="submit" value="單筆手動新增">
             </form>
             </td>
             <td>
-              <form  action="/base4dcarbon/term/inputbatch" method="get" >
+              <form  :action="inputbatchurl" method="get" >
              資料主檔名：<input type="text" name="datafile" required>
-             <input type="hidden" name="statusreport" value="由批次新增進入本頁">
+             <input type="hidden" name="statusreport" class="form-control" id="msg1" value="由批次新增進入本頁">
+             <input type="hidden" name="caseID" class="form-control" id="msg3" :value="caseID">
+             <input type="hidden" name="status" class="form-control" id="msg2" value="1">
              <input type="submit" value="批次新增">
              </form>
              </td>
@@ -95,7 +94,7 @@ background-color: rgb(205, 226, 253);
             </td>
             <td>
             <span class="navbar-text">
-                <font size="1">{{statusreport}}</font>
+                <font size="2">{{statusreport}}</font>
               </span>
             </td>
             </tr>
@@ -129,27 +128,30 @@ background-color: rgb(205, 226, 253);
         <table border="1" class="table table-striped">
             <thead>
             <tr>
+                <th>{{items.item4}}</th>
+                <th>{{items.item1}}</th>
                 <th>{{items.item2}}</th>
                 <th>{{items.item3}}</th>
-                <th>{{items.item4}}</th>
-                <th>{{items.item5}}</th>
               <!-- <th>特別註記</th> -->
             </tr>
             </thead>
-            <tbody id="termlist">
-              <!-- <tr v-for="term of termshow" :key="term._id"> -->
-                <tr v-for="term of termShow" :key="term._id">
-                <td>{{term.a15model}}</td>
-                <td>{{term.a20field}}</td>
-                <td>{{term.a25code}}</td>
-                <td>{{term.a30mean}}</td>
+            <tbody id="subactlist">
+              <!-- <tr v-for="subact of subactshow" :key="subact._id"> -->
+                <tr v-for="subact of subactShow" :key="subact._id">
+                <td>{{subact.a25order}}</td>
+                <td>{{subact.a10type}}</td>
+                <td>{{subact.a15nickname}}</td>
+                <td>{{subact.a20describe}}</td>
                 <!-- statusreport="由已擷取資料組清單頁進入本頁"> -->
 
                   <td>
-                    <input type="submit" value="檢視或編輯" @click="editone(term._id)">
+                    <input type="submit" value="檢視或編輯" @click="editone(subact._id)">
                   </td>
                   <td>
-                    <input type="submit" value="刪除" @click="deleteone(term._id)">
+                    <input type="submit" value="刪除" @click="deleteone(subact._id)">
+                  </td>
+                  <td>
+                    <input type="submit" value="生產資材清單" @click="inputmanage(subact._id)">
                   </td>
                 </tr>
             </tbody>
@@ -190,16 +192,22 @@ background-color: rgb(205, 226, 253);
       props:{},
       data(){
         return {
-            brand:"dCarbon",
-        introduction:"本制度系統介紹",
-        otherdata:"管理其他資料",
-        entry:"重新登入",
-        modeltype:"名詞對照表管理",
-        startuse:"使用本制度",
-        statusreport:'<%- statusreport %>'
-        //statusreport:"顯示測試"
+          brand:"dCarbon",
+          previouspage:"回案件清單頁",
+          decompose:"活動分解作業",
+          outcomepage:"檢視分解結果",
+          statusreport:'<%- statusreport %>',
+          caseID:'<%- caseID %>',
+          personID:'<%- personID %>',
+          previousurl:"",
+          outcomeurl:""
         }
       },
+          mounted:function(){
+            let basepath="/dcarbon/branch/";
+            this.previousurl=basepath+"pwa4decompser/"+this.personID;
+            this.outcomeurl=basepath+"/decompser/outcome/"+this.personID+"?caseID="+this.caseID;
+          },
       methods:{
 
       },
@@ -209,8 +217,11 @@ background-color: rgb(205, 226, 253);
       props:{},
       data(){
         return {
+
+
         }
       },
+
       methods:{
 
       },
@@ -239,22 +250,28 @@ background-color: rgb(205, 226, 253);
           pageIndex:[],
           showIndex:[],
           activeIndex:[],
-          termShow:[],
-          statusreport:'<%- JSON.stringify(statusreport) %>',
-          termlist:JSON.parse(decodeURIComponent('<%=termlist%>')),
+          subactShow:[],
+          inputoneurl:"",
+          inputbatchurl:"",
+          statusreport:'<%- statusreport %>',
+          caseID:'<%- caseID %>',
+          personID:'<%- personID %>',
+          subactlist:JSON.parse(decodeURIComponent('<%=subactlist%>')),
         items:{
-            item0:"適用的專案",
-            item1:"適用的資料庫",
-            item2:"適用的model或namespace",
-            item3:"適用的欄位或群組",
-            item4:"英文代碼或中文簡稱",
-            item5:"類別或意涵",
-            item99:"特別註記"
+          item0:"對應之活動代碼",
+          item1:"細部活動類型",
+          item2:"細部活動名稱",
+          item3:"細部活動描述",
+          item4:"細部活動順序",
+          item5:"活動分解士ID",
+          item99:"特別註記"
             }
         }
       },
       mounted:function(){
-        this.maxRow=this.termlist.length;
+        this.inputoneurl="/base4dcarbon/subact/inputpage1/"+this.personID;
+        this.inputbatchurl="/base4dcarbon/subact/inputbatch/"+this.personID;
+        this.maxRow=this.subactlist.length;
         this.modRow=this.maxRow%this.perPage;
         this.maxPage=this.modRow==0?this.maxRow/this.perPage:Math.floor(this.maxRow/this.perPage)+1;
         this.modPage=this.maxPage%this.perRound;
@@ -264,14 +281,19 @@ background-color: rgb(205, 226, 253);
       },
       methods:{
         editone:function(id){
-          let querytext="?statusreport=由term資料清單頁的編輯按鈕進入本頁";
-          let url2='/base4dcarbon/term/editpage/'+id+querytext;
+          let querytext="?statusreport=由subact資料清單頁的編輯按鈕進入本頁&status=1&subactID="+id;
+          let url2='/base4dcarbon/subact/editpage1/'+this.personID+querytext;
           window.location=url2;
         },
         deleteone:function(id){
-          let querytext="?statusreport=由term資料清單頁的刪除按鈕進入本頁";
-          let url3='/base4dcarbon/term/delete/'+id+querytext;
+          let querytext="?statusreport=由subact資料清單頁的編輯按鈕進入本頁&status=1&subactID="+id;
+          let url3='/base4dcarbon/subact/delete1/'+this.peronID+querytext;
           window.location=url3
+           },
+        inputmanage:function(id){
+          let querytext="?statusreport=由subact資料清單頁的生產資材清單按鈕進入本頁&status=1&subactID="+id+"&caseID="+this.caseID;
+          let url4='/base4dcarbon/input/operate/'+this.personID+querytext;
+          window.location=url4
            },
 
         getShowData:function(index){
@@ -291,16 +313,16 @@ background-color: rgb(205, 226, 253);
           this.currentPage=this.pageIndex[index]
           console.log("currentPage is:"+this.currentPage)
           this.fullPage=(this.maxRow>=(this.currentPage*this.perPage))?true:false;
-          this.termShow.splice(0);
+          this.subactShow.splice(0);
           let startRow=(this.currentPage-1)*this.perPage;
             console.log("startRow is:"+startRow)
           let rowNo=this.fullPage?this.perPage:this.modRow;
           console.log("rowNo is:"+rowNo);
-          //this.termShow=[];
-          this.termShow=this.termlist.slice(startRow,startRow+rowNo)
-          //this.termShow=this.termlist.slice(8,3)
-          console.log("11st termlist:"+this.termlist[10])
-          console.log("1st termShow:"+this.termShow[0])
+          //this.subactShow=[];
+          this.subactShow=this.subactlist.slice(startRow,startRow+rowNo)
+          //this.subactShow=this.subactlist.slice(8,3)
+          console.log("11st subactlist:"+this.subactlist[10])
+          console.log("1st subactShow:"+this.subactShow[0])
 
         },
         goFirstPage:function(){

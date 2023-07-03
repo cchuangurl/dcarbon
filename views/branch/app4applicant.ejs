@@ -88,13 +88,13 @@ background-color: rgb(248, 243, 243);
             button5:"認驗證進度查詢",
             button6:"公評碳權權包"
           },
-        user1:JSON.parse(decodeURIComponent('<%= user1 %>')),
+        personID:'<%= user1 %>',
         applyurl:"",
         //applyurl:"/base4dcarbon/activity/inputpage1/647bfaf1e07292995168f90f"
       }
     },
     mounted:function(){
-        this.applyurl="/base4dcarbon/activity/inputpage1/"+this.user1.a10personID;
+        this.applyurl="/base4dcarbon/activity/inputpage1/"+this.personID;
         console.log("applyurl:"+this.applyurl)
     },
     methods:{

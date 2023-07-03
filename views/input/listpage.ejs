@@ -83,9 +83,10 @@ background-color: rgb(205, 226, 253);
             </form>
             </td>
             <td>
-              <form  action="/base4dcarbon/input/inputbatch" method="get" >
+              <form  :action="inputbatchurl" method="get" >
              資料主檔名：<input type="text" name="datafile" required>
              <input type="hidden" name="statusreport" value="由批次新增進入本頁">
+             <input type="hidden" name="status" value="0">
              <input type="submit" value="批次新增">
              </form>
              </td>
@@ -240,8 +241,10 @@ background-color: rgb(205, 226, 253);
           showIndex:[],
           activeIndex:[],
           inputShow:[],
-          statusreport:'<%- JSON.stringify(statusreport) %>',
+          statusreport:'<%- statusreport %>',
+          personID:'<%- personID %>',
           inputlist:JSON.parse(decodeURIComponent('<%=inputlist%>')),
+          inputbatchurl:"",
         items:{
           item0:"對應之細部活動代碼",
           item1:"投入資材類型",
@@ -253,6 +256,7 @@ background-color: rgb(205, 226, 253);
         }
       },
       mounted:function(){
+        this.inputbatchurl="/base4dcarbon/input/inputbatch/"+this.personID;
         this.maxRow=this.inputlist.length;
         this.modRow=this.maxRow%this.perPage;
         this.maxPage=this.modRow==0?this.maxRow/this.perPage:Math.floor(this.maxRow/this.perPage)+1;

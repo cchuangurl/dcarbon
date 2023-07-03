@@ -1,6 +1,7 @@
 var router = require('@koa/router')();
 
 const branchController = require('../controllers/index').branch;
+const subactController = require('../controllers/index').subact;
 //依帳號決定轉頁
 router.post('/', async (ctx, next)=> {
 	await branchController.dispatch(ctx)
@@ -9,9 +10,17 @@ router.post('/', async (ctx, next)=> {
 router.get('/app4applicant/:id', async (ctx, next)=> {
     await branchController.goapplicant(ctx,next)
 });
-//到Processorweb
+//到Decomposerrweb
 router.get('/pwa4decomposer/:id', async (ctx, next)=> {
   await branchController.godecomposer(ctx,next)
+});
+//到Decomposerr的findcase
+router.get('/decomposer/findcase/:id', async (ctx, next)=> {
+  await branchController.decomposerfindcase(ctx,next)
+});
+//到Decomposerr的operate
+router.get('/decomposer/operate/:id', async (ctx, next)=> {
+  await subactController.operate(ctx,next)
 });
 //到Methodorweb
 router.get('/pwa4methodor/:id', async (ctx, next)=> {

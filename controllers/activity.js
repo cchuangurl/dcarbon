@@ -41,7 +41,7 @@ async inputpage(ctx, next) {
         statusreport="status未傳成功!"
     }
 	await ctx.render("activity/inputpage",{
-		statusreport:ctx.request.body.statusreport
+		statusreport
 	})
 },
 //到申請人填寫活動資料頁
@@ -147,6 +147,9 @@ async create(ctx,next){
 //存入申請人填寫的活動資料
 async create1(ctx,next){
   var new_activity = new Activity(ctx.request.body);
+  var {status}=ctx.request.body;
+  var {statusreport}=ctx.request.brtody;
+  console.log("statusreoprt:"+statusreoprt);
   var personID=ctx.params.id;
   var activityID, nickname;
   console.log("got new_activity:"+new_activity.a15nickname);
@@ -158,7 +161,12 @@ async create1(ctx,next){
       actname=activityx.a15nickname;
       console.log("got actname:"+actname);
       statusreport="儲存單筆活動資料後進入本頁";
-      await ctx.redirect("/base4dcarbon/case/inputpage1/"+personID+"?statusreport="+statusreport+"&activityID="+activityID+"&actname="+actname)
+    if(status=="0"){
+          await ctx.redirect("/base4dcarbon/activity/?statusreport="+statusreport)
+        }else{
+          let querytxt="?statusreport="+statusreport+"&activityID="+activityID+"&actname="+actname+"&status=1";
+          await ctx.redirect("/base4dcarbon/case/inputpage1/"+personID+querytxt)
+        }
     })
   .catch((err)=>{
       console.log("Activity.save() failed !!")

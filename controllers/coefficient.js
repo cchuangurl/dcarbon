@@ -5,7 +5,7 @@ module.exports = {
 async list(ctx,next){
     console.log("found route /base4dcarbon/coefficient !!");
     var statusreport=ctx.query.statusreport;
-    console.log("gotten query:"+statusreport);
+    console.log("got query:"+statusreport);
     await Coefficient.find({}).then(async coefficients=>{
         //console.log("found coefficients:"+coefficients);
         console.log("type of coefficients:"+typeof(coefficients));
@@ -33,7 +33,7 @@ async list(ctx,next){
 //到新增資料頁
 async inputpage(ctx, next) {
     var {statusreport}=ctx.request.body;
-    console.log("gotten query:"+statusreport);
+    console.log("got query:"+statusreport);
     if(statusreport===undefined){
         statusreport="status未傳成功!"
     }
@@ -44,7 +44,7 @@ async inputpage(ctx, next) {
 //到修正單筆資料頁
 async editpage(ctx, next) {
     var statusreport=ctx.query.statusreport;
-    console.log("gotten query:"+statusreport);
+    console.log("got query:"+statusreport);
     console.log("ID:"+ctx.params.id);
     console.log("entered coefficient.findById(ctx.params.id)!!");
     if(statusreport===undefined){
@@ -200,7 +200,7 @@ async batchinput(ctx, next){
 //依參數id刪除資料
 async destroy(ctx,next){
     var statusreport=ctx.query.statusreport;
-    console.log("gotten query:"+statusreport);
+    console.log("got query:"+statusreport);
     await Coefficient.deleteOne({_id: ctx.params.id})
     .then(()=>{
         console.log("Deleted a coefficient....");
@@ -218,7 +218,7 @@ async destroy(ctx,next){
 async update(ctx,next){
     let {_id}=ctx.request.body;
     var {statusreport}=ctx.request.body;
-    console.log("gotten query:"+statusreport);
+    console.log("got query:"+statusreport);
     await Coefficient.findOneAndUpdate({_id:_id}, ctx.request.body, { new: true })
     .then((newcoefficient)=>{
         console.log("Saving new_coefficient....:"+newcoefficient);

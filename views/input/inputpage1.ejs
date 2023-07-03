@@ -24,7 +24,7 @@ body {
 .navbar-toggler{background:#fff !important;}
 </style>
 
-  <title>單筆credit資料</title>
+  <title>單筆input資料</title>
   </head>
   <body>
     <div id="show_div">
@@ -41,7 +41,7 @@ body {
         <div class="collapse navbar-collapse" id="navbarText">
           <ul class="navbar-nav mr-auto">
             <li class="nav-item">
-                <a class="nav-link" href="/base4dcarbon/credit">{{lastpage}}<span class="sr-only">(current)</span></a>
+                <a class="nav-link" :href="previousurl">{{previouspage}}</a>
               </li>
             <li class="nav-item active">
               <a class="nav-link" href="#">{{input1}}<span class="sr-only">(current)</span></a>
@@ -65,53 +65,41 @@ body {
         <div class="card-body">
           <h5 class="card-title">{{card_title}}</h5>
           <h6 class="card-subtitle mb-2 text-muted">{{card_subtitle}}</h6>
-          <form action="/base4dcarbon/credit/add" method="post">
+          <form :action="inputadd1url" method="post">
             <div class="form-group" :key="inputerUIkey">
 
               <label for="formGroupExampleInput2">{{items.item0}}</label>
-              <input type="text" :name="names.name0" class="form-control" id="formGroupExampleInput0" :placeholder="holders.holder0">
+              <input type="text" :name="names.name0" class="form-control" id="formGroupExampleInput0" :value="subactID">
 
               <label for="formGroupExampleInput2">{{items.item1}}</label>
-              <input type="text" :name="names.name1" class="form-control" id="formGroupExampleInput1" :placeholder="holders.holder1">
+              <select :name="names.name1" class="form-select">
+                <optgroup v-for="typex of types" :key="typex._id">
+                <option :value="typex.a25code">{{typex.a30mean}}</option>
+                </optgroup>
+                </select>
+              <br>
 
               <label for="formGroupExampleInput2">{{items.item2}}</label>
-              <input type="text" :name="names.name2" class="form-control" id="formGroupExampleInput2" :placeholder="holders.holder2">
+              <select :name="names.name2" class="form-select">
+                <optgroup v-for="nickname of nicknames" :key="nickname._id">
+                <option :value="nickname.a25code">{{nickname.a30mean}}</option>
+                </optgroup>
+                </select>
+              <br>
 
               <label for="formGroupExampleInput2">{{items.item3}}</label>
               <input type="text" :name="names.name3" class="form-control" id="formGroupExampleInput3" :placeholder="holders.holder3">
 
               <label for="formGroupExampleInput2">{{items.item4}}</label>
-              <input type="text" :name="names.name4" class="form-control" id="formGroupExampleInput4" :placeholder="holders.holder4">
-
-              <label for="formGroupExampleInput2">{{items.item5}}</label>
-              <input type="text" :name="names.name5" class="form-control" id="formGroupExampleInput5" :placeholder="holders.holder5">
-
-              <label for="formGroupExampleInput2">{{items.item6}}</label>
-              <input type="text" :name="names.name6" class="form-control" id="formGroupExampleInput6" :placeholder="holders.holder6">
-
-              <label for="formGroupExampleInput2">{{items.item7}}</label>
-              <input type="text" :name="names.name7" class="form-control" id="formGroupExampleInput7" :placeholder="holders.holder7">
-
-              <label for="formGroupExampleInput2">{{items.item8}}</label>
-              <input type="text" :name="names.name8" class="form-control" id="formGroupExampleInput8" :placeholder="holders.holder8">
-
-              <label for="formGroupExampleInput2">{{items.item9}}</label>
-              <input type="text" :name="names.name9" class="form-control" id="formGroupExampleInput9" :placeholder="holders.holder9">
-
-              <label for="formGroupExampleInput2">{{items.item10}}</label>
-              <input type="text" :name="names.name10" class="form-control" id="formGroupExampleInput10" :placeholder="holders.holder10">
-
-              <label for="formGroupExampleInput2">{{items.item11}}</label>
-              <input type="text" :name="names.name11" class="form-control" id="formGroupExampleInput11" :placeholder="holders.holder11">
-
-              <label for="formGroupExampleInput2">{{items.item12}}</label>
-              <input type="text" :name="names.name12" class="form-control" id="formGroupExampleInput12" :placeholder="holders.holder12">
+              <input type="text" :name="names.name4" class="form-control" id="formGroupExampleInput4" :value="personID">
 
               <label for="formGroupExampleInput">{{items.item99}}</label>
               <input type="text" name="a99footnote" class="form-control" id="formGroupExampleInput99" :placeholder="holders.holder99">
 
-              <input type="hidden" name="statusreport" class="form-control" id="msg1" value="由單筆credit輸入後進入本頁">
-              <input type="hidden" name="status" class="form-control" id="msg2" value="0">
+              <input type="hidden" name="statusreport" class="form-control" id="msg1" value="由單筆input輸入後進入本頁">
+              <input type="hidden" name="status" class="form-control" id="msg2" value="1">
+              <input type="hidden" name="caseID" class="form-control" id="msg3" :value="caseID">
+              <input type="hidden" name="subactID" class="form-control" id="msg4" :value="subactID">
               <input type="submit" id="button1" value="確定送出" class="btn btn-info">
             </div>
           </form>
@@ -130,72 +118,74 @@ Vue.component("bander",{
     data(){
       return {
         brand:"dCarbon內部功能",
-        lastpage:"回前頁",
+        previouspage:"回前頁",
         input1:"手動新增1筆",
         inputbatch:"批次輸入",
         crawl:"從網路抓取",
-        statusreport:'<%- statusreport %>'
+        statusreport:'<%- statusreport %>',
+        subactID:'<%- subactID %>',
+        personID:'<%- personID %>'
       }
     },
-
+    mounted:function(){
+      let querytext="?statusreport=由input作業區的按鈕進入本頁&status=1&subactID="+this.subactID;
+        this.previousurl="/base4dcarbon/input/inputpage1/"+this.personID+querytext;
+        this.inputbatchurl="/base4dcarbon/input/inputbatch/"+this.personID+querytext;
+    },
     template:"#banderUI"
   });
   Vue.component("inputer",{
 
     data(){
       return {
-        card_title:"新增1個公評碳權資料",
+        card_title:"新增1個投入因素",
         card_subtitle:"請輸入以下各項資料:",
         items:{
-          item0:"申請案代碼",
-          item1:"核發時間",
-          item2:"整個案場核發碳權噸數",
-          item3:"權利起始時間",
-          item4:"權利到期時間",
-          item5:"權證內容hash碼(亦為權證編號)",
-          item6:"首發權證hash所在區塊",
-          item7:"認驗證回溯連結",
-          item8:"本次移轉的交易hash",
-          item9:"本次移轉交易hash所在區塊",
-          item10:"目前權利人",
-          item11:"權利人權利持分",
-          item12:"智能合約位址",
+          item0:"對應之細部活動代碼",
+          item1:"投入資材類型",
+          item2:"投入資材名稱",
+          item3:"投入資材規格等描述描述",
+          item4:"活動分解士ID",
           item99:"特別註記"
           },
         names:{
-          name0:"a05caseID",
-          name1:"a10when",
-          name2:"a15totalcredit",
-          name3:"a20enforce",
-          name4:"a25expire",
-          name5:"a30credithash",
-          name6:"a35creditblock",
-          name7:"a40tracelink",
-          name8:"a45nowhash",
-          name9:"a50nowblock",
-          name10:"a55holder",
-          name11:"a60share",
-          name12:"a65contract"
+          name0:"a05subactID",
+          name1:"a10inputtype",
+          name2:"a15nickname",
+          name3:"a20describe",
+          name4:"a25loyalistID"
             },
         holders:{
           holder0:"物件識別碼,",
-          holder1:"日期時間,",
-          holder2:"數字,",
-          holder3:"日期時間,",
-          holder4:"日期時間,",
-          holder5:"字串,",
-          holder6:"數字,>0",
-          holder7:"字串,",
-          holder8:"字串,",
-          holder9:"數字,>0",
-          holder10:"字串,",
-          holder11:"數字,>0, =<1",
-          holder12:"字串,",
+          holder1:"字串,如名詞字典選項",
+          holder2:"字串,",
+          holder3:"字串,",
+          holder4:"物件識別碼,",
           holder99:"字串"
             },
+        caseID:'<%- caseID %>',
+        subactID:'<%- subactID %>',
+        personID:'<%- personID %>',
+        termlist:JSON.parse(decodeURIComponent('<%= termlist %>')),
+        types:[],
+        nicknames:[],
+        inputadd1url:"",
       inputerUIkey:0
 
       }
+    },
+    mounted:function(){
+        for(term of this.termlist){
+            if(term.a20field=="a10inputtype"){
+                this.types.push(term)
+            }
+        }
+        for(term of this.termlist){
+            if(term.a20field=="a15nickname"){
+                this.nicknames.push(term)
+            }
+        }
+        this.inputadd1url="/base4dcarbon/input/add/"+this.personID
     },
     methods:{
         rerender:function() {

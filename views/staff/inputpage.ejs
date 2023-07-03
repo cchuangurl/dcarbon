@@ -78,7 +78,7 @@ body {
               <input type="text" :name="names.name2" class="form-control" id="formGroupExampleInput2" :placeholder="holders.holder2">
 
               <label for="formGroupExampleInput2">{{items.item3}}</label>
-              <select :name="names.name3" class="form-select" :placeholder="holders.holder3">
+              <select :name="names.name3" class="form-select">
                 <optgroup v-for="department of departments" :key="department._id">
                 <option :value="department.a25code">{{department.a30mean}}</option>
                 </optgroup>

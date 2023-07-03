@@ -41,7 +41,7 @@ body {
         <div class="collapse navbar-collapse" id="navbarText">
           <ul class="navbar-nav mr-auto">
             <li class="nav-item">
-                <a class="nav-link" href="/base4dcarbon/subact">{{lastpage}}<span class="sr-only">(current)</span></a>
+                <a class="nav-link" :href="previousurl">{{previouspage}}<span class="sr-only">(current)</span></a>
               </li>
             <li class="nav-item active">
               <a class="nav-link" href="#">{{input1}}<span class="sr-only">(current)</span></a>
@@ -83,11 +83,14 @@ body {
               <label for="formGroupExampleInput2">{{items.item4}}</label>
               <input type="text" :name="names.name4" class="form-control" id="formGroupExampleInput4" :placeholder="holders.holder4">
 
+              <label for="formGroupExampleInput2">{{items.item5}}</label>
+              <input type="text" :name="names.name5" class="form-control" id="formGroupExampleInput5" :placeholder="holders.holder5">
+
               <label for="formGroupExampleInput">{{items.item99}}</label>
               <input type="text" name="a99footnote" class="form-control" id="formGroupExampleInput99" :placeholder="holders.holder99">
 
               <input type="hidden" name="statusreport" class="form-control" id="msg1" value="由單筆subact輸入後進入本頁">
-
+              <input type="hidden" name="status" class="form-control" id="msg2" value="0">
               <input type="submit" id="button1" value="確定送出" class="btn btn-info">
             </div>
           </form>
@@ -106,14 +109,19 @@ Vue.component("bander",{
     data(){
       return {
         brand:"dCarbon內部功能",
-        lastpage:"回前頁",
+        previouspage:"回細部活動清單頁",
         input1:"手動新增1筆",
         inputbatch:"批次輸入",
         crawl:"從網路抓取",
-        statusreport:'<%- statusreport %>'
+        statusreport:'<%- statusreport %>',
+        caseID:'<%- caseID %>',
+        personID:'<%- personID %>'
       }
     },
-
+    mounted:function(){
+      let querytext="?statusreport=由case資料清單頁的活動解構鈕進入本頁&personID="+this.peronID;
+      let previousurl='/base4dcarbon/subact/'+this.caseID+querytext;
+    },
     template:"#banderUI"
   });
   Vue.component("inputer",{
@@ -127,7 +135,8 @@ Vue.component("bander",{
           item1:"細部活動類型",
           item2:"細部活動名稱",
           item3:"細部活動描述",
-          item4:"活動分解士ID",
+          item4:"細部活動順序",
+          item5:"活動分解士ID",
           item99:"特別註記"
           },
         names:{
@@ -135,7 +144,8 @@ Vue.component("bander",{
           name1:"a10type",
           name2:"a15nickname",
           name3:"a20describe",
-          name4:"a25loyalistID"
+          name4:"a25order",
+          name5:"a30loyalistID"
             },
         holders:{
           holder0:"物件識別碼,",
@@ -145,9 +155,27 @@ Vue.component("bander",{
           holder4:"物件識別碼,",
           holder99:"字串"
             },
+        caseID:'<%- caseID %>',
+        personID:'<%- personID %>',
+        activityID:'<%- activityID %>',
+        termlist:JSON.parse(decodeURIComponent('<%= termlist %>')),
+        types:[],
+        nicknames:[],
       inputerUIkey:0
 
       }
+    },
+    mounted:function(){
+        for(term of this.termlist){
+            if(term.a20field=="a10type"){
+                this.types.push(term)
+            }
+        }
+        for(term of this.termlist){
+            if(term.a20field=="a15nickname"){
+                this.nicknames.push(term)
+            }
+        }
     },
     methods:{
         rerender:function() {

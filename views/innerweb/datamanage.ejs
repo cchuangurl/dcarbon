@@ -69,11 +69,14 @@ background-color: rgb(205, 226, 253);
       props:{},
       data(){
         return{
-      tables:JSON.parse(decodeURIComponent('<%=tables%>')),
+          personID:'<%- personID %>',
+          tables:JSON.parse(decodeURIComponent('<%=tables%>'))
       }
       },
       mounted:function(){
-
+        for(table of this.tables){
+          table.route=table.route+"/"+this.personID
+        }
       },
       methods:{
 
