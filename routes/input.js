@@ -10,7 +10,7 @@ router.get('/operate/:id', async (ctx, next)=> {
 	await inputController.operate(ctx)
 });
 //到新增資料頁
-router.get('/inputpage', async (ctx, next)=> {
+router.get('/inputpage/:id', async (ctx, next)=> {
     await inputController.inputpage(ctx,next)
 });
 //到新增單筆資料頁

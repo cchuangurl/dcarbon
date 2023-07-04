@@ -77,16 +77,18 @@ background-color: rgb(205, 226, 253);
           <table>
             <tr>
             <td>
-            <form  action="/base4dcarbon/subact/inputpage" method="get" >
-            <input type="hidden" name="statusreport" value="由單筆手動新增按鈕進來">
-            <input type="submit" value="單筆手動新增">
-            </form>
-            </td>
-            <td>
-              <form  action="/base4dcarbon/subact/inputbatch" method="get" >
-             資料主檔名：<input type="text" name="datafile" required>
-             <input type="hidden" name="statusreport" value="由批次新增進入本頁">
-             <input type="submit" value="批次新增">
+              <form  :action="inputpageurl" method="get" >
+                <input type="hidden" name="statusreport" value="由單筆手動新增按鈕進來">
+                <input type="hidden" name="status" value="0">
+                <input type="submit" value="單筆手動新增">
+                </form>
+                </td>
+                <td>
+                  <form  :action="inputbatchurl" method="get" >
+                 資料主檔名：<input type="text" name="datafile" required>
+                 <input type="hidden" name="statusreport" value="由批次新增進入本頁">
+                 <input type="hidden" name="status" value="0">
+                 <input type="submit" value="批次新增">
              </form>
              </td>
 
@@ -241,6 +243,9 @@ background-color: rgb(205, 226, 253);
           activeIndex:[],
           subactShow:[],
           statusreport:'<%- JSON.stringify(statusreport) %>',
+          personID:'<%- personID %>',
+          inputpageurl:"",
+          inputbatchurl:"",
           subactlist:JSON.parse(decodeURIComponent('<%=subactlist%>')),
         items:{
           item0:"對應之活動代碼",
@@ -254,6 +259,8 @@ background-color: rgb(205, 226, 253);
         }
       },
       mounted:function(){
+        this.inputpageurl="/base4dcarbon/subact/inputpage/"+this.personID;
+        this.inputbatchurl="/base4dcarbon/subact/inputbatch/"+this.personID;
         this.maxRow=this.subactlist.length;
         this.modRow=this.maxRow%this.perPage;
         this.maxPage=this.modRow==0?this.maxRow/this.perPage:Math.floor(this.maxRow/this.perPage)+1;

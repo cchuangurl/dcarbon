@@ -6,7 +6,7 @@ router.get('/:id', async (ctx, next)=> {
 	await subactController.list(ctx)
 });
 //到新增細部流程資料頁
-router.get('/inputpage', async (ctx, next)=> {
+router.get('/inputpage/:id', async (ctx, next)=> {
     await subactController.inputpage(ctx,next)
 });
 //到新增細部流程資料頁

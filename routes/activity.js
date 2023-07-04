@@ -6,7 +6,7 @@ router.get('/:id', async (ctx, next)=> {
 	await activityController.list(ctx)
 });
 //到新增活動資料頁
-router.get('/inputpage', async (ctx, next)=> {
+router.get('/inputpage/:id', async (ctx, next)=> {
     await activityController.inputpage(ctx,next)
 });
 //到申請人填寫活動資料頁
@@ -19,7 +19,7 @@ router.get('/editpage/:id', async (ctx, next)=> {
     await activityController.editpage(ctx,next)
 });
 //批次新增資料
-router.get('/inputbatch', async (ctx, next)=> {
+router.get('/inputbatch/:id', async (ctx, next)=> {
     await activityController.batchinput(ctx,next)
 });
 //依參數id取得資料

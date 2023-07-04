@@ -77,8 +77,9 @@ background-color: rgb(205, 226, 253);
           <table>
             <tr>
             <td>
-            <form  action="/base4dcarbon/input/inputpage" method="get" >
+            <form  :action="inputpageurl" method="get" >
             <input type="hidden" name="statusreport" value="由單筆手動新增按鈕進來">
+            <input type="hidden" name="status" value="0">
             <input type="submit" value="單筆手動新增">
             </form>
             </td>
@@ -243,8 +244,9 @@ background-color: rgb(205, 226, 253);
           inputShow:[],
           statusreport:'<%- statusreport %>',
           personID:'<%- personID %>',
-          inputlist:JSON.parse(decodeURIComponent('<%=inputlist%>')),
+          inputpageurl:"",
           inputbatchurl:"",
+          inputlist:JSON.parse(decodeURIComponent('<%=inputlist%>')),
         items:{
           item0:"對應之細部活動代碼",
           item1:"投入資材類型",
@@ -256,6 +258,7 @@ background-color: rgb(205, 226, 253);
         }
       },
       mounted:function(){
+        this.inputpageurl="/base4dcarbon/input/inputpage/"+this.personID;
         this.inputbatchurl="/base4dcarbon/input/inputbatch/"+this.personID;
         this.maxRow=this.inputlist.length;
         this.modRow=this.maxRow%this.perPage;

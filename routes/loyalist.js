@@ -6,7 +6,7 @@ router.get('/:id', async (ctx, next)=> {
 	await loyalistController.list(ctx)
 });
 //到新增資料頁
-router.get('/inputpage', async (ctx, next)=> {
+router.get('/inputpage/:id', async (ctx, next)=> {
     await loyalistController.inputpage(ctx,next)
 });
 //到修正單筆資料頁
@@ -15,7 +15,7 @@ router.get('/editpage/:id', async (ctx, next)=> {
     await loyalistController.editpage(ctx,next)
 });
 //批次新增資料
-router.get('/inputbatch', async (ctx, next)=> {
+router.get('/inputbatch/:id', async (ctx, next)=> {
     await loyalistController.batchinput(ctx,next)
 });
 //依參數id取得資料
