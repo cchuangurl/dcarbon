@@ -203,10 +203,12 @@ background-color: rgb(205, 226, 253);
         }
       },
           mounted:function(){
-            let basepath="/dcarbon/branch/";
-            let querytext="?statusreport=由case資料清單頁的活動解構鈕進入本頁&status=1&caseID="+this.caseID;
-          this.previousurl=basepath+'decomposer/operate/'+this.personID+querytext;
-            this.outcomeurl=basepath+"/decompser/outcome/"+this.personID+"?caseID="+this.caseID;
+            let basepath="/base4dcarbon/branch/decomposer";
+            let status1="?statusreport=由case資料清單頁的活動解構鈕進入本頁&status=1";
+            let status3="?statusreport=由case資料清單頁的活動解構鈕進入本頁&status=3";
+            let casequery="&caseID="+this.caseID;
+            this.previousurl=basepath+"/operate/"+this.personID+status1;
+            this.outcomeurl=basepath+"/outcome/"+this.personID+status3+casequery;
           },
       methods:{
 

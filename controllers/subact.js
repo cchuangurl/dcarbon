@@ -2,6 +2,7 @@
 const Subact = require('../models/index').subact;
 const Case = require('../models/index').case;
 const Term = require('../models/index').term;
+const Input = require('../models/index').input;
 module.exports = {
 //列出清單list(req,res)
 async list(ctx,next){

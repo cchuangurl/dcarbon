@@ -204,9 +204,11 @@ background-color: rgb(205, 226, 253);
         }
       },
           mounted:function(){
-            let basepath="/dcarbon/branch/";
-            this.previousurl=basepath+"pwa4decompser/"+this.personID;
-            this.outcomeurl=basepath+"/decompser/outcome/"+this.personID+"?caseID="+this.caseID;
+            let basepath="/base4dcarbon/branch";
+            this.previousurl=basepath+"/pwa4decompser/"+this.personID;
+            let status2="?statusreport=由case資料清單頁的活動解構鈕進入本頁&status=2";
+            let casequery="&caseID="+this.caseID;
+            this.outcomeurl=basepath+"/decomposer/outcome/"+this.personID+status2+casequery;
           },
       methods:{
 

@@ -2,6 +2,7 @@ var router = require('@koa/router')();
 
 const branchController = require('../controllers/index').branch;
 const subactController = require('../controllers/index').subact;
+const caseController = require('../controllers/index').case;
 //依帳號決定轉頁
 router.post('/', async (ctx, next)=> {
 	await branchController.dispatch(ctx)
@@ -21,6 +22,10 @@ router.get('/decomposer/findcase/:id', async (ctx, next)=> {
 //到Decomposerr的operate
 router.get('/decomposer/operate/:id', async (ctx, next)=> {
   await subactController.operate(ctx,next)
+});
+//檢視活動解構結果
+router.get('/decomposer/outcome/:id', async (ctx, next)=> {
+  await caseController.decomposed(ctx,next)
 });
 //到Methodorweb
 router.get('/pwa4methodor/:id', async (ctx, next)=> {
