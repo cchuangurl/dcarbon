@@ -156,6 +156,13 @@ background-color: rgb(205, 226, 253);
                   </tr>
               </tbody>
           </table>
+            <br>
+            <form  :action="pass2methodorurl" method="get">
+              <input type="hidden" name="status" value="4">
+              <input type="hidden" name="statusreport" value="活動分解確認送去建構方法">
+              <input type="hidden" name="caseID" :value="caseID">
+              <input type="submit" value="確認分解結果" class="btn btn-info">
+            </form>
       </nav>
       </template>
 
@@ -247,6 +254,7 @@ background-color: rgb(205, 226, 253);
           theactivity:JSON.parse(decodeURIComponent('<%=theactivity%>')),
           nicknames1:[],
           nicknames2:[],
+          pass2methodorurl:"",
           items1:{
               item:"本減碳活動代碼",
               item0:"對應之產品代碼",
@@ -343,7 +351,9 @@ background-color: rgb(205, 226, 253);
         this.subactlist.sort((a,b)=>{
             return parseFloat(a.a25order)-parseFloat(b.a25order)
         })
-
+        let querytext="?statusreport=活動分解確認送去建構方法&status=4&caseID="+this.caseID;
+        //this.pass2methodorurl="/base4dcarbon/branch/pass2methodor/"+this.personID+querytext;
+        this.pass2methodorurl="/base4dcarbon/branch/pass2methodor/"+this.personID;
       },
       methods:{
 

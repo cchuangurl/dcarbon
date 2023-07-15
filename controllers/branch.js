@@ -2,6 +2,7 @@
 const User = require('../models/index').user;
 const Loyalist = require('../models/index').loyalist;
 const Case = require('../models/index').case;
+const Progress = require('../models/index').progress;
 module.exports = {
 //依帳號決定轉頁
 async dispatch(ctx, next) {
@@ -49,15 +50,20 @@ async godecomposer(ctx, next) {
   console.log("進入branch controller的godecomposer");
   var personID=ctx.params.id;
   console.log("personID:"+personID);
+  var case2decompose=new Array();
   var caselist;
   var loyalist1;
   await Case.find({}).then(async cases=>{
-    //console.log("found cases:"+cases);
     console.log("type of cases:"+typeof(cases));
     console.log("1st case:"+cases[0]);
-    //console.log("1st case:"+cases[0].a15casename)
     console.log("No. of case:"+cases.length)
-    caselist=encodeURIComponent(JSON.stringify(cases));
+    for(casex of cases){
+      if(casex.a40loyalistID.indexOf(personID)>-1){
+          case2decompose.push(casex)
+      }
+    }
+    console.log("No. of case2decompse:"+case2decompose.length)
+    caselist=encodeURIComponent(JSON.stringify(case2decompose));
     console.log("type of caselist:"+typeof(caselist))
     })
     .catch(err=>{
@@ -84,18 +90,403 @@ await Loyalist.findOne({_id:personID})
       console.log(err)
     })
 },
-//到Decomposerr的findcase
-
-
-//到Decomposerr的operate
-
+//到Decomposer的findcase
+async decomposerfindcase(ctx, next){
+  console.log("進入branch controller的decomposerfindcase");
+  var personID=ctx.params.id;
+  console.log("personID:"+personID);
+  var case2choose=new Array();
+  var caselist;
+  var loyalist1;
+  //await Case.find({$elemMatch:a40loyalistID.length==0}).then(async cases=>{
+    //await Case.find({'a40loyalistID.length':0}).then(async cases=>{
+    await Case.find({}).then(async cases=>{
+    console.log("type of cases:"+typeof(cases));
+    console.log("1st case:"+cases[0]);
+    console.log("No. of case:"+cases.length)
+    for(casex of cases){
+        if(casex.a40loyalistID.length==0){
+        case2choose.push(casex)
+        }
+    }
+    console.log("No. of case2choose:"+case2choose.length)
+    caselist=encodeURIComponent(JSON.stringify(case2choose));
+    console.log("type of caselist:"+typeof(caselist))
+    })
+    .catch(err=>{
+      console.log("Case.find({}) failed !!");
+      console.log(err)
+    })
+statusreport="以活動解構士身分進入本頁";
+await Loyalist.findOne({_id:personID})
+    .then(async loyalistx=>{
+      console.log("type of loyalistx:"+typeof(loyalistx));
+      console.log("loyalistx:"+loyalistx)
+      loyalist1=encodeURIComponent(JSON.stringify(loyalistx));
+      console.log("type of loyalist1:"+typeof(loyalist1));
+      console.log("loyalist1:"+loyalist1)
+      await ctx.render("branch/decomposer/findcasepage" ,{
+        loyalist1,
+        caselist,
+        personID,
+        statusreport
+          })
+    })
+    .catch(err=>{
+      console.log("Loyalist.findOne() failed !!");
+      console.log(err)
+    })
+},
+//到Decomposer的choosecase
+async decomposerchoosecase(ctx, next){
+  console.log("進入branch controller的decomposerchoosecase");
+  var personID=ctx.params.id;
+  console.log("personID:"+personID);
+  var caseID=ctx.query.caseID;
+  console.log("got caseID:"+caseID);
+    var case2decompose=new Array();
+  var caselist;
+  var loyalist1;
+  let new_progress=new Progress({
+    a05caseID:caseID,
+    a10stage:"disintegrate",
+    a15when:Date.now(),
+    a99footnote:"create after chose"
+    })
+  await new_progress.save()
+      .then(async ()=>{
+        console.log("Saving new_progress....");
+      })
+      .catch((err)=>{
+        console.log("Progress.save() failed !!")
+        console.log(err)
+     })
+  await Case.findById({_id:caseID}).then(async casex=>{
+    console.log("type of casex:"+typeof(casex));
+    console.log("case found:"+casex);
+    casex.a40loyalistID.push(personID);
+    console.log("casex.a40loyalistID:"+casex.a40loyalistID.length);
+    new_case=new Case(casex);
+    //await new_case.updateOne().then(async ()=>{
+    await new_case.save().then(async ()=>{
+      await Case.find({'a40loyalistID.some(personID)':true}).then(async cases=>{
+        //await Case.find({'a40loyalistID.length':0}).then(async cases=>{
+          console.log("type of cases:"+typeof(cases));
+          console.log("1st case:"+cases[0]);
+          console.log("No. of case:"+cases.length)
+          for(casex of cases){
+            if(casex.a40loyalistID.some(personID)){
+            case2decompose.push(casex)
+            }
+        }
+        console.log("No. of case2decompose:"+case2decompose.length)
+          caselist=encodeURIComponent(JSON.stringify(case2decompose));
+          console.log("type of caselist:"+typeof(caselist))
+          })
+          .catch(err=>{
+            console.log("Case.find({}) failed !!");
+            console.log(err)
+          })
+      })
+      .catch(err=>{
+        console.log("Case.save({}) failed !!");
+        console.log(err)
+      })
+    })
+    .catch(err=>{
+      console.log("Case.findById({}) failed !!");
+      console.log(err)
+    })
+statusreport="以活動解構士身分進入本頁";
+await Loyalist.findOne({_id:personID})
+    .then(async loyalistx=>{
+      console.log("type of loyalistx:"+typeof(loyalistx));
+      console.log("loyalistx:"+loyalistx)
+      loyalist1=encodeURIComponent(JSON.stringify(loyalistx));
+      console.log("type of loyalist1:"+typeof(loyalist1));
+      console.log("loyalist1:"+loyalist1)
+      await ctx.render("branch/pwa4decomposer" ,{
+        loyalist1,
+        caselist,
+        personID,
+        statusreport
+          })
+    })
+    .catch(err=>{
+      console.log("Loyalist.findOne() failed !!");
+      console.log(err)
+    })
+},
+//活動解構結果確定
+async pass2methodor(ctx, next) {
+  console.log("進入branch controller的pass2methodor");
+  var personID=ctx.params.id;
+  console.log("personID:"+personID);
+  var statusreport=ctx.query.statusreport;
+  console.log("got statusreport:"+statusreport);
+  var status=ctx.query.status;
+  console.log("got status:"+status);
+  var caseID=ctx.query.caseID;
+  console.log("got caseID:"+caseID);
+  var case2decompose=new Array();
+  var caselist;
+  var loyalist1;
+  let new_progress=new Progress({
+    a05caseID:caseID,
+    a10stage:"disintegrated",
+    a15when:Date.now(),
+    a99footnote:"create after decomposed"
+    })
+  await new_progress.save()
+      .then(async ()=>{
+        console.log("Saving new_progress....");
+      })
+      .catch((err)=>{
+        console.log("Progress.save() failed !!")
+        console.log(err)
+     })
+     await Case.find({}).then(async cases=>{
+      console.log("type of cases:"+typeof(cases));
+      console.log("1st case:"+cases[0]);
+      console.log("No. of case:"+cases.length)
+      for(casex of cases){
+        if(casex.a40loyalistID.indexOf(personID)>-1){
+            case2decompose.push(casex)
+        }
+      }
+      console.log("No. of case2decompse:"+case2decompose.length)
+      caselist=encodeURIComponent(JSON.stringify(case2decompose));
+    console.log("type of caselist:"+typeof(caselist))
+    })
+    .catch(err=>{
+      console.log("Case.find({}) failed !!");
+      console.log(err)
+    })
+statusreport="以活動解構士身分進入本頁";
+await Loyalist.findOne({_id:personID})
+    .then(async loyalistx=>{
+      console.log("type of loyalistx:"+typeof(loyalistx));
+      console.log("loyalistx:"+loyalistx)
+      loyalist1=encodeURIComponent(JSON.stringify(loyalistx));
+      console.log("type of loyalist1:"+typeof(loyalist1));
+      console.log("loyalist1:"+loyalist1)
+      await ctx.render("branch/pwa4decomposer" ,{
+        loyalist1,
+        caselist,
+        personID,
+        statusreport
+          })
+    })
+    .catch(err=>{
+      console.log("Loyalist.findOne() failed !!");
+      console.log(err)
+    })
+},
 
 
 
 
 //到Methodorweb
-async gomehtodor(ctx, next) {
+async gomethodor(ctx, next) {
+  console.log("進入branch controller的gomethodor");
+  var personID=ctx.params.id;
+  console.log("personID:"+personID);
+  var case2setmethod=new Array();
+  var caselist;
+  var loyalist1;
+  await Case.find({}).then(async cases=>{
+    console.log("type of cases:"+typeof(cases));
+    console.log("1st case:"+cases[0]);
+    console.log("No. of case:"+cases.length)
+    for(casex of cases){
+        if(casex.a40loyalistID.indexOf(personID)>-1){
+        case2setmethod.push(casex)
+        }
+    }
+    console.log("No. of case2setmethod:"+case2setmethod.length)
+      caselist=encodeURIComponent(JSON.stringify(case2setmethod));
+    console.log("type of caselist:"+typeof(caselist))
+    })
+    .catch(err=>{
+      console.log("Case.find({personID}) failed !!");
+      console.log(err)
+    })
+statusreport="以方法建構士身分進入本頁";
+await Loyalist.findOne({_id:personID})
+    .then(async loyalistx=>{
+      console.log("type of loyalistx:"+typeof(loyalistx));
+      console.log("loyalistx:"+loyalistx)
+      loyalist1=encodeURIComponent(JSON.stringify(loyalistx));
+      console.log("type of loyalist1:"+typeof(loyalist1));
+      console.log("loyalist1:"+loyalist1)
+      await ctx.render("branch/pwa4methodor" ,{
+        loyalist1,
+        caselist,
+        personID,
+        statusreport
+          })
+    })
+    .catch(err=>{
+      console.log("Loyalist.findOne() failed !!");
+      console.log(err)
+    })
 
+},
+//到Mehtodor的findcase
+async methodorfindcase(ctx, next){
+  console.log("進入branch controller的methodorfindcase");
+  var personID=ctx.params.id;
+  console.log("personID:"+personID);
+  var case2choose=new Array();
+  var caselist;
+  var loyalist1;
+  await Case.find({}).then(async cases=>{
+    console.log("type of cases:"+typeof(cases));
+    console.log("1st case:"+cases[0]);
+    console.log("No. of case:"+cases.length)
+    for(casex of cases){
+        await Progress.find({a05caseID:casex._id})
+         .then(async progresses=>{
+            console.log("no. of progresses:"+progresses.length);
+            let stages=new Array();
+            for(progressx of progresses){
+                stages.push(progressx.a10stage)
+            }
+            console.log("no. of stages:"+stages.length);
+            console.log("isdecompsed:"+stages.indexOf("disintegrated"));
+            console.log("isconstructing:"+stages.indexOf("constructing"));
+            if(stages.indexOf("disintegrated")>-1&&stages.indexOf("constructing")<0){
+                case2choose.push(casex)
+            }
+          })
+          .catch(err=>{
+            console.log("Progress.find({}) failed !!");
+            console.log(err)
+          })
+    }
+    console.log("No. of case2choose:"+case2choose.length)
+    caselist=encodeURIComponent(JSON.stringify(case2choose));
+    console.log("type of caselist:"+typeof(caselist))
+    })
+    .catch(err=>{
+      console.log("Case.find({}) failed !!");
+      console.log(err)
+    })
+statusreport="以方法建構士身分進入本頁";
+await Loyalist.findOne({_id:personID})
+    .then(async loyalistx=>{
+      console.log("type of loyalistx:"+typeof(loyalistx));
+      console.log("loyalistx:"+loyalistx)
+      loyalist1=encodeURIComponent(JSON.stringify(loyalistx));
+      console.log("type of loyalist1:"+typeof(loyalist1));
+      console.log("loyalist1:"+loyalist1)
+      await ctx.render("branch/methodor/findcasepage" ,{
+        loyalist1,
+        caselist,
+        personID,
+        statusreport
+          })
+    })
+    .catch(err=>{
+      console.log("Loyalist.findOne() failed !!");
+      console.log(err)
+    })
+},
+//到Mehtodor的choosecase
+async methodorchoosecase(ctx, next){
+  console.log("進入branch controller的methodorchoosecase");
+  var personID=ctx.params.id;
+  console.log("personID:"+personID);
+  var caseID=ctx.query.caseID;
+  console.log("got caseID:"+caseID);
+    var case2construct=new Array();
+  var caselist;
+  var loyalist1;
+  let new_progress=new Progress({
+    a05caseID:caseID,
+    a10stage:"constructing",
+    a15when:Date.now(),
+    a99footnote:"create after chose by methodor"
+    })
+  await new_progress.save()
+      .then(async ()=>{
+        console.log("Saving new_progress....");
+      })
+      .catch((err)=>{
+        console.log("Progress.save() failed !!")
+        console.log(err)
+     })
+  await Case.findById({_id:caseID}).then(async casex=>{
+    console.log("type of casex:"+typeof(casex));
+    console.log("case found:"+casex);
+    casex.a40loyalistID.push(personID);
+    console.log("casex.a40loyalistID:"+casex.a40loyalistID.length);
+    new_case=new Case(casex);
+    //await new_case.updateOne().then(async ()=>{
+    await new_case.save().then(async ()=>{
+      await Case.find({}).then(async cases=>{
+          console.log("type of cases:"+typeof(cases));
+          console.log("1st case:"+cases[0]);
+          console.log("No. of case:"+cases.length)
+          for(casex of cases){
+            if(casex.a40loyalistID.indexOf(personID)>-1){
+              case2construct.push(casex)
+            }
+        }
+        console.log("No. of case2construct:"+case2construct.length)
+          caselist=encodeURIComponent(JSON.stringify(case2construct));
+          console.log("type of caselist:"+typeof(caselist))
+          })
+          .catch(err=>{
+            console.log("Case.find({}) failed !!");
+            console.log(err)
+          })
+      })
+      .catch(err=>{
+        console.log("Case.save({}) failed !!");
+        console.log(err)
+      })
+    })
+    .catch(err=>{
+      console.log("Case.findById({}) failed !!");
+      console.log(err)
+    })
+statusreport="以方法建構士身分進入本頁";
+await Loyalist.findOne({_id:personID})
+    .then(async loyalistx=>{
+      console.log("type of loyalistx:"+typeof(loyalistx));
+      console.log("loyalistx:"+loyalistx)
+      loyalist1=encodeURIComponent(JSON.stringify(loyalistx));
+      console.log("type of loyalist1:"+typeof(loyalist1));
+      console.log("loyalist1:"+loyalist1)
+      await ctx.render("branch/pwa4methodor" ,{
+        loyalist1,
+        caselist,
+        personID,
+        statusreport
+          })
+    })
+    .catch(err=>{
+      console.log("Loyalist.findOne() failed !!");
+      console.log(err)
+    })
+},
+//到Mehtodor的workspace
+async methodorworkspace(ctx,next){
+  console.log("found route /base4dcarbon/branch/methodor/workspace !!");
+  var statusreport=ctx.query.statusreport;
+  console.log("got statusreport:"+statusreport);
+  var status=ctx.query.status;
+  console.log("got status:"+status);
+  var caseID=ctx.query.caseID;
+  console.log("gotten caseID:"+caseID);
+  var personID=ctx.params.id;
+  console.log("gotten personID:"+personID);
+  await ctx.render("branch/methodor/workspace",{
+      statusreport,
+      personID,
+      caseID
+  })
 },
 //到Collecterweb
 async gocollecter(ctx, next) {
@@ -114,76 +505,8 @@ async gomaintainer(ctx, next) {
   console.log("進入branch controller的maintainer");
   statusreport="以資料管理權限進入本頁";
   var personID=ctx.params.id;
-  var tablesjson=[
-    {"route":"/base4dcarbon/user",
-    "label":"使用者帳戶資料表維管"
-    },
-    {"route":"/base4dcarbon/userright",
-    "label":"使用者權限資料表維管"
-    },
-    {"route":"/base4dcarbon/staff",
-    "label":"團隊人員資料表維管"
-    },
-    {"route":"/base4dcarbon/applicant",
-    "label":"認證申請人資料表維管"
-    },
-    {"route":"/base4dcarbon/loyalist",
-    "label":"淨零義士資料表維管"
-    },
-    {"route":"/base4dcarbon/product",
-    "label":"申請碳權產品資料表維管"
-    },
-    {"route":"/base4dcarbon/activity",
-    "label":"減碳或增匯活動資料表維管"
-    },
-    {"route":"/base4dcarbon/subact",
-    "label":"減碳或增匯細部活動資料表維管"
-    },
-    {"route":"/base4dcarbon/input",
-    "label":"細部活動投入資料表維管"
-    },
-    {"route":"/base4dcarbon/coefficient",
-    "label":"細部活動碳排係數資料表維管"
-    },
-    {"route":"/base4dcarbon/method",
-    "label":"認驗證方法資料表維管"
-    },
-    {"route":"/base4dcarbon/dataneed",
-    "label":"驗證所需提供資料表維管"
-    },
-    {"route":"/base4dcarbon/case",
-    "label":"申請案場資料表維管"
-    },
-    {"route":"/base4dcarbon/progress",
-    "label":"申請案件進度表資料表維管"
-    },
-    {"route":"/base4dcarbon/evidence",
-    "label":"上傳佐證資料表維管"
-    },
-    {"route":"/base4dcarbon/report",
-    "label":"驗證報告資料表維管"
-    },
-    {"route":"/base4dcarbon/credit",
-    "label":"公評碳權管理資料表維管"
-    },
-    {"route":"/base4dcarbon/award",
-    "label":"公評點數資料表維管"
-    },
-    {"route":"/base4dcarbon/source",
-    "label":"資料來源資料表維管"
-    },
-    {"route":"/base4dcarbon/term",
-    "label":"名詞對照資料表維管"
-    }
-    ];
-    console.log("type of tablesjson:"+typeof(tablesjson));
-    console.log("type of 1st table:"+typeof(tablesjson[0]));
-    console.log("No. of table:"+tablesjson.length)
-    let tables=encodeURIComponent(JSON.stringify(tablesjson));
-    console.log("type of tables:"+typeof(tables));
   await ctx.render("innerweb/datamanage" ,{
       statusreport,
-      tables,
       personID
   })
 }

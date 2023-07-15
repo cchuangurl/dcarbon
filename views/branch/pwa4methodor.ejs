@@ -58,7 +58,7 @@ background-color: rgb(248, 243, 243);
 
 </style>
 
-  <title>活動解構士PWA示意版</title>
+  <title>方法建構士PWA示意版</title>
   </head>
   <body>
     <div id="show_div">
@@ -187,10 +187,10 @@ background-color: rgb(248, 243, 243);
                   <!-- statusreport="由已擷取資料組清單頁進入本頁"> -->
 
                     <td>
-                      <input type="submit" value="檢視申請資料" @click="viewone(casex._id)">
+                      <input type="submit" value="檢視減碳活動解構結果" @click="viewone(casex._id)">
                     </td>
                     <td>
-                      <input type="submit" value="進行活動解構" @click="decompose(casex._id)">
+                      <input type="submit" value="建構認驗證方法" @click="setmethod(casex._id)">
                     </td>
                   </tr>
               </tbody>
@@ -236,7 +236,6 @@ background-color: rgb(248, 243, 243);
 
 <!-- Vue CDN-->
 <script src="https://unpkg.com/vue@2.6.14/dist/vue.js"></script>
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDnUK0WDGT2ba1GiTWXv910l5e0Hza7y-U&callback=initMap" async defer></script>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script src="https://cdn.bootcss.com/qs/6.5.1/qs.min.js"></script>
 <script>
@@ -245,8 +244,8 @@ Vue.component("bander",{
     data(){
       return {
         brand:"dCarbon",
-        listcase:"分解中案件",
-        findcase:"尋找新案件",
+        listcase:"方法建構中的案件",
+        findcase:"尋找待方法建構案件",
         awardmanage:"公評點數管理",
         awardentry:"公評點數收支",
         awardtrade:"公評點數移轉",
@@ -262,13 +261,13 @@ Vue.component("bander",{
       }
     },
     mounted:function(){
-        let basepath="/dcarbon/branch/";
+        let basepath="/base4dcarbon/branch";
         this.loyalist=this.loyalist1.a05lastname+this.loyalist1.a10firstname;
-        this.listcaseurl=basepath+"PWA4decompser/"+this.personID;
-        this.findcaseurl=basepath+"/decompser/findcase/"+this.personID;
-        this.awardmanageurl=basepath+"/decompser/awardmanage/"+this.personID;
-        this.awardentryurl=basepath+"/decompser/awardentry"+this.personID;
-        this.awardtradeurl=basepath+"/decompser/awardtrade/"+this.personID
+        this.listcaseurl=basepath+"/PWA4methodor/"+this.personID;
+        this.findcaseurl=basepath+"/methodor/findcase/"+this.personID;
+        this.awardmanageurl=basepath+"/methodor/awardmanage/"+this.personID;
+        this.awardentryurl=basepath+"/methodor/awardentry"+this.personID;
+        this.awardtradeurl=basepath+"/methodor/awardtrade/"+this.personID
     },
     methods:{
 
@@ -293,12 +292,7 @@ Vue.component("bander",{
 
     },
     methods:{
-      viewone:function(id){
-          window.location=url2;
-        },
-      setmethod:function(id){
-        window.location=url2;
-      },
+
     },
     template:"#sidebarUI"
   });
@@ -370,10 +364,20 @@ Vue.component("bander",{
       },
       methods:{
         viewone:function(id){
-          let querytext="?statusreport=由case資料清單頁的檢視按鈕進入本頁"+"&loyalist="+this.personID;
-          let url2='/base4dcarbon/case/viewpage/'+id+querytext;
-          window.location=url2;
+          let basepath="/base4dcarbon/branch";
+          let status3="?statusreport=由case資料清單頁的檢視解構果鈕進入本頁&status=3";
+          let casequery="&caseID="+id;
+          let outcomeurl=basepath+"/decomposer/outcome/"+this.personID+status3+casequery;
+          window.location=outcomeurl;
         },
+        setmethod:function(id){
+          let basepath="/base4dcarbon/branch";
+          let status3="?statusreport=由case資料清單頁的建構方法鈕進入本頁&status=3";
+          let casequery="&caseID="+id;
+          let setmethodurl=basepath+'/methodor/workspace/'+this.personID+status3+casequery;
+          window.location=setmethodurl;
+        },
+
         decompose:function(id){
           let querytext="?statusreport=由case資料清單頁的活動解構鈕進入本頁"+"&loyalist="+this.peronID;
           let url3='/base4dcarbon/branch/decomposer/operate'+id+querytext;

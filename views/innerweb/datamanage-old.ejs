@@ -6,6 +6,7 @@
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 <!-- <script src="/javascripts/jquery-3.4.1.js"></script> -->
 <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.4.1/jquery.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 <style type="text/css">
 body {
 background-color: rgb(205, 226, 253);
@@ -25,126 +26,52 @@ background-color: rgb(205, 226, 253);
      align-items:left;
      margin:10px
 }
+#bulletin {background:#def3f8;}
+#worktodo {background:#f8e8c5;}
 .navbar{background:#cff8c5;}
 .nav-link, .navbar-brand{color: #f4f4f4;cursor:pointer;}
 .nav-link{margin-right:1em !important;}
 .nav-link:hover{background: #f4f4f4;color:#f97300;}
 .navbar-collapse{justify-content:flex-end;}
 .navbar-toggler{background:#fff !important;}
-.page-item {
-    margin-right:12px
-}
-.page-item[active=true]{
-    font-weight: bold;
-    text-decoration:underline
-}
 </style>
 
-  <title>認驗證方法建構區入口</title>
+  <title>內部系統--資料庫維管入口</title>
   </head>
   <body>
-    <div id="show_div">
-      <bander></bander>
-      <div class="row" align="justify">
-        <outputer></outputer>
-      </div>
-        <!-- <inputer></inputer> -->
-    </div>
-
-    <template id="banderUI">
-      <nav class="navbar navbar-expand-lg navbar-light">
-        <a class="navbar-brand" href="/">{{brand}}</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarText">
-          <ul class="navbar-nav mr-auto">
-            <li class="nav-item">
-              <a class="nav-link  active" href="#">{{data2manage}}<span class="sr-only">(current)</span></a>
-            </li>
-<!--
-            <li class="nav-item">
-                <a class="nav-link" :href="previousurl">{{previouspage}}</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" :href="outcomeurl">{{outcomepage}}</a>
-              </li>
--->
-          </ul>
-          <span class="navbar-text">
-            <font size="2">{{statusreport}}</font>
-          </span>
+    <h5>去中心化碳權認證系統</h5>
+    <h4>資料庫各資料表維管入口</h4>
+        <div id="show_div">
+          <div class="row" align="justify">
+            <div class="col-lg-9 col-md-6 col-sm-12">
+                <content1></content1>
+          </div>
+          </div>
         </div>
-      </nav>
-    </template>
-
-    <template id="outputerUI">
-        <nav aria-label="...">
-          <div class="row" id="tablefy" v-for="table of tables" :key="table._id">
-            <div class="col-lg-3 col-md-6 col-sm-12">
-            <form  :action="table.route" method="get">
-              <input type="hidden" name="statusreport" value="由資料維管按鈕進入本頁">
-              <input type="submit" :value="table.label" class="btn btn-info">
-            </form>
-  </div>
-  </div>
-      </nav>
-      </template>
-
-      <template id="outputerUI">
-
-      </template>
-
-  <!-- Vue CDN-->
-  <script src="https://unpkg.com/vue@2.6.14/dist/vue.js"></script>
-  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+      <template id="content1UI">
+            <nav aria-label="...">
+        <div class="row" id="tablefy" v-for="table of tables" :key="table._id">
+          <div class="col-lg-3 col-md-6 col-sm-12">
+          <form  :action="table.route" method="get">
+            <input type="hidden" name="statusreport" value="由資料維管按鈕進入本頁">
+            <input type="submit" :value="table.label" class="btn btn-info">
+          </form>
+</div>
+</div>
+</nav>
+</template>
+<!-- Vue CDN-->
+<script src="https://unpkg.com/vue@2.6.14/dist/vue.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script src="https://cdn.bootcss.com/qs/6.5.1/qs.min.js"></script>
-  <script>
-  Vue.component("bander",{
-      props:{},
-      data(){
-        return {
-          brand:"dCarbon",
-          //previouspage:"回案件清單頁",
-          data2manage:"各資料表維管入口",
-          //outcomepage:"檢視認驗證方法建構結果",
-          statusreport:'<%- statusreport %>',
-          personID:'<%- personID %>',
-          previousurl:"",
-          outcomeurl:""
-        }
-      },
-          mounted:function(){
-            let basepath="/base4dcarbon/branch";
-            this.previousurl=basepath+"/pwa4methodor/"+this.personID;
-            let status0="?statusreport=由資料表維管入口進入本頁&status=0";
-          },
-      methods:{
-
-      },
-      template:"#banderUI"
-    });
-    Vue.component("inputer",{
-      props:{},
-      data(){
-        return {
-
-
-        }
-      },
-
-      methods:{
-
-      },
-      template:"#inputerUI"
-    });
-    Vue.component("outputer",{
+<script>
+ Vue.component("content1",{
       props:{},
       data(){
         return{
-          statusreport:'<%- statusreport %>',
           personID:'<%- personID %>',
-          tables:[
+          //tables:JSON.parse(decodeURIComponent('<%=tables%>'))
+      tables:[
             {"route":"/base4dcarbon/user",
             "label":"使用者帳戶資料表維管"
             },
@@ -206,19 +133,19 @@ background-color: rgb(205, 226, 253);
             "label":"名詞對照資料表維管"
             }
             ]
-        }
+      }
       },
       mounted:function(){
-        for(table of this.tables)
-        table.route=table.route+'/'+this.personID;
-        console.log("revise route: "+table.route)
+        for(table of this.tables){
+          table.route=table.route+"/"+this.personID
+        }
       },
       methods:{
 
       },
-    template:"#outputerUI"
+    template:"#content1UI"
   });
-    new Vue({
+  new Vue({
         el:'#show_div',
         data:{
           testdata:'有執行到此。。。。'
@@ -264,7 +191,5 @@ background-color: rgb(205, 226, 253);
         }
     })
 </script>
-
-
-  </body>
+</body>
 </html>

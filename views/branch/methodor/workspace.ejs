@@ -60,16 +60,14 @@ background-color: rgb(205, 226, 253);
         <div class="collapse navbar-collapse" id="navbarText">
           <ul class="navbar-nav mr-auto">
             <li class="nav-item">
-              <a class="nav-link  active" href="#">{{data2manage}}<span class="sr-only">(current)</span></a>
+              <a class="nav-link  active" href="#">{{setmethod}}<span class="sr-only">(current)</span></a>
             </li>
-<!--
             <li class="nav-item">
                 <a class="nav-link" :href="previousurl">{{previouspage}}</a>
               </li>
               <li class="nav-item">
                 <a class="nav-link" :href="outcomeurl">{{outcomepage}}</a>
               </li>
--->
           </ul>
           <span class="navbar-text">
             <font size="2">{{statusreport}}</font>
@@ -80,11 +78,11 @@ background-color: rgb(205, 226, 253);
 
     <template id="outputerUI">
         <nav aria-label="...">
-          <div class="row" id="tablefy" v-for="table of tables" :key="table._id">
-            <div class="col-lg-3 col-md-6 col-sm-12">
-            <form  :action="table.route" method="get">
-              <input type="hidden" name="statusreport" value="由資料維管按鈕進入本頁">
-              <input type="submit" :value="table.label" class="btn btn-info">
+          <div class="row" id="tablefy" v-for="work of work2dos" :key="work._id">
+            <div class="col-lg-4 col-md-6 col-sm-12">
+            <form  :action="work.route" method="get">
+              <input type="hidden" name="statusreport" value="由方法建構區工作按鈕進入本頁">
+              <input type="submit" :value="work.label" class="btn btn-info">
             </form>
   </div>
   </div>
@@ -105,10 +103,11 @@ background-color: rgb(205, 226, 253);
       data(){
         return {
           brand:"dCarbon",
-          //previouspage:"回案件清單頁",
-          data2manage:"各資料表維管入口",
-          //outcomepage:"檢視認驗證方法建構結果",
+          previouspage:"回案件清單頁",
+          setmethod:"建構認驗證方法作業區",
+          outcomepage:"檢視認驗證方法建構結果",
           statusreport:'<%- statusreport %>',
+          caseID:'<%- caseID %>',
           personID:'<%- personID %>',
           previousurl:"",
           outcomeurl:""
@@ -117,7 +116,9 @@ background-color: rgb(205, 226, 253);
           mounted:function(){
             let basepath="/base4dcarbon/branch";
             this.previousurl=basepath+"/pwa4methodor/"+this.personID;
-            let status0="?statusreport=由資料表維管入口進入本頁&status=0";
+            let status5="?statusreport=由建構方法作業區入口進入本頁&status=5";
+            let casequery="&caseID="+this.caseID;
+            this.outcomeurl=basepath+"/methodor/outcome/"+this.personID+status5+casequery;
           },
       methods:{
 
@@ -143,75 +144,36 @@ background-color: rgb(205, 226, 253);
       data(){
         return{
           statusreport:'<%- statusreport %>',
+          caseID:'<%- caseID %>',
           personID:'<%- personID %>',
-          tables:[
-            {"route":"/base4dcarbon/user",
-            "label":"使用者帳戶資料表維管"
+          work2dos:[
+            {"route":"/base4dcarbon/method/formula",
+                "label":"編輯公評碳權數量計算公式"
+                },
+            {"route":"/base4dcarbon/dataneed/baselineitem",
+            "label":"訂定所需提供之基線資料項目"
             },
-            {"route":"/base4dcarbon/userright",
-            "label":"使用者權限資料表維管"
+            {"route":"/base4dcarbon/dataneed/newactitem",
+            "label":"訂定所需提供之減碳活動資料項目"
             },
-            {"route":"/base4dcarbon/staff",
-            "label":"團隊人員資料表維管"
+            {"route":"/base4dcarbon/dataneed/postitem",
+            "label":"訂定認證後需續提供之減碳活動資料項目"
             },
-            {"route":"/base4dcarbon/applicant",
-            "label":"認證申請人資料表維管"
+            {"route":"/base4dcarbon/coefficient/parameteritem",
+            "label":"訂定各計算碳權可能用到的參(係)數項目"
             },
-            {"route":"/base4dcarbon/loyalist",
-            "label":"淨零義士資料表維管"
+            {"route":"/base4dcarbon/coefficient/available",
+            "label":"檢查所需參(係)數是否已在資料庫"
             },
-            {"route":"/base4dcarbon/product",
-            "label":"申請碳權產品資料表維管"
-            },
-            {"route":"/base4dcarbon/activity",
-            "label":"減碳或增匯活動資料表維管"
-            },
-            {"route":"/base4dcarbon/subact",
-            "label":"減碳或增匯細部活動資料表維管"
-            },
-            {"route":"/base4dcarbon/input",
-            "label":"細部活動投入資料表維管"
-            },
-            {"route":"/base4dcarbon/coefficient",
-            "label":"細部活動碳排係數資料表維管"
-            },
-            {"route":"/base4dcarbon/method",
-            "label":"認驗證方法資料表維管"
-            },
-            {"route":"/base4dcarbon/dataneed",
-            "label":"驗證所需提供資料表維管"
-            },
-            {"route":"/base4dcarbon/case",
-            "label":"申請案場資料表維管"
-            },
-            {"route":"/base4dcarbon/progress",
-            "label":"申請案件進度表資料表維管"
-            },
-            {"route":"/base4dcarbon/evidence",
-            "label":"上傳佐證資料表維管"
-            },
-            {"route":"/base4dcarbon/report",
-            "label":"驗證報告資料表維管"
-            },
-            {"route":"/base4dcarbon/credit",
-            "label":"公評碳權管理資料表維管"
-            },
-            {"route":"/base4dcarbon/award",
-            "label":"公評點數資料表維管"
-            },
-            {"route":"/base4dcarbon/source",
-            "label":"資料來源資料表維管"
-            },
-            {"route":"/base4dcarbon/term",
-            "label":"名詞對照資料表維管"
+            {"route":"/base4dcarbon/datanned/notice",
+            "label":"通知申請人需提供之資料項目"
             }
             ]
         }
       },
       mounted:function(){
-        for(table of this.tables)
-        table.route=table.route+'/'+this.personID;
-        console.log("revise route: "+table.route)
+        for(work of this.work2dos)
+        work.route=work.route+'/'+this.personID
       },
       methods:{
 

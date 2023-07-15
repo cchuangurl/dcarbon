@@ -236,7 +236,6 @@ background-color: rgb(248, 243, 243);
 
 <!-- Vue CDN-->
 <script src="https://unpkg.com/vue@2.6.14/dist/vue.js"></script>
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDnUK0WDGT2ba1GiTWXv910l5e0Hza7y-U&callback=initMap" async defer></script>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script src="https://cdn.bootcss.com/qs/6.5.1/qs.min.js"></script>
 <script>
@@ -262,13 +261,13 @@ Vue.component("bander",{
       }
     },
     mounted:function(){
-        let basepath="/dcarbon/branch/";
+        let basepath="/base4dcarbon/branch";
         this.loyalist=this.loyalist1.a05lastname+this.loyalist1.a10firstname;
-        this.listcaseurl=basepath+"PWA4decompser/"+this.personID;
-        this.findcaseurl=basepath+"/decompser/findcase/"+this.personID;
-        this.awardmanageurl=basepath+"/decompser/awardmanage/"+this.personID;
-        this.awardentryurl=basepath+"/decompser/awardentry"+this.personID;
-        this.awardtradeurl=basepath+"/decompser/awardtrade/"+this.personID
+        this.listcaseurl=basepath+"/pwa4decomposer/"+this.personID;
+        this.findcaseurl=basepath+"/decomposer/findcase/"+this.personID;
+        this.awardmanageurl=basepath+"/decomposer/awardmanage/"+this.personID;
+        this.awardentryurl=basepath+"/decomposer/awardentry"+this.personID;
+        this.awardtradeurl=basepath+"/decomposer/awardtrade/"+this.personID
     },
     methods:{
 
