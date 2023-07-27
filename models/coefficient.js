@@ -4,7 +4,6 @@ var Schema = mongoose.Schema;
 
 var CoefficientSchema = new Schema(
   {
-    a05subactID:{type:Schema.Types.ObjectID,required:false},
     a10data:{type:Number,required:false},
     a15unit:{type:String,required:false},
     a20describe:{type:String,required:false},

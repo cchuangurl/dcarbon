@@ -306,7 +306,7 @@ async batchinput(ctx, next){
         //ctx.redirect("/base4dcarbon/project/?statusreport="+statusreport)
         console.log("go back to datamanage1.ejs");
         statusreport="完成case批次輸入";
-        await ctx.render("innerweb/datamanage/datamanagetemp",{
+        await ctx.render("branch/datamanage",{
             statusreport
         })
     })

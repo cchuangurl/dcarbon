@@ -8,10 +8,8 @@ async list(ctx,next){
     console.log("got query:"+statusreport);
     var personID=ctx.params.id;
     await Coefficient.find({}).then(async coefficients=>{
-        //console.log("found coefficients:"+coefficients);
         console.log("type of coefficients:"+typeof(coefficients));
         console.log("type of 1st coefficient:"+typeof(coefficients[0]));
-        //console.log("1st coefficient:"+coefficients[0].a10data)
         console.log("No. of coefficient:"+coefficients.length)
         let coefficientlist=encodeURIComponent(JSON.stringify(coefficients));
         console.log("type of coefficients:"+typeof(coefficientlist));
@@ -95,8 +93,12 @@ async create(ctx,next){
 },
 //批次新增資料
 async batchinput(ctx, next){
+    console.log("found route /base4dcarbon/iputbatch !!");
     var statusreport=ctx.query.statusreport;
+    var personID=ctx.params.personID
+    var coefficientlist;
     var datafile=ctx.query.datafile;
+    var coefficients=new Array();
     console.log("got the name of datafile:"+datafile)
     // 引用需要的模組
     const fs = require('fs');
@@ -112,92 +114,91 @@ async batchinput(ctx, next){
         input: fs.createReadStream(filepath+datafile+'.csv')
     });
     var lineno=0;
-    var coefficientArray;
-    var tempstore=new Array(10);
-    for (let i=0;i<10;i++){
+    var documentlength=9;
+    var tempstore=new Array(documentlength);
+    for (let i=0;i<documentlength;i++){
         tempstore[i]=new Array();
     };
     let readfile=(()=>{
         console.log("reading..."+datafile+".csv");
-        return new Promise((resolve,reject)=>{
-    //當讀入一行資料時
-    lineReader.on('line', function(data) {
+      //當讀入一行資料時
+      lineReader.on('line', function(data) {
         var values = data.split(',');
-        for (let i=0;i<10;i++){
+        for (let i=0;i<documentlength;i++){
             tempstore[i][lineno]=values[i].trim();
         }
         lineno++;
-        console.log("read line:"+data)
-    });//EOF lineReader.on
-    resolve();
-            })//EOF promise
+        //console.log("read line:"+data)
+        });//EOF lineReader.on
+        console.log("finished read file")
     })//EOF readfile
-    let savedata=(()=>{
-        return new Promise((resolve, reject)=>{
-        coefficientArray=new Array(lineno);
-
-        let saveone=(async new_coefficient=>{
-                await new_coefficient.save()
-                .then(()=>{
-                    console.log("Saved document:"+new_coefficient.a10data)
-                    })
-                .catch((err)=>{
-                    console.log("Coefficient.save() failed !!")
-                    console.log(err)
-                })
-        });//EOF saveone
-        for (let k=0;k<lineno;k++){
-            coefficientArray[k]=new Array(10);
-            for (let m=0;m<10;m++){
-                coefficientArray[k][m]=tempstore[m][k]
-                //console.log(coefficientArray[k])
+    let transpose=( ()=>{
+      console.log("3 seconds later....")
+      //return new Promise((resolve, reject)=>{
+        coefficients=new Array(lineno);
+        for(let k=0;k<lineno;k++){
+            coefficients[k]=new Array(documentlength);
+            for(let i=0;i<documentlength;i++){
+                coefficients[k][i]=tempstore[i][k];
             }
         }
-        console.log("3 second later...");
-        console.log("1st datum of coefficientArray:"+coefficientArray[0][0]);
-        console.log("read total lines:"+coefficientArray.length);
-        let sequence=Promise.resolve();
-        coefficientArray.forEach(function(coefficientj){
+        console.log("1st of coefficients:"+coefficients[0]);
+        console.log("no. of coefficients:"+coefficients.length);
+        coefficientlist=encodeURIComponent(JSON.stringify(coefficients));
+        console.log("type of coefficientlist:"+typeof(coefficientlist));
+        //esolve();
+      //})//EOF promise
+    })
+    let savedata=( ()=>{
+      console.log("2 seconds later....")
+      return new Promise((resolve, reject)=>{
+        let saveone=(async new_coefficient=>{
+          await new_coefficient.save()
+          .then(()=>{
+              console.log("Saved document:"+new_coefficient.a20describe)
+              })
+          .catch((err)=>{
+              console.log("Coefficient.save() failed !!")
+              console.log(err)
+          })
+            });//EOF saveone
+          let sequence=Promise.resolve();
+          for(let k=0;k<lineno;k++){
             sequence=sequence.then(function(){
-                var new_coefficient = new Coefficient({
-                  a05subactID:coefficientj[0],
-                  a10data:coefficientj[1],
-                  a15unit:coefficientj[2],
-                  a20describe:coefficientj[3],
-                  a25sourceID:coefficientj[4],
-                  a30detail:coefficientj[5],
-                  a35loyalistID:coefficientj[6],
-                  a40when:coefficientj[7],
-                  a45renew:coefficientj[8],
-                  a99footnote:coefficientj[9]
-
-                });//EOF new coefficient
-                    saveone(new_coefficient)
-                .catch(err=>{
-                    console.log(err)
-                })
+            let new_coefficient = new Coefficient({
+              //a05subactID:coefficients[k][0],
+              a10data:coefficients[k][0],
+              a15unit:coefficients[k][1],
+              a20describe:coefficients[k][2],
+              a25sourceID:coefficients[k][3],
+              a30detail:coefficients[k][4],
+              a35loyalistID:coefficients[k][5],
+              a40when:coefficients[k][6],
+              a45renew:coefficients[k][7],
+              a99footnote:coefficients[k][8]
+            });//EOF new coefficient
+            saveone(new_coefficient)
+              .catch(err=>{
+                  console.log(err)
+              })
             })//EOF sequence
-            })//EOF forEach
-            resolve();
-        })//EOF promise
-        })//EOF savedata
-    await readfile()
-    .then(()=>{
-        setTimeout(savedata,3000)
-    })
-    .then(async ()=>{
-        //console.log("going to list prject....");
-        //ctx.redirect("/base4dcarbon/project/?statusreport="+statusreport)
-        console.log("go back to datamanage1.ejs");
-        statusreport="完成coefficient批次輸入";
-        await ctx.render("innerweb/datamanage/datamanagetemp",{
-            statusreport
+            }//EOF for
+              console.log("finish save data!! ")
+              resolve();
+            })//EOF promise
         })
+    let golistpage=( ()=>{
+      console.log("10 seconds later....")
+      //return new Promise((resolve, reject)=>{
+        ctx.redirect("/base4dcarbon/coefficient/"+personID+"?statusreport="+statusreport)
+        //resolve();
+      //})//EOF promise
     })
-    .catch((err)=>{
-        console.log("ctx.redirect failed !!")
-        console.log(err)
-    })
+    readfile();
+    setTimeout(transpose,3000);
+    setTimeout(savedata,5000);
+    //await golistpage();
+    setTimeout(golistpage,18000)
 },
 //依參數id刪除資料
 async destroy(ctx,next){

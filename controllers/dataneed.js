@@ -1,11 +1,14 @@
 //載入相對應的model
 const Dataneed = require('../models/index').dataneed;
+const Subact=require('../models/index').subact;
+const Term=require('../models/index').term;
+const Case=require('../models/index').case;
 module.exports = {
 //列出清單list(req,res)
 async list(ctx,next){
     console.log("found route /base4dcarbon/dataneed !!");
     var statusreport=ctx.query.statusreport;
-    console.log("gotten query:"+statusreport);
+    console.log("got query:"+statusreport);
     var personID=ctx.params.id;
     await Dataneed.find({}).then(async dataneeds=>{
         //console.log("found dataneeds:"+dataneeds);
@@ -34,19 +37,62 @@ async list(ctx,next){
 
 //到新增資料頁
 async inputpage(ctx, next) {
-    var {statusreport}=ctx.request.body;
-    console.log("gotten query:"+statusreport);
+    console.log("進入dataneed controller的inputpage");
+    var personID=ctx.params.id;
+    console.log("personID:"+personID);
+    var statusreport=ctx.query.statusreport;
+    console.log("got statusreport:"+statusreport);
+    var status=ctx.query.status;
+    console.log("got status:"+status);
+    var caseID=ctx.query.caseID;
+    console.log("got caseID:"+caseID);
     if(statusreport===undefined){
         statusreport="status未傳成功!"
     }
-	await ctx.render("dataneed/inputpage",{
-		statusreport:ctx.request.body.statusreport
-	})
+    await Term.find({a15model:{$in:"dataneed"}}).then(async terms=>{
+      console.log("type of terms:"+typeof(terms));
+      console.log("type of 1st term:"+typeof(terms[0]));
+      console.log("1st term:"+terms[0])
+      console.log("No. of term:"+terms.length)
+      termlist=encodeURIComponent(JSON.stringify(terms));
+      console.log("type of termlist:"+typeof(termlist));
+        })
+        .catch(err=>{
+          console.log("Term.find({}) failed !!");
+          console.log(err)
+        })
+
+    await Case.findOne({_id:caseID})
+      .then(async casex=>{
+        let activityID=casex.a10activityID;
+        await Subact.find({$and:[{a05activityID:activityID},{a10type:"baseline"}]})
+            .then(async subacts=>{
+              console.log("1st of subacts:"+subacts[0]);
+                subactlist=encodeURIComponent(JSON.stringify(subacts));
+                console.log("type of subactlist:"+typeof(subactlist));
+                })
+            .catch(err=>{
+                console.log("Subact.find({}) failed !!");
+                console.log(err)
+            })
+        })
+      .catch(err=>{
+      console.log("Case.findOne({}) failed !!");
+      console.log(err)
+      })
+  await ctx.render("dataneed/inputpage",{
+      statusreport,
+      status,
+      personID,
+      caseID,
+      subactlist,
+      termlist
+    })
 },
 //到修正單筆資料頁
 async editpage(ctx, next) {
     var statusreport=ctx.query.statusreport;
-    console.log("gotten query:"+statusreport);
+    console.log("got query:"+statusreport);
     console.log("ID:"+ctx.params.id);
     console.log("entered dataneed.findById(ctx.params.id)!!");
     if(statusreport===undefined){
@@ -80,13 +126,35 @@ findByNo(req,res){
 
 //寫入一筆資料
 async create(ctx,next){
-    var new_dataneed = new Dataneed(ctx.request.body);
+  console.log("進入dataneed controller的add");
+  var personID=ctx.params.id;
+  console.log("personID:"+personID);
+  var {statusreport}=ctx.request.body;
+  console.log("got statusreport:"+statusreport);
+  var {status}=ctx.request.body;
+  console.log("got status:"+status);
+  var {caseID}=ctx.request.body;
+  console.log("got caseID:"+caseID);
+  if(statusreport===undefined){
+      statusreport="status未傳成功!"
+  }
+  var new_dataneed = new Dataneed(ctx.request.body);
     console.log("got new_dataneed:"+new_dataneed.a10datatype);
     await new_dataneed.save()
     .then(()=>{
         console.log("Saving new_dataneed....");
-    statusreport="儲存單筆客戶資料後進入本頁";
-    ctx.redirect("/base4dcarbon/dataneed/?statusreport="+statusreport)
+    statusreport="儲存單筆佐證資料項目後進入本頁";
+    let redirecturl;
+    let basepath="/basedcarbon/dataneed";
+    let querytext="?statusreport=由單筆輸入佐證資料項目頁回到本頁&status="+status+"&caseID="+caseID;
+    switch(this.status){
+      case "0":redirecturl=basepath+"/listpage/"+personID+querytext;break;
+      case "5":redirecturl=basepath+"/baselineitem/"+personID+querytext;break;
+      case "6":redirecturl=basepath+"/newactitem/"+personID+querytext;break;
+      case "7":redirecturl=basepath+"/postitem/"+personID+querytext;break;
+      default:redirecturl=basepath+"/listpage/"+personID+querytext;break
+    }
+    ctx.redirect(redirecturl)
     })
     .catch((err)=>{
         console.log("Dataneed.save() failed !!")
@@ -186,7 +254,7 @@ async batchinput(ctx, next){
         //ctx.redirect("/base4dcarbon/project/?statusreport="+statusreport)
         console.log("go back to datamanage1.ejs");
         statusreport="完成dataneed批次輸入";
-        await ctx.render("innerweb/datamanage/datamanagetemp",{
+        await ctx.render("branch/datamanage",{
             statusreport
         })
     })
@@ -198,7 +266,7 @@ async batchinput(ctx, next){
 //依參數id刪除資料
 async destroy(ctx,next){
     var statusreport=ctx.query.statusreport;
-    console.log("gotten query:"+statusreport);
+    console.log("got query:"+statusreport);
     await Dataneed.deleteOne({_id: ctx.params.id})
     .then(()=>{
         console.log("Deleted a dataneed....");
@@ -216,7 +284,7 @@ async destroy(ctx,next){
 async update(ctx,next){
     let {_id}=ctx.request.body;
     var {statusreport}=ctx.request.body;
-    console.log("gotten query:"+statusreport);
+    console.log("got query:"+statusreport);
     await Dataneed.findOneAndUpdate({_id:_id}, ctx.request.body, { new: true })
     .then((newdataneed)=>{
         console.log("Saving new_dataneed....:"+newdataneed);
@@ -227,5 +295,216 @@ async update(ctx,next){
         console.log("Dataneed.findOneAndUpdate() failed !!")
         console.log(err)
     })
-}
+},
+async baselineoperate(ctx,next){
+  console.log("found route /base4dcarbon/dataneed/baselineitem !!");
+  var statusreport=ctx.query.statusreport;
+  console.log("got query:"+statusreport);
+  var status=ctx.query.status;
+  console.log("got status:"+status);
+  var caseID=ctx.query.caseID;
+  console.log("got caseID:"+caseID);
+  var personID=ctx.params.id;
+  var activityID;
+  var allbaseline=new Array();
+  var subactlist,dataneedlist,termlist;
+  await Case.findById(caseID)
+    .then(async casex=>{
+        console.log("Casex:"+casex);
+        activityID=casex.a10activityID;
+        console.log("activityID:"+activityID);
+        })
+    .catch(err=>{
+        console.log("Case.findById() failed !!");
+        console.log(err)
+      })
+  await Term.find({a15model:{$in:"subact"}}).then(async terms=>{
+    console.log("type of terms:"+typeof(terms));
+    console.log("type of 1st term:"+typeof(terms[0]));
+    console.log("1st term:"+terms[0])
+    console.log("No. of term:"+terms.length)
+    termlist=encodeURIComponent(JSON.stringify(terms));
+    console.log("type of termlist:"+typeof(termlist));
+      })
+      .catch(err=>{
+        console.log("Term.find({}) failed !!");
+        console.log(err)
+      })
+    await Subact.find({$and:[{a05activityID:activityID},{a10type:"baseline"}]})
+        .then(async subacts=>{
+          console.log("1st of subacts:"+subacts[0]);
+          for(subactx of subacts){
+              await Dataneed.find({$and:[{a05subactID:subactx._id},{a10datatype:"baseline"}]})
+                  .then(async dataneeds=>{
+                      console.log("type of dataneeds:"+typeof(dataneeds));
+                      console.log("1st dataneeds:"+dataneeds[0]);
+                      console.log("No. of dataneeds:"+dataneeds.length);
+                      allbaseline=allbaseline.concat(dataneeds);
+                      })
+                  .catch(err=>{
+                      console.log("Dataneed.find({}) failed !!");
+                      console.log(err)
+                  })
+              console.log("No. of allbaseline:"+allbaseline.length)
+              }
+            dataneedlist=encodeURIComponent(JSON.stringify(allbaseline));
+            console.log("type of dataneeds:"+typeof(dataneedlist));
+            console.log("no. of subacts:"+subacts.length);
+            subactlist=encodeURIComponent(JSON.stringify(subacts));
+            console.log("type of subactlist:"+typeof(subactlist));
+            })
+        .catch(err=>{
+            console.log("Subact.find({}) failed !!");
+            console.log(err)
+        })
+    await ctx.render("dataneed/baselineitem",{
+            subactlist,
+            dataneedlist,
+            termlist,
+            caseID,
+            personID,
+            statusreport
+        })
+    },
+async newactoperate(ctx,next){
+  console.log("found route /base4dcarbon/dataneed/newactitem !!");
+  var statusreport=ctx.query.statusreport;
+  console.log("got query:"+statusreport);
+  var status=ctx.query.status;
+  console.log("got status:"+status);
+  var caseID=ctx.query.caseID;
+  console.log("got caseID:"+caseID);
+  var personID=ctx.params.id;
+  var activityID;
+  var allbaseline=new Array();
+  var subactlist,dataneedlist;
+  await Case.findById(caseID)
+    .then(async casex=>{
+        console.log("Casex:"+casex);
+        activityID=casex.a10activityID;
+        console.log("activityID:"+activityID);
+        })
+    .catch(err=>{
+        console.log("Case.findById() failed !!");
+        console.log(err)
+      })
+  await Term.find({a15model:{$in:"subact"}}).then(async terms=>{
+    console.log("type of terms:"+typeof(terms));
+    console.log("type of 1st term:"+typeof(terms[0]));
+    console.log("1st term:"+terms[0])
+    console.log("No. of term:"+terms.length)
+    termlist=encodeURIComponent(JSON.stringify(terms));
+    console.log("type of termlist:"+typeof(termlist));
+      })
+      .catch(err=>{
+        console.log("Term.find({}) failed !!");
+        console.log(err)
+      })
+    await Subact.find({$and:[{a05activityID:activityID},{a10type:"baseline"}]})
+        .then(async subacts=>{
+          console.log("1st of subacts:"+subacts[0]);
+          for(subactx of subacts){
+              await Dataneed.find({$and:[{a05subactID:subactx._id},{a10datatype:"evidence"}]})
+                  .then(async dataneeds=>{
+                      console.log("type of dataneeds:"+typeof(dataneeds));
+                      console.log("1st dataneeds:"+dataneeds[0]);
+                      console.log("No. of dataneeds:"+dataneeds.length);
+                      allbaseline=allbaseline.concat(dataneeds);
+                      })
+                  .catch(err=>{
+                      console.log("Dataneed.find({}) failed !!");
+                      console.log(err)
+                  })
+              console.log("No. of allbaseline:"+allbaseline.length)
+              }
+            dataneedlist=encodeURIComponent(JSON.stringify(allbaseline));
+            console.log("type of dataneeds:"+typeof(dataneedlist));
+            console.log("no. of subacts:"+subacts.length);
+            subactlist=encodeURIComponent(JSON.stringify(subacts));
+            console.log("type of subactlist:"+typeof(subactlist));
+            })
+        .catch(err=>{
+            console.log("Subact.find({}) failed !!");
+            console.log(err)
+        })
+    await ctx.render("dataneed/newactitem",{
+            subactlist,
+            dataneedlist,
+            termlist,
+            caseID,
+            personID,
+            statusreport
+        })
+    },
+async postoperate(ctx,next){
+  console.log("found route /base4dcarbon/dataneed/postitem !!");
+  var statusreport=ctx.query.statusreport;
+  console.log("got query:"+statusreport);
+  var status=ctx.query.status;
+  console.log("got status:"+status);
+  var caseID=ctx.query.caseID;
+  console.log("got caseID:"+caseID);
+  var personID=ctx.params.id;
+  var activityID;
+  var allbaseline=new Array();
+  var subactlist,dataneedlist;
+  await Case.findById(caseID)
+    .then(async casex=>{
+        console.log("Casex:"+casex);
+        activityID=casex.a10activityID;
+        console.log("activityID:"+activityID);
+        })
+    .catch(err=>{
+        console.log("Case.findById() failed !!");
+        console.log(err)
+      })
+  await Term.find({a15model:{$in:"subact"}}).then(async terms=>{
+    console.log("type of terms:"+typeof(terms));
+    console.log("type of 1st term:"+typeof(terms[0]));
+    console.log("1st term:"+terms[0])
+    console.log("No. of term:"+terms.length)
+    termlist=encodeURIComponent(JSON.stringify(terms));
+    console.log("type of termlist:"+typeof(termlist));
+      })
+      .catch(err=>{
+        console.log("Term.find({}) failed !!");
+        console.log(err)
+      })
+    await Subact.find({$and:[{a05activityID:activityID},{a10type:"baseline"}]})
+        .then(async subacts=>{
+          console.log("1st of subacts:"+subacts[0]);
+          for(subactx of subacts){
+              await Dataneed.find({$and:[{a05subactID:subactx._id},{a10datatype:"persist"}]})
+                  .then(async dataneeds=>{
+                      console.log("type of dataneeds:"+typeof(dataneeds));
+                      console.log("1st dataneeds:"+dataneeds[0]);
+                      console.log("No. of dataneeds:"+dataneeds.length);
+                      allbaseline=allbaseline.concat(dataneeds);
+                      })
+                  .catch(err=>{
+                      console.log("Dataneed.find({}) failed !!");
+                      console.log(err)
+                  })
+              console.log("No. of allbaseline:"+allbaseline.length)
+              }
+            dataneedlist=encodeURIComponent(JSON.stringify(allbaseline));
+            console.log("type of dataneeds:"+typeof(dataneedlist));
+            console.log("no. of subacts:"+subacts.length);
+            subactlist=encodeURIComponent(JSON.stringify(subacts));
+            console.log("type of subactlist:"+typeof(subactlist));
+            })
+        .catch(err=>{
+            console.log("Subact.find({}) failed !!");
+            console.log(err)
+        })
+    await ctx.render("dataneed/postitem",{
+            subactlist,
+            dataneedlist,
+            termlist,
+            caseID,
+            personID,
+            statusreport
+        })
+    }
+
 }//EOF export

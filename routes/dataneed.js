@@ -18,10 +18,7 @@ router.get('/editpage/:id', async (ctx, next)=> {
 router.get('/inputbatch/:id', async (ctx, next)=> {
     await dataneedController.batchinput(ctx,next)
 });
-//依參數id取得資料
-router.get('/:id', async(ctx, next)=> {
-	await dataneedController.retrieve(ctx)
-});
+
 //依參數no取得一筆資料
 router.get('/find/:no', async(ctx, next)=> {
 	await dataneedController.findByNo(ctx)
@@ -38,6 +35,18 @@ router.get('/delete/:id', async (ctx, next)=> {
 //依參數id更新資料
 router.post('/update', async (ctx, next)=> {
 	await dataneedController.update(ctx)
+});
+//到訂定基線資料項目
+router.get('/baselineitem/:id', async(ctx, next)=> {
+	await dataneedController.baselineoperate(ctx)
+});
+//到訂定減碳或增匯資料項目
+router.get('/newactitem/:id', async(ctx, next)=> {
+	await dataneedController.newactoperate(ctx)
+});
+//到訂定持續減碳或增匯資料項目
+router.get('/postitem/:id', async(ctx, next)=> {
+	await dataneedController.postoperate(ctx)
 });
 //到測試片段程式頁
 router.get('/codetest', async (ctx, next)=> {

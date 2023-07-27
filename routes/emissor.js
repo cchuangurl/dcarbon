@@ -1,51 +1,44 @@
 var router = require('@koa/router')();
 
-const methodController = require('../controllers/index').method;
+const emissorController = require('../controllers/index').emissor;
 //列出清單
 router.get('/:id', async (ctx, next)=> {
-	await methodController.list(ctx)
+	await emissorController.list(ctx)
 });
 //到新增資料頁
 router.get('/inputpage/:id', async (ctx, next)=> {
-    await methodController.inputpage(ctx,next)
+    await emissorController.inputpage(ctx,next)
 });
 //到修正單筆資料頁
 router.get('/editpage/:id', async (ctx, next)=> {
     console.log("get id:"+ctx.params.id)
-    await methodController.editpage(ctx,next)
+    await emissorController.editpage(ctx,next)
 });
 //批次新增資料
 router.get('/inputbatch/:id', async (ctx, next)=> {
-    await methodController.batchinput(ctx,next)
+    await emissorController.batchinput(ctx,next)
 });
-//依參數id取得資料
+/*依參數id取得資料
 router.get('/:id', async(ctx, next)=> {
-	await methodController.retrieve(ctx)
+	await emissorController.retrieve(ctx)
 });
+*/
 //依參數no取得一筆資料
 router.get('/find/:no', async(ctx, next)=> {
-	await methodController.findByNo(ctx)
+	await emissorController.findByNo(ctx)
 });
 //寫入一筆資料
-router.post('/add', async (ctx, next)=> {
+router.post('/add/:id', async (ctx, next)=> {
 	console.log(ctx.request.body);
-	await methodController.create(ctx)
+	await emissorController.create(ctx)
 });
 //依參數id刪除資料
 router.get('/delete/:id', async (ctx, next)=> {
-	await methodController.destroy(ctx)
+	await emissorController.destroy(ctx)
 });
 //依參數id更新資料
 router.post('/update', async (ctx, next)=> {
-	await methodController.update(ctx)
-});
-//到公式編輯作業
-router.get('/formula/:id', async (ctx, next)=> {
-	await methodController.editformula(ctx)
-});
-//顯示公式
-router.get('/showformula/:id', async (ctx, next)=> {
-	await methodController.showformula(ctx)
+	await emissorController.update(ctx)
 });
 //到測試片段程式頁
 router.get('/codetest', async (ctx, next)=> {
@@ -54,7 +47,7 @@ router.get('/codetest', async (ctx, next)=> {
     if(statusreport===undefined){
         statusreport="status未傳成功!"
     }
-	await ctx.render("method/codetest",{
+	await ctx.render("emissor/codetest",{
 		statusreport:statusreport
 	})
 });

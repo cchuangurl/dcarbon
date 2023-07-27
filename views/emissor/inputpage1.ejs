@@ -24,7 +24,7 @@ body {
 .navbar-toggler{background:#fff !important;}
 </style>
 
-  <title>單筆dataneed資料</title>
+  <title>單筆emissor資料</title>
   </head>
   <body>
     <div id="show_div">
@@ -34,29 +34,27 @@ body {
 
     <template id="banderUI">
       <nav class="navbar navbar-expand-lg navbar-light">
-        <a class="navbar-brand" href="/">{{brand}}</a>
+        <a class="navbar-brand" href="#">{{brand}}</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarText">
           <ul class="navbar-nav mr-auto">
             <li class="nav-item">
-                <a class="nav-link" :href="lasepageurl">{{lastpage}}<span class="sr-only">(current)</span></a>
+                <a class="nav-link" :href="previousurl">{{previouspage}}</a>
               </li>
             <li class="nav-item active">
-              <a class="nav-link" href="#">{{input1}}<span class="sr-only">(current)</span></a>
+              <a class="nav-link" href="#">{{emissor1}}<span class="sr-only">(current)</span></a>
             </li>
-          <!--
             <li class="nav-item">
-              <a class="nav-link" href="#">{{inputbatch}}</a>
+              <a class="nav-link" href="#">{{emissorbatch}}</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="#">{{crawl}}</a>
             </li>
-            -->
           </ul>
           <span class="navbar-text">
-            <font size="2">{{statusreport}}</font>
+            <font size="1">{{statusreport}}</font>
           </span>
         </div>
       </nav>
@@ -67,42 +65,45 @@ body {
         <div class="card-body">
           <h5 class="card-title">{{card_title}}</h5>
           <h6 class="card-subtitle mb-2 text-muted">{{card_subtitle}}</h6>
-          <form :action="addoneurl" method="post">
+          <form :action="emissoradd1url" method="post">
             <div class="form-group" :key="inputerUIkey">
 
               <label for="formGroupExampleInput2">{{items.item0}}</label>
-              <select :name="names.name0" class="form-select">
-                <optgroup v-for="subact of subactlist" :key="subact._id">
-                <option :value="subact._id">{{subact.a20describe}}</option>
-                </optgroup>
-                </select>
-              <br>
+              <emissor type="text" :name="names.name0" class="form-control" id="formGroupExampleInput0" :value="subactID">
 
               <label for="formGroupExampleInput2">{{items.item1}}</label>
               <select :name="names.name1" class="form-select">
-                <optgroup v-for="term of termlist" :key="term._id">
-                <option :value="term.a25code">{{term.a30mean}}</option>
+                <optgroup v-for="typex of types" :key="typex._id">
+                <option :value="typex.a25code">{{typex.a30mean}}</option>
                 </optgroup>
                 </select>
               <br>
+
               <label for="formGroupExampleInput2">{{items.item2}}</label>
-              <input type="text" :name="names.name2" class="form-control" id="formGroupExampleInput2" :placeholder="holders.holder2">
+              <select :name="names.name2" class="form-select">
+                <optgroup v-for="nickname of nicknames" :key="nickname._id">
+                <option :value="nickname.a25code">{{nickname.a30mean}}</option>
+                </optgroup>
+                </select>
+              <br>
 
               <label for="formGroupExampleInput2">{{items.item3}}</label>
-              <input type="text" :name="names.name3" class="form-control" id="formGroupExampleInput3" :placeholder="holders.holder3">
+              <emissor type="text" :name="names.name3" class="form-control" id="formGroupExampleInput3" :placeholder="holders.holder3">
 
               <label for="formGroupExampleInput2">{{items.item4}}</label>
-              <input type="text" :name="names.name4" class="form-control" id="formGroupExampleInput4" :placeholder="holders.holder4">
+              <emissor type="text" :name="names.name4" class="form-control" id="formGroupExampleInput4" :value="personID">
 
               <label for="formGroupExampleInput">{{items.item99}}</label>
-              <input type="text" name="a99footnote" class="form-control" id="formGroupExampleInput99" :placeholder="holders.holder99">
-              <input type="hidden" name="caseID" :value="caseID">
-              <input type="hidden" name="statusreport" class="form-control" id="msg1" value="由單筆dataneed輸入後進入本頁">
-              <input type="hidden" name="status" class="form-control" id="msg2" :value="status">
-              <input type="submit" id="button1" value="確定送出" class="btn btn-info">
+              <emissor type="text" name="a99footnote" class="form-control" id="formGroupExampleInput99" :placeholder="holders.holder99">
+
+              <emissor type="hidden" name="statusreport" class="form-control" id="msg1" value="由單筆emissor輸入後進入本頁">
+              <emissor type="hidden" name="status" class="form-control" id="msg2" value="1">
+              <emissor type="hidden" name="caseID" class="form-control" id="msg3" :value="caseID">
+              <emissor type="hidden" name="subactID" class="form-control" id="msg4" :value="subactID">
+              <emissor type="submit" id="button1" value="確定送出" class="btn btn-info">
             </div>
           </form>
-          <input type="submit" id="button2" value="重新輸入" class="btn btn-info" @click="rerender()">
+          <emissor type="submit" id="button2" value="重新輸入" class="btn btn-info" @click="rerender()">
             <!-- <a href="#" class="card-link">Card link</a>
             <a href="#" class="card-link">Another link</a> -->
         </div>
@@ -116,73 +117,76 @@ Vue.component("bander",{
 
     data(){
       return {
-        brand:"dCarbon",
-        lastpage:"回前頁",
-        input1:"手動新增1筆",
-        inputbatch:"批次輸入",
+        brand:"dCarbon內部功能",
+        previouspage:"回前頁",
+        emissor1:"手動新增1筆",
+        emissorbatch:"批次輸入",
         crawl:"從網路抓取",
-        lastpageurl:"",
-        status:'<%- status%>',
-        statusreport:'<%- statusreport %>'
-        }
-      },
-      mounted:function(){
-        let basepath="/basedcarbon/dataneed";
-        let querytext="?statusreport=由單筆輸入佐證資料項目頁回到本頁&status="+this.status+"&caseID="+this.caseID;
-        switch(this.status){
-          case "0":this.lastpageurl=basepath+"/listpage/"+this.personID+querytext;break;
-          case "5":this.lastpageurl=basepath+"/baselineitem/"+this.personID+querytext;break;
-          case "6":this.lastpageurl=basepath+"/newactitem/"+this.personID+querytext;break;
-          case "7":this.lastpageurl=basepath+"/postitem/"+this.personID+querytext;break;
-          default:this.lastpageurl=basepath+"/listpage/"+this.personID+querytext;break
-        }
-
-      },
+        statusreport:'<%- statusreport %>',
+        subactID:'<%- subactID %>',
+        personID:'<%- personID %>'
+      }
+    },
+    mounted:function(){
+      let querytext="?statusreport=由emissor作業區的按鈕進入本頁&status=1&subactID="+this.subactID;
+        this.previousurl="/base4dcarbon/emissor/emissorpage1/"+this.personID+querytext;
+        this.emissorbatchurl="/base4dcarbon/emissor/emissorbatch/"+this.personID+querytext;
+    },
     template:"#banderUI"
   });
   Vue.component("inputer",{
 
     data(){
       return {
-        card_title:"新增1個佐證需求項目",
+        card_title:"新增1個投入因素",
         card_subtitle:"請輸入以下各項資料:",
-        statusreport:'<%- statusreport %>',
-        status:'<%- status %>',
-        caseID:'<%- caseID %>',
-        personID:'<%- personID %>',
-        termlist:JSON.parse(decodeURIComponent('<%=termlist%>')),
-        subactlist:JSON.parse(decodeURIComponent('<%=subactlist%>')),
-        addoneurl:"",
         items:{
-          item0:"細部活動代碼",
-          item1:"資料需求階段",
-          item2:"資料提供期限",
-          item3:"所需資料名稱",
-          item4:"所需資料描述",
+          item0:"對應之細部活動代碼",
+          item1:"投入資材類型",
+          item2:"投入資材名稱",
+          item3:"投入資材規格等描述描述",
+          item4:"活動分解士ID",
           item99:"特別註記"
           },
         names:{
           name0:"a05subactID",
-          name1:"a10datatype",
-          name2:"a15timing",
-          name3:"a20dataname",
-          name4:"a25describe"
+          name1:"a10emissortype",
+          name2:"a15nickname",
+          name3:"a20describe",
+          name4:"a25loyalistID"
             },
         holders:{
           holder0:"物件識別碼,",
           holder1:"字串,如名詞字典選項",
-          holder2:"日期時間,",
+          holder2:"字串,",
           holder3:"字串,",
-          holder4:"字串,",
+          holder4:"物件識別碼,",
           holder99:"字串"
             },
+        caseID:'<%- caseID %>',
+        subactID:'<%- subactID %>',
+        personID:'<%- personID %>',
+        termlist:JSON.parse(decodeURIComponent('<%= termlist %>')),
+        types:[],
+        nicknames:[],
+        emissoradd1url:"",
       inputerUIkey:0
 
       }
     },
-      mounted:function(){
-        this.addoneurl="/base4dcarbon/dataneed/add/"+this.peronID
-      },
+    mounted:function(){
+        for(term of this.termlist){
+            if(term.a20field=="a10emissortype"){
+                this.types.push(term)
+            }
+        }
+        for(term of this.termlist){
+            if(term.a20field=="a15nickname"){
+                this.nicknames.push(term)
+            }
+        }
+        this.emissoradd1url="/base4dcarbon/emissor/add/"+this.personID
+    },
     methods:{
         rerender:function() {
       this.inputerUIkey += 1;

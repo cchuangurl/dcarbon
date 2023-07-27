@@ -2,6 +2,7 @@
 const User = require('../models/index').user;
 const Loyalist = require('../models/index').loyalist;
 const Case = require('../models/index').case;
+const Activity = require('../models/index').activity;
 const Progress = require('../models/index').progress;
 module.exports = {
 //依帳號決定轉頁
@@ -479,13 +480,41 @@ async methodorworkspace(ctx,next){
   var status=ctx.query.status;
   console.log("got status:"+status);
   var caseID=ctx.query.caseID;
-  console.log("gotten caseID:"+caseID);
+  console.log("got caseID:"+caseID);
   var personID=ctx.params.id;
-  console.log("gotten personID:"+personID);
+  console.log("got personID:"+personID);
+  var activityID;
+  var thecase, theactivity;
+  await Case.findById(caseID)
+    .then(async casex=>{
+        console.log("Casex:"+casex);
+        thecase=encodeURIComponent(JSON.stringify(casex));
+        console.log("case:"+thecase);
+        console.log("type of case:"+typeof(thecase));
+        activityID=casex.a10activityID;
+        console.log("activityID:"+activityID);
+        })
+      .catch(err=>{
+          console.log("Case.findById() failed !!");
+          console.log(err)
+        })
+      await Activity.findById(activityID)
+      .then(async activityx=>{
+          console.log("activityx:"+activityx);
+          theactivity=encodeURIComponent(JSON.stringify(activityx));
+          console.log("the activity:"+theactivity);
+          console.log("type of theactivity:"+typeof(theactivity));
+          })
+      .catch(err=>{
+          console.log("Case.findById() failed !!");
+          console.log(err)
+        })
   await ctx.render("branch/methodor/workspace",{
       statusreport,
       personID,
-      caseID
+      caseID,
+      thecase,
+      theactivity
   })
 },
 //到Collecterweb
@@ -505,7 +534,7 @@ async gomaintainer(ctx, next) {
   console.log("進入branch controller的maintainer");
   statusreport="以資料管理權限進入本頁";
   var personID=ctx.params.id;
-  await ctx.render("innerweb/datamanage" ,{
+  await ctx.render("branch/datamanage" ,{
       statusreport,
       personID
   })

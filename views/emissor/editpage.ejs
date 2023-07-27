@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.4.1/jquery.js"></script>
+<style type="text/css">
+body {
+  background-color: #d6d6d3;
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+     flex-direction:column;
+	 justify-content: flex-start;
+     align-items:center;
+  	margin: 0;
+}
+.navbar{background:#e5f8cd;}
+.nav-link, .navbar-brand{color: #f4f4f4;cursor:pointer;}
+.nav-link{margin-right:1em !important;}
+.nav-link:hover{background: #f4f4f4;color:#f97300;}
+.navbar-collapse{justify-content:flex-end;}
+.navbar-toggler{background:#fff !important;}
+</style>
+
+  <title>修正指定之emissor</title>
+  </head>
+  <body>
+    <div id="show_div">
+      <bander></bander>
+        <inputer></inputer>
+        <!-- <outputer></outputer> -->
+    </div>
+
+    <template id="banderUI">
+      <nav class="navbar navbar-expand-lg navbar-light">
+        <a class="navbar-brand" href="#">{{brand}}</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarText">
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="/base4dcarbon/emissor">{{lastpage}}</a>
+            </li>
+            <li class="nav-item active">
+              <a class="nav-link" href="#">{{edit1}} <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">{{editbatch}}</a>
+            </li>
+          </ul>
+          <span class="navbar-text">
+            <!--{{statusreport}}-->
+          </span>
+        </div>
+      </nav>
+    </template>
+
+    <template id="inputerUI" >
+      <div class="card" style="width: 18rem;">
+        <div class="card-body">
+          <h5 class="card-title">修正{{emissor.a25code}}之對照資料</h5>
+          <h6 class="card-subtitle mb-2 text-muted">{{card_subtitle}}</h6>
+          <form action="/base4dcarbon/emissor/update" method="post">
+            <div class="form-group" :key="inputerUIkey">
+            <label for="formGroupExampleInput2">{{items.item}}</label>
+            <emissor type="text" name="_id" class="form-control" id="formGroupExampleInput" :value="emissor._id">
+
+            <label for="formGroupExampleInput2">{{items.item0}}</label>
+            <emissor type="text" :name="names.name0" class="form-control" id="formGroupExampleInput0" :value="emissor.a05activityID">
+
+            <label for="formGroupExampleInput2">{{items.item1}}</label>
+            <emissor type="text" :name="names.name1" class="form-control" id="formGroupExampleInput1" :value="emissor.a10emissortype">
+
+            <label for="formGroupExampleInput2">{{items.item2}}</label>
+            <emissor type="text" :name="names.name2" class="form-control" id="formGroupExampleInput2" :value="emissor.a15nickname">
+
+            <label for="formGroupExampleInput2">{{items.item3}}</label>
+            <emissor type="text" :name="names.name3" class="form-control" id="formGroupExampleInput3" :value="emissor.a20describe">
+
+            <label for="formGroupExampleInput2">{{items.item4}}</label>
+            <emissor type="text" :name="names.name4" class="form-control" id="formGroupExampleInput4" :value="emissor.a25loyalistID">
+
+              <emissor type="hidden" name="statusreport" class="form-control" id="msg1" value="由修正emissor後進入本頁">
+
+              <emissor type="submit" id="button1" value="確定送出" class="btn btn-info">
+            </div>
+          </form>
+          <emissor type="submit" id="button2" value="重新輸入" class="btn btn-info" @click="rerender()">
+          <!-- <a href="#" class="card-link">Card link</a>
+          <a href="#" class="card-link">Another link</a> -->
+        </div>
+      </div>
+    </template>
+
+
+<!-- Vue CDN-->
+<script src="https://unpkg.com/vue@2.6.14/dist/vue.js"></script>
+<script>
+Vue.component("bander",{
+    props:{},
+    data(){
+      return {
+        brand:"Deep內部功能",
+        lastpage:"回前頁",
+        edit1:"修正1筆",
+        editbatch:"修正多筆",
+        //statusreport:'<%- statusreport %>'
+      }
+    },
+    methods:{
+
+    },
+    template:"#banderUI"
+  });
+  Vue.component("inputer",{
+    props:{},
+    data(){
+      return {
+        card_title:"",
+        card_subtitle:"請修正以下各項資料:",
+        items:{
+          item0:"對應之細部活動代碼",
+          item1:"投入資材類型",
+          item2:"投入資材名稱",
+          item3:"投入資材規格等描述描述",
+          item4:"活動分解士ID",
+          item99:"特別註記"
+          },
+        names:{
+          name0:"a05subactID",
+          name1:"a10emissortype",
+          name2:"a15nickname",
+          name3:"a20describe",
+          name4:"a25loyalistID"
+            },
+      emissor:JSON.parse(decodeURIComponent('<%=emissor%>')),
+      inputerUIkey:0
+
+  }//EOF return
+    }, //EOF data()
+    methods:{
+        rerender:function() {
+      this.inputerUIkey += 1;
+      console.log("inputerUIkey:"+this.inputerUIkey)
+    }
+    },
+
+    template:"#inputerUI"
+  });
+    new Vue({
+        el:'#show_div',
+        data:{
+          testdata:'有執行到此。。。。'
+        },
+        /* computed:{
+
+        },
+        watch:{
+
+        },
+        filters:{
+
+        },
+        mixins:[
+
+        ],
+        template:" ",
+        components:{
+
+        },*/
+        beforeCreate:function(){
+          console.log("before create...")
+        },created:function(){
+          console.log("created...")
+        },
+        beforeMount:function(){
+          console.log("before mount...")
+        },
+        mounted:function(){
+          console.log("mounted...")
+        },
+        beforeUpdate:function(){
+          console.log("before update...")
+        },
+        updated:function(){
+          console.log("updated...")
+        },
+        beforeDestroy:function(){
+
+        }
+    })
+</script>
+
+
+  </body>
+</html>

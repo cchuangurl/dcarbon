@@ -18,6 +18,11 @@ background-color: rgb(205, 226, 253);
      align-items:center;
   	margin: 0;
 }
+.needcolor{
+  color:rgb(72, 188, 5);
+  font-size:large;
+  font-weight:bold;
+  }
 #tablefy{
     display: inline-block;
   flex-direction:row;
@@ -78,9 +83,24 @@ background-color: rgb(205, 226, 253);
 
     <template id="outputerUI">
         <nav aria-label="...">
+          <div id="activity_info">
+            {{items1.item1}}:<span class="needcolor">{{theactivity.a10type}}</span><br>
+            {{items1.item2}}:<span class="needcolor">{{theactivity.a15nickname}}</span><br>
+            {{items1.item3}}:<span class="needcolor">{{theactivity.a20describe}}</span><br>
+          </div>
+          <div id="case_info">
+            {{items2.item2}}:<span class="needcolor">{{thecase.a15casename}}</span><br>
+            {{items2.item5}}:<span class="needcolor">{{thecase.a30caseunit}}</span><br>
+            {{items2.item6}}:<span class="needcolor">{{thecase.a35scale}}</span>
+
+          </div>
+          <br>
           <div class="row" id="tablefy" v-for="work of work2dos" :key="work._id">
             <div class="col-lg-4 col-md-6 col-sm-12">
             <form  :action="work.route" method="get">
+              <input type="hidden" name="caseID" :value="caseID">
+              <!-- <input type="hidden" name="activityID" :value="theactivity._id"> -->
+              <input type="hidden" name="status" value="5">
               <input type="hidden" name="statusreport" value="由方法建構區工作按鈕進入本頁">
               <input type="submit" :value="work.label" class="btn btn-info">
             </form>
@@ -146,6 +166,30 @@ background-color: rgb(205, 226, 253);
           statusreport:'<%- statusreport %>',
           caseID:'<%- caseID %>',
           personID:'<%- personID %>',
+          thecase:JSON.parse(decodeURIComponent('<%=thecase%>')),
+          theactivity:JSON.parse(decodeURIComponent('<%=theactivity%>')),
+          items1:{
+              item:"本減碳活動代碼",
+              item0:"對應之產品代碼",
+              item1:"活動類型",
+              item2:"活動名稱",
+              item3:"本活動描述",
+              item99:"特別註記"
+            },
+            items2:{
+              item:"本申請案代碼",
+              item0:"申請人代碼",
+              item1:"申請活動代碼",
+              item2:"申請案場名稱",
+              item3:"申請案場地址",
+              item4:"申請案場中心點GPS",
+              item5:"申請案規模計算單位",
+              item6:"申請案規模數值",
+              item7:"申請案查證人ID列舉",
+              item8:"申請案是否通過",
+              item9:"申請案獲得之碳權噸數",
+              item99:"特別註記"
+            },
           work2dos:[
             {"route":"/base4dcarbon/method/formula",
                 "label":"編輯公評碳權數量計算公式"

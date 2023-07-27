@@ -23,6 +23,7 @@ background-color: rgb(205, 226, 253);
   font-size:large;
   font-weight:bold;
   }
+caption{caption-side: top;}
 .column1{background:lightblue}
 .column2{background:rgb(246, 197, 128)}
 .navbar{background:#cff8c5;}
@@ -115,8 +116,9 @@ background-color: rgb(205, 226, 253);
 <br>
           <a href="#inputs" style="position:right">檢視使用之生產資材差異</a>
 <br>
-減碳(或增匯)活動之細部活動及其與基線差異:
+
         <table border="1" class="table table-striped">
+          <caption>減碳(或增匯)活動之細部活動及其與基線差異:</caption>
             <thead>
             <tr>
                 <th>{{items3.item1}}</th>
@@ -135,8 +137,9 @@ background-color: rgb(205, 226, 253);
             <br><br>
 
         </table>
-        減碳(或增匯)活動使用生產資材之差異:
+
             <table id="inputs" border="1" class="table table-striped">
+              <caption>減碳(或增匯)活動使用生產資材之差異:</caption>
               <thead>
               <tr>
                 <th>{{items4.item0}}</th>

@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+<!-- <script src="/javascripts/jquery-3.4.1.js"></script> -->
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.4.1/jquery.js"></script>
+<style type="text/css">
+body {
+background-color: rgb(205, 226, 253);
+  height: 100vh;
+  width: 100vw;
+  position: relative;
+  display: flex;
+  flex-direction:column;
+	 justify-content: flex-start;
+     align-items:center;
+  	margin: 0;
+}
+.navbar{background:#cff8c5;}
+.nav-link, .navbar-brand{color: #f4f4f4;cursor:pointer;}
+.nav-link{margin-right:1em !important;}
+.nav-link:hover{background: #f4f4f4;color:#f97300;}
+.navbar-collapse{justify-content:flex-end;}
+.navbar-toggler{background:#fff !important;}
+.page-item {
+    margin-right:12px
+}
+.page-item[active=true]{
+    font-weight: bold;
+    text-decoration:underline
+}
+</style>
+
+  <title>具體排放源資料管理</title>
+  </head>
+  <body>
+    <div id="show_div">
+      <bander></bander>
+        <outputer></outputer>
+        <!-- <emissorer></emissorer> -->
+    </div>
+
+    <template id="banderUI">
+      <nav class="navbar navbar-expand-lg navbar-light">
+        <a class="navbar-brand" href="/">{{brand}}</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarText">
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="/base4dcarbon/briefing/">{{introduction}}</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/base4dcarbon/branch/datamanage">{{otherdata}}</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/base4dcarbon/">{{entry}}</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link  active" href="#">{{modeltype}}<span class="sr-only">(current)</span></a>
+              </li>
+              <li class="nav-item">
+                  <a class="nav-link" href="#">{{startuse}}</a>
+          </ul>
+          <span class="navbar-text">
+            <font size="1">{{statusreport}}</font>
+          </span>
+        </div>
+      </nav>
+    </template>
+
+    <template id="outputerUI">
+        <nav aria-label="...">
+          <table>
+            <tr>
+            <td>
+            <form  :action="inputpageurl" method="get" >
+            <emissor type="hidden" name="statusreport" value="由單筆手動新增按鈕進來">
+            <emissor type="hidden" name="status" value="0">
+            <emissor type="hidden" name="caseID" :value="caseID">
+            <emissor type="submit" value="單筆手動新增">
+            </form>
+            </td>
+            <td>
+              <form  :action="inputbatchurl" method="get" >
+             資料主檔名：<emissor type="text" name="datafile" required>
+             <emissor type="hidden" name="statusreport" value="由批次新增進入本頁">
+             <emissor type="hidden" name="status" value="0">
+            <emissor type="hidden" name="caseID" :value="caseID">
+             <emissor type="submit" value="批次新增">
+             </form>
+             </td>
+
+            <td>
+            （/public目錄下.csv檔）
+            </td>
+            <td>
+            <span class="navbar-text">
+                <font size="1">{{statusreport}}</font>
+              </span>
+            </td>
+            </tr>
+            </table>
+
+          <table>
+          <tr class="pagination">
+            <td class="page-item" v-show="firstPage" @click="goFirstPage()">回第1頁</td>
+            <td class="page-item" v-show="previousRound" @click="goPreviousRound()">上{{perRound}}頁</td>
+            <div class="page index"  >
+                <!--  未來可精進的寫法
+                    <li class="page-item" v-for="page in 10">
+                        <a class="page-link" href>{{page}}></a>
+                    </li>
+                -->
+            <td class="page-item" :active="activeIndex[0]" v-show="showIndex[0]" @click="getShowData(0)">{{pageIndex[0]}}</td>
+            <td class="page-item" :active="activeIndex[1]" v-show="showIndex[1]" @click="getShowData(1)">{{pageIndex[1]}}</td>
+            <td class="page-item" :active="activeIndex[2]" v-show="showIndex[2]" @click="getShowData(2)">{{pageIndex[2]}}</td>
+            <td class="page-item" :active="activeIndex[3]" v-show="showIndex[3]" @click="getShowData(3)">{{pageIndex[3]}}</td>
+            <td class="page-item" :active="activeIndex[4]" v-show="showIndex[4]" @click="getShowData(4)">{{pageIndex[4]}}</td>
+            <td class="page-item" :active="activeIndex[5]" v-show="showIndex[5]" @click="getShowData(5)">{{pageIndex[5]}}</td>
+            <td class="page-item" :active="activeIndex[6]" v-show="showIndex[6]" @click="getShowData(6)">{{pageIndex[6]}}</td>
+            <td class="page-item" :active="activeIndex[7]" v-show="showIndex[7]" @click="getShowData(7)">{{pageIndex[7]}}</td>
+            <td class="page-item" :active="activeIndex[8]" v-show="showIndex[8]" @click="getShowData(8)">{{pageIndex[8]}}</td>
+            <td class="page-item" :active="activeIndex[9]" v-show="showIndex[9]" @click="getShowData(9)">{{pageIndex[9]}}</td>
+        </div>
+            <td class="page-item" v-show="nextRound" @click="goNextRound()">下{{perRound}}頁</td>
+            <td class="page-item" v-show="endPage" @click="goEndPage()">到最末頁</td>
+          </tr>
+          </table>
+        <table border="1" class="table table-striped">
+            <thead>
+            <tr>
+                <th>{{items.item4}}</th>
+                <th>{{items.item2}}</th>
+                <th>{{items.item5}}</th>
+                <th>{{items.item6}}</th>
+              <!-- <th>特別註記</th> -->
+            </tr>
+            </thead>
+            <tbody id="emissorlist">
+              <!-- <tr v-for="emissor of emissorshow" :key="emissor._id"> -->
+                <tr v-for="emissor of emissorShow" :key="emissor._id">
+                <td>{{emissor.a25emissortype}}</td>
+                <td>{{emissor.a15nickname}}</td>
+                <td>{{emissor.a30emissorunit}}</td>
+                <td>{{emissor.a35coeffunit}}</td>
+                <!-- statusreport="由已擷取資料組清單頁進入本頁"> -->
+
+                  <td>
+                    <emissor type="submit" value="檢視或編輯" @click="editone(emissor._id)">
+                  </td>
+                  <td>
+                    <emissor type="submit" value="刪除" @click="deleteone(emissor._id)">
+                  </td>
+                </tr>
+            </tbody>
+        </table>
+        <table>
+            <tr class="pagination">
+              <td class="page-item" v-show="firstPage" @click="goFirstPage()">回第1頁</td>
+              <td class="page-item" v-show="previousRound" @click="goPreviousRound()">上{{perRound}}頁</td>
+              <div class="page index"  >
+              <td class="page-item" :active="activeIndex[0]" v-show="showIndex[0]" @click="getShowData(0)">{{pageIndex[0]}}</td>
+              <td class="page-item" :active="activeIndex[1]" v-show="showIndex[1]" @click="getShowData(1)">{{pageIndex[1]}}</td>
+              <td class="page-item" :active="activeIndex[2]" v-show="showIndex[2]" @click="getShowData(2)">{{pageIndex[2]}}</td>
+              <td class="page-item" :active="activeIndex[3]" v-show="showIndex[3]" @click="getShowData(3)">{{pageIndex[3]}}</td>
+              <td class="page-item" :active="activeIndex[4]" v-show="showIndex[4]" @click="getShowData(4)">{{pageIndex[4]}}</td>
+              <td class="page-item" :active="activeIndex[5]" v-show="showIndex[5]" @click="getShowData(5)">{{pageIndex[5]}}</td>
+              <td class="page-item" :active="activeIndex[6]" v-show="showIndex[6]" @click="getShowData(6)">{{pageIndex[6]}}</td>
+              <td class="page-item" :active="activeIndex[7]" v-show="showIndex[7]" @click="getShowData(7)">{{pageIndex[7]}}</td>
+              <td class="page-item" :active="activeIndex[8]" v-show="showIndex[8]" @click="getShowData(8)">{{pageIndex[8]}}</td>
+              <td class="page-item" :active="activeIndex[9]" v-show="showIndex[9]" @click="getShowData(9)">{{pageIndex[9]}}</td>
+          </div>
+              <td class="page-item" v-show="nextRound" @click="goNextRound()">下{{perRound}}頁</td>
+              <td class="page-item" v-show="endPage" @click="goEndPage()">到最末頁</td>
+            </tr>
+            </table>
+      </nav>
+      </template>
+
+      <template id="outputerUI">
+
+      </template>
+
+  <!-- Vue CDN-->
+  <script src="https://unpkg.com/vue@2.6.14/dist/vue.js"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="https://cdn.bootcss.com/qs/6.5.1/qs.min.js"></script>
+  <script>
+  Vue.component("bander",{
+      props:{},
+      data(){
+        return {
+            brand:"dCarbon",
+        introduction:"本制度系統介紹",
+        otherdata:"管理其他資料",
+        entry:"重新登入",
+        modeltype:"具體排放源管資料管理",
+        startuse:"使用本制度",
+        statusreport:'<%- statusreport %>',
+        caseID:'<%- caseID %>',
+        personID:'<%- personID %>'
+        //statusreport:"顯示測試"
+        }
+      },
+      methods:{
+
+      },
+      template:"#banderUI"
+    });
+    Vue.component("inputer",{
+      props:{},
+      data(){
+        return {
+        }
+      },
+      methods:{
+
+      },
+      template:"#inputerUI"
+    });
+    Vue.component("outputer",{
+      props:{},
+      data(){
+        return{
+          perPage:8,
+          perRound:10,
+          maxRow:1,
+          maxPage:1,
+          maxRound:1,
+          modRow:1,
+          modPage:1,
+          currentIndex:0,
+          currentPage:1,
+          currentRound:1,
+          indexLength:1,
+          previousRound:false,
+          firstPage:false,
+          nextRound:false,
+          endPage:false,
+          fullPage:false,
+          pageIndex:[],
+          showIndex:[],
+          activeIndex:[],
+          emissorShow:[],
+          statusreport:'<%- statusreport %>',
+          personID:'<%- personID %>',
+          caseID:'<%- caseID %>',
+          inputpageurl:"",
+          inputbatchurl:"",
+          emissorlist:JSON.parse(decodeURIComponent('<%=emissorlist%>')),
+        items:{
+          item0:"對應之細部活動代碼",
+          item1:"對應之投入項目代碼",
+          item2:"具體排放源名稱",
+          item3:"排放源說明",
+          item4:"基線或減碳增匯",
+          item5:"排放源慣用單位",
+          item6:"對應係數慣用單位",
+          item7:"換算為公噸碳排之乘數",
+          item8:"每單元排放源數量",
+          item9:"總共多少單元",
+          item10:"對應之排放係ID",
+          item11:"更新註記",
+          item99:"特別註記"
+            }
+        }
+      },
+      mounted:function(){
+        this.inputpageurl="/base4dcarbon/emissor/inputpage/"+this.personID;
+        this.inputbatchurl="/base4dcarbon/emissor/inputbatch/"+this.personID;
+        this.maxRow=this.emissorlist.length;
+        this.modRow=this.maxRow%this.perPage;
+        this.maxPage=this.modRow==0?this.maxRow/this.perPage:Math.floor(this.maxRow/this.perPage)+1;
+        this.modPage=this.maxPage%this.perRound;
+        this.maxRound=this.modPage==0?this.maxPage/this.perRound:Math.floor(this.maxPage/this.perRound)+1;
+        this.goFirstPage()
+
+      },
+      methods:{
+        editone:function(id){
+          let querytext="?statusreport=由emissor資料清單頁的編輯按鈕進入本頁&caseID="+this.caseID+"&emissorID="+id;
+          let url2='/base4dcarbon/emissor/editpage/'+this.personID+querytext;
+          window.location=url2;
+        },
+        deleteone:function(id){
+          let querytext="?statusreport=由emissor資料清單頁的刪除按鈕進入本頁&caseID="+this.caseID+"&emissorID="+id;
+          let url3='/base4dcarbon/emissor/delete/'+id+querytext;
+          window.location=url3
+           },
+
+        getShowData:function(index){
+          this.currentIndex=index;
+          this.activeIndex.splice(0);
+          this.pageIndex.splice(0);
+          this.showIndex.splice(0);
+          for(let i=0;i<this.indexLength;i++){
+              this.pageIndex.push(((this.currentRound-1)*this.perRound)+i+1);
+              this.showIndex.push(true);
+              this.activeIndex.push(false)
+          }
+          this.activeIndex[index]=true;
+          for(let i=this.indexlength;i<this.perRound;i++){
+              this.showIndex.push(false)
+          };
+          this.currentPage=this.pageIndex[index]
+          console.log("currentPage is:"+this.currentPage)
+          this.fullPage=(this.maxRow>=(this.currentPage*this.perPage))?true:false;
+          this.emissorShow.splice(0);
+          let startRow=(this.currentPage-1)*this.perPage;
+            console.log("startRow is:"+startRow)
+          let rowNo=this.fullPage?this.perPage:this.modRow;
+          console.log("rowNo is:"+rowNo);
+          //this.emissorShow=[];
+          this.emissorShow=this.emissorlist.slice(startRow,startRow+rowNo)
+          //this.emissorShow=this.emissorlist.slice(8,3)
+          console.log("11st emissorlist:"+this.emissorlist[10])
+          console.log("1st emissorShow:"+this.emissorShow[0])
+
+        },
+        goFirstPage:function(){
+          this.currentRound=1;
+          this.indexLength=(this.maxPage>this.perRound)?this.perRound:this.modPage;
+          this.previousRound=false;
+          this.firstPage=false;
+          this.nextRound=(this.maxPage<(this.perRound+1))?false:true;
+          this.endPage=(this.maxPage<(this.perRound+1))?false:true;
+          this.currentIndex=0;
+          this.getShowData(this.currentIndex)
+        },
+        goEndPage:function(){
+          this.currentRound=this.maxRound;
+          this.indexLength=(this.modPage==0)?this.perRound:this.modPage;
+          this.previousRound=true;
+          this.firstPage=true;
+          this.nextRound=false;
+          this.endPage=false;
+          this.currentIndex=this.indexLength-1;
+          this.getShowData(this.currentIndex)
+        },
+        goPreviousRound:function(){
+          if(this.currentRound>1){
+          this.currentRound--;
+          this.currentIndex=0;
+          this.indexLength=this.perRound;
+          this.previousRound=this.currentRound>1?true:false;
+          this.firstPage=this.currentRound>1?true:false;
+          this.nextRound=true;
+          this.endPage=true;
+          this.getShowData(this.currentIndex)
+          }else{
+              console.log("There is no previous round!!")
+              this.goFirstpage()
+          }
+        },
+        goNextRound:function(){
+          if(this.currentRound<this.maxRound){
+          this.currentRound++;
+          this.currentIndex=0;
+          this.indexLength=(this.maxPage>this.currentRound*this.perRound)?this.perRound:this.modPage;
+          this.previousRound=true;
+          this.firstPage=true;
+          this.nextRound=(this.maxPage>this.currentRound*this.perRound)?true:false;
+          this.endPage=(this.maxPage>this.currentRound*this.perRound)?true:false;
+          this.getShowData(this.currentIndex)
+          }else{
+            console.log("There is no next round!!")
+            this.goEndPage()
+          }
+        }
+      },
+    template:"#outputerUI"
+  });
+    new Vue({
+        el:'#show_div',
+        data:{
+          testdata:'有執行到此。。。。'
+        },
+        /* computed:{
+
+        },
+        watch:{
+
+        },
+        filters:{
+
+        },
+        mixins:[
+
+        ],
+        template:" ",
+
+        components:{
+          "bander":bander,
+          "outputer":outputer,
+          "emissorer":emissorer
+        },*/
+        beforeCreate:function(){
+          console.log("before create...")
+        },created:function(){
+          console.log("created...")
+        },
+        beforeMount:function(){
+          console.log("before mount...")
+        },
+        mounted:function(){
+          console.log("mounted...")
+        },
+        beforeUpdate:function(){
+          console.log("before update...")
+        },
+        updated:function(){
+          console.log("updated...")
+        },
+        beforeDestroy:function(){
+
+        }
+    })
+</script>
+
+
+  </body>
+</html>
