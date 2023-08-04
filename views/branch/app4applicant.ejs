@@ -42,7 +42,6 @@ background-color: rgb(248, 243, 243);
     line-height:60px;
     margin:5px;
     border-radius:10px
-
 }
 .navbar{background:#d6eff5;}
 .nav-link, .navbar-brand{color: #f4f4f4;cursor:pointer;}
@@ -62,13 +61,16 @@ background-color: rgb(248, 243, 243);
 
     <template id="content1UI">
         <div id="mobilephone">
-            <h3>公評碳權申請人App</h3>
-            <a class="appbutton">{{buttons.button1}}</a>
-            <a class="appbutton" :href="applyurl">{{buttons.button2}}</a>
-            <a class="appbutton">{{buttons.button3}}</a>
-            <a class="appbutton">{{buttons.button4}}</a>
-            <a class="appbutton">{{buttons.button5}}</a>
-            <a class="appbutton">{{buttons.button6}}</a>
+            <h3>共識碳權申請人App</h3>
+            <div class="row" id="tablefy" v-for="work of work2dos" :key="work._id">
+              <div class="col-lg-12 col-md-12 col-sm-12">
+              <form  :action="work.route" method="get">
+                <input type="hidden" name="status" :value="work.status">
+                <input type="hidden" name="statusreport" value="由申請人App按鈕進入本頁">
+                <input type="submit" :value="work.label" class="appbutton">
+              </form>
+    </div>
+    </div>
               <==           ...
           </div>
         </template>
@@ -80,22 +82,37 @@ background-color: rgb(248, 243, 243);
     props:{},
     data(){
       return {
-        buttons:{
-            button1:"登入註冊",
-            button2:"申請公評碳權",
-            button3:"上傳佐證資料",
-            button4:"拍照上傳",
-            button5:"認驗證進度查詢",
-            button6:"公評碳權權包"
-          },
+        work2dos:[
+            {"route":"/base4dcarbon",
+                "label":"登入.註冊",
+                "status":"1"
+                },
+            {"route":"/base4dcarbon/activity/inputpage1",
+            "label":"申請共識碳權",
+                "status":"2"
+            },
+            {"route":"/base4dcarbon/case/applycase",
+            "label":"上傳佐證資料",
+                "status":"3"
+            },
+            {"route":"/base4dcarbon/evidence/photo",
+            "label":"拍照後上傳",
+                "status":"4"
+            },
+            {"route":"/base4dcarbon/case/applycase",
+            "label":"認驗證進度查詢",
+                "status":"5"
+            },
+            {"route":"/base4dcarbon/credit/applicant/",
+            "label":"共識碳權權包",
+                "status":"6"
+          }],
         personID:'<%= personID %>',
-        applyurl:"",
-        //applyurl:"/base4dcarbon/activity/inputpage1/647bfaf1e07292995168f90f"
       }
     },
     mounted:function(){
-        this.applyurl="/base4dcarbon/activity/inputpage1/"+this.personID;
-        console.log("applyurl:"+this.applyurl)
+      for(work of this.work2dos)
+        work.route=work.route+'/'+this.personID
     },
     methods:{
 

@@ -1,5 +1,7 @@
 //載入相對應的model
 const Coefficient = require('../models/index').coefficient;
+const Source = require('../models/index').source;
+const Term = require('../models/index').term;
 module.exports = {
 //列出清單list(req,res)
 async list(ctx,next){
@@ -32,14 +34,35 @@ async list(ctx,next){
 
 //到新增資料頁
 async inputpage(ctx, next) {
-    var {statusreport}=ctx.request.body;
-    console.log("got query:"+statusreport);
-    if(statusreport===undefined){
-        statusreport="status未傳成功!"
-    }
+  console.log("進入coefficient controller的inputpage");
+  var personID=ctx.params.id;
+  console.log("personID:"+personID);
+  var statusreport=ctx.query.statusreport;
+  console.log("got statusreport:"+statusreport);
+  var status=ctx.query.status;
+  console.log("got status:"+status);
+  var emissorID=ctx.query.emissorID;
+  console.log("got emissorID:"+emissorID);
+  if(statusreport===undefined){
+      statusreport="status未傳成功!"
+  }
+  var sourcelist;
+  await Source.find({})
+    .then(async sources=>{
+      console.log("type of sources:"+typeof(sources));
+      console.log("type of 1st source:"+typeof(sources[0]));
+      console.log("No. of source:"+sources.length)
+      sourcelist=encodeURIComponent(JSON.stringify(sources));
+      console.log("type of sources:"+typeof(sourcelist));
+    })
 	await ctx.render("coefficient/inputpage",{
-		statusreport:ctx.request.body.statusreport
+		statusreport,
+    status,
+    emissorID,
+    personID,
+    sourcelist
 	})
+
 },
 //到修正單筆資料頁
 async editpage(ctx, next) {
@@ -78,13 +101,31 @@ findByNo(req,res){
 
 //寫入一筆資料
 async create(ctx,next){
+  console.log("進入coefficient controller的add");
+    var personID=ctx.params.id;
+    console.log("personID:"+personID);
+    var {statusreport}=ctx.request.body;
+    console.log("got statusreport:"+statusreport);
+    var {status}=ctx.request.body;
+    console.log("got status:"+status);
+    if(statusreport===undefined){
+        statusreport="status未傳成功!"
+    }
     var new_coefficient = new Coefficient(ctx.request.body);
     console.log("got new_coefficient:"+new_coefficient.a10data);
+    new_coefficient.a35loyalistID=personID;
+    new_coefficient.a40when=Date.now();
     await new_coefficient.save()
-    .then(()=>{
-        console.log("Saving new_coefficient....");
+    .then(async newcoefficient=>{
+        console.log("Saving new_coefficient....:"+newcoefficient.a20describe);
     statusreport="儲存單筆客戶資料後進入本頁";
-    ctx.redirect("/base4dcarbon/coefficient/?statusreport="+statusreport)
+    let gobackurl;
+    switch(status){
+        case "0":gobackurl="/base4dcarbon/coefficient/"+personID;break;
+        case "9":gobackurl="/base4dcarbon/branch/pwa4collecter/"+personID;break;
+        default:gobackurl="/base4dcarbon/branch/pwa4collecter/"+personID
+      }
+    await ctx.redirect(gobackurl+"?statusreport="+statusreport)
     })
     .catch((err)=>{
         console.log("Coefficient.save() failed !!")

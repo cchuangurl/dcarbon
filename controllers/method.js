@@ -6,6 +6,7 @@ const Activity = require('../models/index').activity;
 const Subact = require('../models/index').subact;
 const Input = require('../models/index').input;
 const Emissor = require('../models/index').emissor;
+const Progress = require('../models/index').progress;
 module.exports = {
 //列出清單list(req,res)
 async list(ctx,next){
@@ -454,5 +455,32 @@ async showformula(ctx,next){
         caseID,
         status
       })
+},
+//確認公式更新進度
+async doneformula(ctx, next) {
+  console.log("進入method controller的doneformula");
+  var personID=ctx.params.id;
+  console.log("personID:"+personID);
+  var statusreport=ctx.query.statusreport;
+  console.log("got statusreport:"+statusreport);
+  var status=ctx.query.status;
+  console.log("got status:"+status);
+  var caseID=ctx.query.caseID;
+  console.log("got caseID:"+caseID);
+  let new_progress=new Progress({
+    a05caseID:caseID,
+    a10stage:"methodology",
+    a15when:Date.now(),
+    a99footnote:"create after formula done"
+    })
+  await new_progress.save()
+      .then(async ()=>{
+        console.log("Saving new_progress....");
+      })
+      .catch((err)=>{
+        console.log("Progress.save() failed !!")
+        console.log(err)
+     })
+  await ctx.redirect("/base4dcarbon/branch/pwa4methodor/"+personID)
 }
 }//EOF export

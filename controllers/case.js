@@ -6,7 +6,7 @@ const Progress = require('../models/index').progress;
 const Activity = require('../models/index').activity;
 const Subact = require('../models/index').subact;
 const Input = require('../models/index').input;
-const User = require('../models/index').user;
+const Dataneed = require('../models/index').dataneed;
 module.exports = {
 //列出清單list(req,res)
 async list(ctx,next){
@@ -347,6 +347,91 @@ async update(ctx,next){
         console.log("Case.findOneAndUpdate() failed !!")
         console.log(err)
     })
+},
+//applicant查詢申請案件
+async applycase(ctx, next) {
+  console.log("進入caseh controller的applycase");
+  var personID=ctx.params.id;
+  console.log("personID:"+personID);
+  var status=ctx.query.status;
+  console.log("got status:"+status);
+  var caselist;
+var statusreport="由查詢申請案件進度鈕進入本頁"
+  await Case.find({a05applicantID:personID}).then(async cases=>{
+    console.log("type of cases:"+typeof(cases));
+    console.log("1st case:"+cases[0]);
+    console.log("No. of case:"+cases.length)
+    caselist=encodeURIComponent(JSON.stringify(cases));
+    console.log("type of caselist:"+typeof(caselist))
+    })
+    .catch(err=>{
+      console.log("Case.find({}) failed !!");
+      console.log(err)
+    })
+    switch(status){
+      case "3":renderurl="branch/applicant/applycasepage3";statusreport="由資料上傳鈕進入本頁";break;
+      case "5":renderurl="branch/applicant/applycasepage5";statusreport="由查詢申請案件進度鈕進入本頁";break;
+      default:case "5":renderurl="branch/applicant/applycasepage5";statusreport="由查詢申請案件進度鈕進入本頁";break;
+    }
+  await ctx.render(renderurl ,{
+        caselist,
+        personID,
+        status,
+        statusreport
+          })
+},
+//到Applicant上傳資料準備
+async preparedata(ctx, next) {
+  console.log("進入case controller的preparedata");
+  var personID=ctx.params.id;
+  console.log("personID:"+personID);
+  var status=ctx.query.status;
+  console.log("got status:"+status);
+  var caseID=ctx.query.caseID;
+  console.log("got caseID:"+caseID);
+  var statusreport="由查詢申請案件進度鈕進入本頁";
+  var activityID;
+  var alldataneed=new Array();
+  var dataneedlist;
+  await Case.findById(caseID)
+    .then(async casex=>{
+        console.log("Casex:"+casex);
+        activityID=casex.a10activityID;
+        console.log("activityID:"+activityID);
+        })
+    .catch(err=>{
+        console.log("Case.findById() failed !!");
+        console.log(err)
+      })
+    await Subact.find({a05activityID:activityID})
+        .then(async subacts=>{
+          console.log("1st of subacts:"+subacts[0]);
+          for(subactx of subacts){
+              await Dataneed.find({a05subactID:subactx._id})
+                  .then(async dataneeds=>{
+                      console.log("type of dataneeds:"+typeof(dataneeds));
+                      console.log("1st dataneeds:"+dataneeds[0]);
+                      console.log("No. of dataneeds:"+dataneeds.length);
+                      alldataneed=alldataneed.concat(dataneeds)
+                      })
+                  .catch(err=>{
+                      console.log("Dataneed.find({}) failed !!");
+                      console.log(err)
+                  })
+                }
+                dataneedlist=encodeURIComponent(JSON.stringify(alldataneed));
+                console.log("type of dataneedlist:"+typeof(dataneedlist));
+              })
+        .catch(err=>{
+            console.log("Subact.find({}) failed !!");
+            console.log(err)
+        })
+    await ctx.render("dataneed/noticepage",{
+            dataneedlist,
+            caseID,
+            personID,
+            statusreport
+        })
 },
 //檢視活動解構結果
 async decomposed(ctx,next){

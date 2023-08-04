@@ -43,6 +43,10 @@ router.get('/delete/:id', async (ctx, next)=> {
 router.post('/update', async (ctx, next)=> {
 	await progressController.update(ctx)
 });
+//碳權申請人查詢案件進度
+router.get('/applycase/:id', async (ctx, next)=> {
+	await progressController.applycase(ctx)
+});
 //到測試片段程式頁
 router.get('/codetest', async (ctx, next)=> {
     var {statusreport}=ctx.request.body;

@@ -26,6 +26,10 @@ background-color: rgb(205, 226, 253);
 caption{caption-side: top;}
 .column1{background:lightblue}
 .column2{background:rgb(246, 197, 128)}
+.sameline{white-space: nowrap;}
+.lefthand{font-size:x-large;font-weight:bold;display: inline;}
+.operator{display: inline;font-size: xx-large;color: #f97300}
+.varible{display: inline;}
 .navbar{background:#cff8c5;}
 .nav-link, .navbar-brand{color: #f4f4f4;cursor:pointer;}
 .nav-link{margin-right:1em !important;}
@@ -106,20 +110,47 @@ caption{caption-side: top;}
                 <tr>
                 <td></td>
                 <td></td>
-                <td colspan="2"><span><h2 style="font-weight:bold">{{CCCestimation}}=</h2></span></td>
+                <td colspan="2"><div class="sameline"><div class="lefthand">{{CCCestimation}}</div><div class="operator">=</div></div></span></td>
                 </tr>
                   <tr v-for="[index,emissorB] of emissorBs.entries()" :key="emissorB._id">
                   <td>({{emissorB.a15nickname}})</td>
                   <td></td>
-                  <td><h2 style="color:red">{{emissorB.a99footnote}}</h2></td>
-                  <td><h3>B{{index+1}}{{emissorB.a30emissorunit}}*Qb{{index+1}}{{caseunit}}*Cb{{index+1}}{{kg}}/{{emissorB.a35coeffunit}}</h3></td>
+                  <td><div class="operator">{{emissorB.a99footnote}}</div></td>
+                  <td><div class="sameline"></div>
+                    <h3><div class="varible">B{{index+1}}{{emissorB.a30emissorunit}}</div>
+                    <div class="operator">*</div>
+                    <div class="varible">Qb{{index+1}}{{caseunit}}</div>
+                    <div class="operator">*</div>
+                    <div class="varible">Cb{{index+1}}{{kg}}</div>
+                    <div class="operator">/</div>
+                    <div class="varible">{{emissorB.a35coeffunit}}</div></h3></div></td>
                   </tr>
                   <tr v-for="[index,emissorD] of emissorDs.entries()" :key="emissorD._id">
                     <td>({{emissorD.a15nickname}})</td>
                     <td></td>
-                    <td><h2 style="color:red">{{emissorD.a99footnote}}</h2></td>
-                    <td><h3>D{{index+1}}{{emissorD.a30emissorunit}}*Qd{{index+1}}{{caseunit}}*Cd{{index+1}}{{kg}}/{{emissorD.a35coeffunit}}</h3></td>
+                    <td><div class="operator">{{emissorD.a99footnote}}</div></td>
+                    <td><div class="sameline">
+                      <h3><div class="varible">D{{index+1}}{{emissorD.a30emissorunit}}</div>
+                      <div class="operator">*</div>
+                      <div class="varible">Qd{{index+1}}{{caseunit}}</div>
+                      <div class="operator">*</div>
+                      <div class="varible">Cd{{index+1}}{{kg}}</div>
+                      <div class="operator">/</div>
+                      <div class="varible">{{emissorD.a35coeffunit}}</div></h3></div></td>
                     </tr>
+                    <tr>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td>
+                        <form  :action="progressurl" method="get" >
+                          <input type="hidden" name="statusreport" class="form-control" id="msg1" value="由公式顯示頁進入本頁">
+                          <input type="hidden" name="status" class="form-control" id="msg2" value="6">
+                          <input type="hidden" name="caseID" class="form-control" id="msg3" :value="caseID">
+                          <input type="submit" value="確認公式" class="btn btn-info">
+                          </form>
+                      </td>
+                      </tr>
               </tbody>
           </table>
       </nav>
@@ -229,6 +260,7 @@ caption{caption-side: top;}
           CCCestimation:"共識碳權(CCC)估計值(公斤)",
           caseunit:"公頃",
           kg:"公斤碳排",
+          progressurl:"",
             items3:{
               item0:"對應之活動代碼",
               item1:"細部活動階段",
@@ -250,6 +282,7 @@ caption{caption-side: top;}
                 this.emissorDs.push(emissor)
               }
             }
+            this.progressurl="/base4dcarbon/method/doneformula/"+this.personID
       },
       methods:{
 

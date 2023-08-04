@@ -39,6 +39,14 @@ router.get('/delete/:id', async (ctx, next)=> {
 router.post('/update', async (ctx, next)=> {
 	await evidenceController.update(ctx)
 });
+//去上傳既有資料檔
+router.get('/upload/:id', async (ctx, next)=> {
+  await evidenceController.uploadpage(ctx,next)
+});
+//去拍照及上傳頁
+router.get('/photo/:id', async (ctx, next)=> {
+	await evidenceController.takepicture(ctx)
+});
 //到測試片段程式頁
 router.get('/codetest', async (ctx, next)=> {
     var {statusreport}=ctx.request.body;

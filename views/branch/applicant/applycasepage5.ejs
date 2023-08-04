@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.4.1/jquery.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+<style type="text/css">
+body {
+background-color: rgb(248, 243, 243);
+  height: 100vh;
+  width: 100vw;
+  position: relative;
+  display: flex;
+  flex-direction:column;
+	 justify-content: flex-start;
+     align-items:center;
+  	margin: 0;
+}
+#mobilephone{
+  background-color: rgb(249, 252, 247);
+  height: 820px;
+  width: 600px;
+  border-width:medium;
+  border-style:solid;
+  border-color:blue;
+  position: relative;
+  display: flex;
+  flex-direction:column;
+	 justify-content: flex-start;
+     align-items:center;
+  	margin: 20PX;
+    border-radius:25px
+}
+#phonescreen{
+  background-color: rgb(240, 248, 234);
+  height: 700px;
+  width: 540px;
+  position: relative;
+  display: flex;
+  flex-direction:column;
+	 justify-content: flex-start;
+     align-items:center;
+  margin-top: 100px;
+  margin-left:10px;
+}
+caption{caption-side: top;font-size:large;}
+#sidearea{
+  background-color: rgb(213, 218, 210);
+  height: 760px;
+  width: 100vw;
+  position: relative;
+  display: flex;
+  flex-direction:column;
+	 justify-content: flex-start;
+     align-items:center
+}
+.sidepart{
+    width: 350px;
+    height:240px;
+    margin-top:10px;
+    border-radius:10px
+}
+#bellcall{
+    background:#f5f5d6
+}
+#messageboard{
+    background:#d6f5de
+}
+#contactpart{
+    background:#d6f5de ;
+    width:100vw;
+    height:100px;
+    align-content: flex-end;
+}
+.contactinfo {
+    margin-left:100px
+}
+.navbar{background:#d6eff5;}
+.nav-link, .navbar-brand{color: #f4f4f4;cursor:pointer;}
+.nav-link{margin-right:1em !important;}
+.nav-link:hover{background: #f4f4f4;color:#f97300;}
+.navbar-collapse{justify-content:flex-end;}
+.navbar-toggler{background:#fff !important;}
+
+</style>
+
+  <title>碳權申請人App示意版-申請中之案子</title>
+  </head>
+  <body>
+    <div id="show_div">
+                        <content1></content1>
+        </div>
+
+    <template id="content1UI">
+        <nav aria-label="...">
+          <div id="mobilephone">
+            <div id="phonescreen">
+          <table border="1" class="table table-striped">
+            <caption>申請中的案件</caption>
+              <thead>
+              <tr>
+                  <th>{{items.item2}}</th>
+                  <th>{{items.item3}}</th>
+                <!-- <th>特別註記</th> -->
+              </tr>
+              </thead>
+              <tbody id="caselist">
+                  <tr v-for="casex of caselist" :key="casex._id">
+                  <td>{{casex.a15casename}}</td>
+                  <td>{{casex.a20caseaddress}}</td>
+                  <!-- statusreport="由已擷取資料組清單頁進入本頁"> -->
+
+                    <td>
+                      <input type="submit" value="檢視申請資料" @click="viewone(casex._id)">
+                    </td>
+                    <td>
+                      <input type="submit" value="進度查詢" @click="progress(casex._id)">
+                    </td>
+                  </tr>
+              </tbody>
+          </table>
+        </div>
+          </div>
+        </nav>
+    </template>
+
+<!-- Vue CDN-->
+<script src="https://unpkg.com/vue@2.6.14/dist/vue.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="https://cdn.bootcss.com/qs/6.5.1/qs.min.js"></script>
+<script>
+  Vue.component("content1",{
+    props:{},
+    data(){
+        return{
+
+          statusreport:'<%- statusreport %>',
+          personID:'<%- personID %>',
+          caselist:JSON.parse(decodeURIComponent('<%= caselist %>')),
+        items:{
+          item0:"申請人代碼",
+          item1:"申請活動代碼",
+          item2:"申請案場名稱",
+          item3:"申請案場地址",
+          item4:"申請案場中心點GPS",
+          item5:"申請案規模計算單位",
+          item6:"申請案規模數值",
+          item7:"申請案查證人ID列舉",
+          item8:"申請案是否通過",
+          item9:"申請案獲得之碳權噸數",
+          item99:"特別註記"
+            }
+        }
+      },
+      mounted:function(){
+
+      },
+      methods:{
+        viewone:function(id){
+          let querytext="?statusreport=由申請中case資料清單頁的檢視鈕進入本頁&status=3&caseID="+id;
+          let url3='/base4dcarbon/case/viewpage1/'+this.personID+querytext;
+          window.location=url3;
+        },
+        progress:function(id){
+          let querytext="?statusreport=由申請中case資料清單頁查詢進度鈕進入本頁&status=5&caseID="+id;
+          let url3='/base4dcarbon/progress/applycase/'+this.personID+querytext;
+          window.location=url3
+           }
+      },
+    template:"#content1UI"
+  });
+
+    new Vue({
+        el:'#show_div',
+        data:{
+          testdata:'有執行到此。。。。'
+        },
+        /* computed:{
+
+        },
+        watch:{
+
+        },
+        filters:{
+
+        },
+        mixins:[
+
+        ],
+        template:" ",
+
+        components:{
+          "bander":bander,
+          "outputer":outputer,
+          "inputer":inputer
+        },*/
+        beforeCreate:function(){
+          console.log("before create...")
+        },created:function(){
+          console.log("created...")
+        },
+        beforeMount:function(){
+          console.log("before mount...")
+        },
+        mounted:function(){
+          console.log("mounted...")
+        },
+        beforeUpdate:function(){
+          console.log("before update...")
+        },
+        updated:function(){
+          console.log("updated...")
+        },
+        beforeDestroy:function(){
+
+        }
+    })
+</script>
+
+
+  </body>
+</html>

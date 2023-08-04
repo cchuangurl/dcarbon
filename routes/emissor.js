@@ -40,6 +40,10 @@ router.get('/delete/:id', async (ctx, next)=> {
 router.post('/update', async (ctx, next)=> {
 	await emissorController.update(ctx)
 });
+//選擇要認領參數
+router.get('/chooseemissor/:id', async (ctx, next)=> {
+	await emissorController.move2collect(ctx)
+});
 //到測試片段程式頁
 router.get('/codetest', async (ctx, next)=> {
     var {statusreport}=ctx.request.body;

@@ -9,6 +9,7 @@ var DataneedSchema = new Schema(
     a15timing:{type:Date,required:false},
     a20dataname:{type:String,required:false},
     a25describe:{type:String,required:false},
+    a30check:{type:Number,required:false},
     a99footnote:{type:String,required:false}
   }
 );

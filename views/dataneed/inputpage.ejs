@@ -127,7 +127,7 @@ Vue.component("bander",{
         }
       },
       mounted:function(){
-        let basepath="/basedcarbon/dataneed";
+        let basepath="/base4dcarbon/dataneed";
         let querytext="?statusreport=由單筆輸入佐證資料項目頁回到本頁&status="+this.status+"&caseID="+this.caseID;
         switch(this.status){
           case "0":this.lastpageurl=basepath+"/listpage/"+this.personID+querytext;break;
@@ -148,10 +148,9 @@ Vue.component("bander",{
         card_subtitle:"請輸入以下各項資料:",
         statusreport:'<%- statusreport %>',
         status:'<%- status %>',
-        caseID:'<%- caseID %>',
+        emissorID:'<%- emissorID %>',
         personID:'<%- personID %>',
         termlist:JSON.parse(decodeURIComponent('<%=termlist%>')),
-        subactlist:JSON.parse(decodeURIComponent('<%=subactlist%>')),
         addoneurl:"",
         items:{
           item0:"細部活動代碼",

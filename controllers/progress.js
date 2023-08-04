@@ -1,11 +1,12 @@
 //載入相對應的model
 const Progress = require('../models/index').progress;
+const Term = require('../models/index').term;
 module.exports = {
 //列出清單list(req,res)
 async list(ctx,next){
     console.log("found route /base4dcarbon/progress !!");
     var statusreport=ctx.query.statusreport;
-    console.log("gotten query:"+statusreport);
+    console.log("got query:"+statusreport);
     var personID=ctx.params.id;
     await Progress.find({}).then(async progresss=>{
         //console.log("found progresss:"+progresss);
@@ -30,12 +31,56 @@ async list(ctx,next){
         console.log(err)
     })
 },
-
-
+//碳權申請人查詢案件進度
+async applycase(ctx,next){
+  console.log("found route /base4dcarbon/progress/applycase !!");
+  var personID=ctx.params.id;
+  var caseID=ctx.query.caseID;
+  console.log("got query:"+statusreport);
+  var statusreport=ctx.query.statusreport;
+  console.log("got query:"+statusreport);
+  var termlist,progresslist;
+  await Term.find({a15model:"progress"}).then(async terms=>{
+    console.log("type of terms:"+typeof(terms));
+    console.log("type of 1st term:"+typeof(terms[0]));
+    console.log("1st term:"+terms[0])
+    console.log("No. of term:"+terms.length)
+    termlist=encodeURIComponent(JSON.stringify(terms));
+    console.log("type of termlist:"+typeof(termlist));
+    })
+    .catch(err=>{
+        console.log("Term.find({}) failed !!");
+        console.log(err)
+    })
+  await Progress.find({a05caseID:caseID}).then(async progresss=>{
+      //console.log("found progresss:"+progresss);
+      console.log("type of progresss:"+typeof(progresss));
+      console.log("type of 1st progress:"+typeof(progresss[0]));
+      //console.log("1st progress:"+progresss[0].a10stage)
+      console.log("No. of progress:"+progresss.length)
+      progresslist=encodeURIComponent(JSON.stringify(progresss));
+      console.log("type of progresss:"+typeof(progresslist));
+      if(statusreport===undefined){
+          statusreport="未截到status"
+      }
+      await ctx.render("branch/applicant/progresspage",{
+      //ctx.response.send({
+          progresslist,
+          termlist,
+          personID,
+          caseID,
+          statusreport
+      })
+  })
+  .catch(err=>{
+      console.log("Progress.find({}) failed !!");
+      console.log(err)
+  })
+},
 //到新增資料頁
 async inputpage(ctx, next) {
     var {statusreport}=ctx.request.body;
-    console.log("gotten query:"+statusreport);
+    console.log("got query:"+statusreport);
     if(statusreport===undefined){
         statusreport="status未傳成功!"
     }
@@ -46,7 +91,7 @@ async inputpage(ctx, next) {
 //到修正單筆資料頁
 async editpage(ctx, next) {
     var statusreport=ctx.query.statusreport;
-    console.log("gotten query:"+statusreport);
+    console.log("got query:"+statusreport);
     console.log("ID:"+ctx.params.id);
     console.log("entered progress.findById(ctx.params.id)!!");
     if(statusreport===undefined){
@@ -210,7 +255,7 @@ async batchinput(ctx, next){
 //依參數id刪除資料
 async destroy(ctx,next){
     var statusreport=ctx.query.statusreport;
-    console.log("gotten query:"+statusreport);
+    console.log("got query:"+statusreport);
     await Progress.deleteOne({_id: ctx.params.id})
     .then(()=>{
         console.log("Deleted a progress....");
@@ -228,7 +273,7 @@ async destroy(ctx,next){
 async update(ctx,next){
     let {_id}=ctx.request.body;
     var {statusreport}=ctx.request.body;
-    console.log("gotten query:"+statusreport);
+    console.log("got query:"+statusreport);
     await Progress.findOneAndUpdate({_id:_id}, ctx.request.body, { new: true })
     .then((newprogress)=>{
         console.log("Saving new_progress....:"+newprogress);

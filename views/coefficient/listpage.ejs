@@ -131,7 +131,6 @@ background-color: rgb(205, 226, 253);
         <table border="1" class="table table-striped">
             <thead>
             <tr>
-                <th>{{items.item0}}</th>
                 <th>{{items.item1}}</th>
                 <th>{{items.item2}}</th>
                 <th>{{items.item3}}</th>
@@ -141,7 +140,6 @@ background-color: rgb(205, 226, 253);
             <tbody id="coefficientlist">
               <!-- <tr v-for="coefficient of coefficientshow" :key="coefficient._id"> -->
                 <tr v-for="coefficient of coefficientShow" :key="coefficient._id">
-                <td>{{coefficient.a05subactID}}</td>
                 <td>{{coefficient.a10data}}</td>
                 <td>{{coefficient.a15unit}}</td>
                 <td>{{coefficient.a20describe}}</td>

@@ -40,6 +40,15 @@ router.post('/addbyapplicant/:id', async (ctx, next)=> {
 	console.log(ctx.request.body);
 	await caseController.create1(ctx)
 });
+//applicant查詢申請案件
+router.get('/applycase/:id', async (ctx, next)=> {
+  await caseController.applycase(ctx,next)
+});
+
+//到Applicant上傳資料準備
+router.get('/preparedata/:id', async (ctx, next)=> {
+  await caseController.preparedata(ctx,next)
+});
 //依參數id刪除資料
 router.get('/delete/:id', async (ctx, next)=> {
 	await caseController.destroy(ctx)

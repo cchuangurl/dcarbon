@@ -318,12 +318,45 @@ async update(ctx,next){
     await Emissor.findOneAndUpdate({_id:_id}, ctx.request.body, { new: true })
     .then((newemissor)=>{
         console.log("Saving new_emissor....:"+newemissor);
-    statusreport="更新單筆名詞對照後進入本頁";
+    statusreport="更新單筆具體排放源後進入本頁";
     ctx.redirect("/base4dcarbon/emissor/?statusreport="+statusreport)
     })
     .catch((err)=>{
         console.log("Emissor.findOneAndUpdate() failed !!")
         console.log(err)
     })
+},
+//選擇要認領參數
+async move2collect(ctx, next) {
+  console.log("found route /base4dcarbon/emissor/choose !!");
+  var statusreport=ctx.query.statusreport;
+  console.log("got statusreport:"+statusreport);
+  var status=ctx.query.status;
+  console.log("got status:"+status);
+  var emissorID=ctx.query.emissorID;
+  console.log("got emissorID:"+emissorID);
+  var personID=ctx.params.id;
+  if(statusreport===undefined){
+      statusreport="status未傳成功!"
+  }
+  await Emissor.findById({_id:emissorID})
+      .then(async emissorx=>{
+          console.log("Emissorx:"+emissorx);
+          emissorx.a60renew=personID;
+          await Emissor.findOneAndUpdate({_id:emissorID}, emissorx)
+          .then(async (newemissor)=>{
+              console.log("Saving new_emissor....:"+newemissor.a15nickname);
+              statusreport="更新單筆具體排放源後進入本頁";
+              await ctx.redirect("/base4dcarbon/branch/collecter/findemissor/"+personID+"?statusreport="+statusreport)
+          })
+          .catch((err)=>{
+              console.log("Emissor.findOneAndUpdate() failed !!")
+              console.log(err)
+          })
+      })
+      .catch(err=>{
+          console.log("Emissor.findById(emissorID) failed !!");
+          console.log(err)
+      })
 }
 }//EOF export

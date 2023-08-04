@@ -234,5 +234,9 @@ async update(ctx,next){
         console.log("Credit.findOneAndUpdate() failed !!")
         console.log(err)
     })
+},
+//到申請人權包
+async wallet4applicant(ctx,next){
+      console.log("to be construct....")
 }
 }//EOF export

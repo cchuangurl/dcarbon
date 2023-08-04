@@ -3,6 +3,7 @@ const User = require('../models/index').user;
 const Loyalist = require('../models/index').loyalist;
 const Case = require('../models/index').case;
 const Activity = require('../models/index').activity;
+const Emissor = require('../models/index').emissor;
 const Progress = require('../models/index').progress;
 module.exports = {
 //依帳號決定轉頁
@@ -519,7 +520,94 @@ async methodorworkspace(ctx,next){
 },
 //到Collecterweb
 async gocollecter(ctx, next) {
-
+    console.log("進入branch controller的gocollecter");
+    var personID=ctx.params.id;
+    console.log("personID:"+personID);
+    var emissor2setcoeff=new Array();
+    var emissorlist;
+    var loyalist1;
+    await Emissor.find({}).then(async emissors=>{
+      console.log("type of emissors:"+typeof(emissors));
+      console.log("1st emissor:"+emissors[0]);
+      console.log("No. of emissor:"+emissors.length)
+      for(emissorx of emissors){
+          if(emissorx.a60renew==personID){
+          emissor2setcoeff.push(emissorx)
+          }
+      }
+      console.log("No. of emissor2setcoeff:"+emissor2setcoeff.length)
+        emissorlist=encodeURIComponent(JSON.stringify(emissor2setcoeff));
+      console.log("type of emissorlist:"+typeof(emissorlist))
+      })
+      .catch(err=>{
+        console.log("Emissor.find({personID}) failed !!");
+        console.log(err)
+      })
+  statusreport="以參數蒐整士身分進入本頁";
+  await Loyalist.findOne({_id:personID})
+      .then(async loyalistx=>{
+        console.log("type of loyalistx:"+typeof(loyalistx));
+        console.log("loyalistx:"+loyalistx)
+        loyalist1=encodeURIComponent(JSON.stringify(loyalistx));
+        console.log("type of loyalist1:"+typeof(loyalist1));
+        console.log("loyalist1:"+loyalist1)
+        await ctx.render("branch/pwa4collecter" ,{
+          loyalist1,
+          emissorlist,
+          personID,
+          statusreport
+            })
+      })
+      .catch(err=>{
+        console.log("Loyalist.findOne() failed !!");
+        console.log(err)
+      })
+},
+//到collecter的findemissor
+async collecterfindemissor(ctx, next) {
+  console.log("進入branch controller的collecterfindemissor");
+  var personID=ctx.params.id;
+  console.log("personID:"+personID);
+  var emissor2setcoeff=new Array();
+  var emissorlist;
+  var loyalist1;
+  await Emissor.find({a60renew:null}).then(async emissors=>{
+    console.log("type of emissors:"+typeof(emissors));
+    console.log("1st emissor:"+emissors[0]);
+    console.log("No. of emissor:"+emissors.length)
+    /* for(emissorx of emissors){
+        if(emissorx.a60renew==""){
+        emissor2setcoeff.push(emissorx)
+        }
+    }
+    console.log("No. of emissor2setcoeff:"+emissor2setcoeff.length)
+      emissorlist=encodeURIComponent(JSON.stringify(emissor2setcoeff)); */
+      emissorlist=encodeURIComponent(JSON.stringify(emissors));
+    console.log("type of emissorlist:"+typeof(emissorlist))
+    })
+    .catch(err=>{
+      console.log("Emissor.find({''}) failed !!");
+      console.log(err)
+    })
+statusreport="以參數蒐整士身分進入本頁";
+await Loyalist.findOne({_id:personID})
+    .then(async loyalistx=>{
+      console.log("type of loyalistx:"+typeof(loyalistx));
+      console.log("loyalistx:"+loyalistx)
+      loyalist1=encodeURIComponent(JSON.stringify(loyalistx));
+      console.log("type of loyalist1:"+typeof(loyalist1));
+      console.log("loyalist1:"+loyalist1)
+      await ctx.render("branch/collecter/findemissorpage" ,{
+        loyalist1,
+        emissorlist,
+        personID,
+        statusreport
+          })
+    })
+    .catch(err=>{
+      console.log("Loyalist.findOne() failed !!");
+      console.log(err)
+    })
 },
 //到Investigatorweb
 async goinvestigator(ctx, next) {

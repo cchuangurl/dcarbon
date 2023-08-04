@@ -230,5 +230,9 @@ async update(ctx,next){
         console.log("Evidence.findOneAndUpdate() failed !!")
         console.log(err)
     })
+},
+//去拍照後上傳
+async takepicture(ctx,next){
+  console.log("to be construct....")
 }
 }//EOF export

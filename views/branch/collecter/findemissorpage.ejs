@@ -4,11 +4,11 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-<!-- <script src="/javascripts/jquery-3.4.1.js"></script> -->
 <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.4.1/jquery.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 <style type="text/css">
 body {
-background-color: rgb(205, 226, 253);
+background-color: rgb(248, 243, 243);
   height: 100vh;
   width: 100vw;
   position: relative;
@@ -18,144 +18,133 @@ background-color: rgb(205, 226, 253);
      align-items:center;
   	margin: 0;
 }
-.needcolor{
-  color:rgb(72, 188, 5);
-  font-size:large;
-  font-weight:bold;
-  }
-  caption{caption-side: top;font-size:large;}
-.column1{background:lightblue}
-.column2{background:rgb(246, 197, 128)}
-.navbar{background:#cff8c5;}
+#sidearea{
+  background-color: rgb(213, 218, 210);
+  height: 760px;
+  width: 100vw;
+  position: relative;
+  display: flex;
+  flex-direction:column;
+	 justify-content: flex-start;
+     align-items:center
+}
+.sidepart{
+    width: 350px;
+    height:240px;
+    margin-top:10px;
+    border-radius:10px
+}
+#bellcall{
+    background:#f5f5d6
+}
+#messageboard{
+    background:#d6f5de
+}
+#contactpart{
+    background:#d6f5de ;
+    width:100vw;
+    height:100px;
+    align-content: flex-end;
+}
+.contactinfo {
+    margin-left:100px
+}
+.navbar{background:#d6eff5;}
 .nav-link, .navbar-brand{color: #f4f4f4;cursor:pointer;}
 .nav-link{margin-right:1em !important;}
 .nav-link:hover{background: #f4f4f4;color:#f97300;}
 .navbar-collapse{justify-content:flex-end;}
 .navbar-toggler{background:#fff !important;}
-.page-item {
-    margin-right:12px
-}
-.page-item[active=true]{
-    font-weight: bold;
-    text-decoration:underline
-}
+
 </style>
 
-  <title>本案減碳增匯公式編輯區</title>
+  <title參數蒐整士PWA示意版-尚未有排放係數之具體排放源</title>
   </head>
   <body>
     <div id="show_div">
       <bander></bander>
-      <caseinfo></caseinfo>
+
         <div class="row" align="justify">
-        <div class="col-lg-4 col-md-6 col-sm-12">
-          <outputer1></outputer1>
-          </div>
-        <div class="col-lg-8 col-md-6 col-sm-12">
-          <outputer2></outputer2>
+            <div class="col-lg-3 col-md-6 col-sm-12" id="sidearea">
+                <sidebar></sidebar> </div>
+            <div class="col-lg-9 col-md-6 col-sm-12">
+                        <content1></content1> </div>
+                </div>
+            </div>
         </div>
-    </div>
+    <contacter></contacter>
     </div>
 
     <template id="banderUI">
-      <nav class="navbar navbar-expand-lg navbar-light">
-        <a class="navbar-brand" href="/">{{brand}}</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarText">
-          <ul class="navbar-nav mr-auto"><li class="nav-item">
-            <a class="nav-link  active" href="#">{{editformula}}<span class="sr-only">(current)</span></a>
-          </li>
-          <li class="nav-item">
-              <a class="nav-link" :href="workspaceurl">{{workspacepage}}</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" :href="methodorurl">{{methodorpage}}</a>
-            </li>
-          </ul>
-          <span class="navbar-text">
-            <font size="2">{{statusreport}}</font>
-          </span>
-        </div>
-      </nav>
+        <nav class="navbar navbar-expand-lg navbar-light">
+            <div class="row">
+              <div class="col-lg col-sm-6">
+                <a class="navbar-brand" href="/">{{brand}}</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+                </button>
+            </div>
+            <div class="collapse navbar-collapse" id="navbarText">
+            <ul class="navbar-nav mr-auto">
+
+                <div class="col-lg col-sm-6">
+                  <li class="nav-item">
+                    <div class="dropdown">
+                        <button
+                            class="btn btn-secondary dropdown-toggle"
+                            type="button"
+                            id="dropdownMenuButton"
+                            data-toggle="dropdown">
+                            {{pwa4collecter}}
+                        </button>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" :href="collecterurl">{{pwa4collecter}}</a>
+                        </div>
+                    </div>
+                </li>
+                </div>
+                <div class="col-lg col-sm-6">
+                  <li class="nav-item">
+                    <a class="nav-link active" href="#">{{findemissor}}<span class="sr-only">(current)</span></a>
+                    </li>
+                    </div>
+                <div class="col-lg col-sm-6">
+                    <li class="nav-item">
+                        <div class="dropdown">
+                            <button
+                                class="btn btn-secondary dropdown-toggle"
+                                type="button"
+                                id="dropdownMenuButton"
+                                data-toggle="dropdown">
+                                {{awardmanage}}
+                            </button>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" :href="awardentryurl">{{awardentry}}</a>
+                              <a class="dropdown-item" :href="awardtradeurl">{{awardtrade}}</a>
+                          </div>
+                        </div>
+                    </li>
+                </div>
+            <div class="col-lg col-sm-6">
+                <span class="navbar-text">
+                    <font size="2">{{statusreport}}</font>
+                </span>
+            </div>
+            <div class="col"></div>
+            <div class="col-lg col-sm-6">
+                <span class="navbar-text">
+                    <font size="2">親愛的{{loyalist}}</font>
+                </span>
+            </div>
+            </div>
+
+            </div>
+        </nav>
     </template>
 
-<template id="caseinfoUI">
-  <nav aria-label="...">
-    <div id="activity_info">
-      {{items1.item2}}:<span class="needcolor">{{theactivity.a15nickname}}</span><br>
-      {{items1.item3}}:<span class="needcolor">{{theactivity.a20describe}}</span><br>
-    </div>
-    <div id="case_info">
-      {{items2.item2}}:<span class="needcolor">{{thecase.a15casename}}</span><br>
-      {{items2.item5}}:<span class="needcolor">{{thecase.a30caseunit}}</span><br>
-      {{items2.item6}}:<span class="needcolor">{{thecase.a35scale}}</span>
-    </div>
-  </nav>
-</template>
-
-    <template id="outputer1UI">
+    <template id="content1UI">
         <nav aria-label="...">
-          <table border="1" class="table table-striped">
-            <caption>減碳(或增匯)活動之細部活動及其與基線差異:</caption>
-              <thead>
-              <tr>
-                  <th>{{items3.item1}}</th>
-                  <th class="column1">{{items3.item2}}</th>
-                  <th class="column2">{{items3.item3}}</th>
-                <!-- <th>特別註記</th> -->
-              </tr>
-              </thead>
-              <tbody id="subactlist">
-                  <tr v-for="subact of subactlist" :key="subact._id">
-                  <td>{{subact.a15nickname}}</td>
-                  <td class="column1">{{subact.a20describe}}</td>
-                  <td class="column2">{{subact.a99footnote}}</td>
-                  </tr>
-              </tbody>
-          </table>
-      </nav>
-      </template>
-
-
-        <template id="outputer2UI">
-          <nav aria-label="...">
-            <table>
-              <tr>
-              <td>
-              <form  :action="inputpageurl" method="get" >
-              <input type="hidden" name="statusreport" class="form-control" id="msg1" value="由單筆手動新增按鈕進來">
-              <input type="hidden" name="status" class="form-control" id="msg2" value="5">
-              <input type="hidden" name="caseID" class="form-control" id="msg3" :value="caseID">
-              <input type="submit" value="單筆手動新增">
-              </form>
-              </td>
-              <td>
-                <form  :action="inputbatchurl" method="get" >
-               資料主檔名：<input type="text" name="datafile" required>
-               <input type="hidden" name="statusreport" class="form-control" id="msg1" value="由批次新增進入本頁">
-               <input type="hidden" name="status" class="form-control" id="msg2" value="5">
-               <input type="hidden" name="caseID" class="form-control" id="msg3" :value="caseID">
-               <input type="submit" value="批次新增">
-               </form>
-               </td>
-
-              <td>
-              （/public目錄下.csv檔）
-              </td>
-              <td>
-                <form  :action="showformulaurl" method="get" >
-               <input type="hidden" name="statusreport" class="form-control" id="msg1" value="由公式編輯頁進入本頁">
-               <input type="hidden" name="status" class="form-control" id="msg2" value="5">
-               <input type="hidden" name="caseID" class="form-control" id="msg3" :value="caseID">
-               <input type="submit" value="檢視公式" class="btn btn-info">
-               </form>
-               </td>
-              </tr>
-              </table>
-
-            <table>
+          <table>
             <tr class="pagination">
               <td class="page-item" v-show="firstPage" @click="goFirstPage()">回第1頁</td>
               <td class="page-item" v-show="previousRound" @click="goPreviousRound()">上{{perRound}}頁</td>
@@ -184,26 +173,23 @@ background-color: rgb(205, 226, 253);
               <thead>
               <tr>
                   <th>{{items.item2}}</th>
-                  <th>{{items.item4}}</th>
+                  <th>{{items.item3}}</th>
                   <th>{{items.item5}}</th>
-                  <th>{{items.item6}}</th>
                 <!-- <th>特別註記</th> -->
               </tr>
               </thead>
               <tbody id="emissorlist">
-                <!-- <tr v-for="emissor of emissorshow" :key="emissor._id"> -->
                   <tr v-for="emissor of emissorShow" :key="emissor._id">
                   <td>{{emissor.a15nickname}}</td>
-                  <td>{{emissor.a25emittype}}</td>
+                  <td>{{emissor.a20describe}}</td>
                   <td>{{emissor.a30emissorunit}}</td>
-                  <td>{{emissor.a35coeffunit}}</td>
                   <!-- statusreport="由已擷取資料組清單頁進入本頁"> -->
 
                     <td>
-                      <input type="submit" value="檢視或編輯" @click="editone(emissor._id)">
+                      <input type="submit" value="檢視排放源" @click="viewone(emissor._id)">
                     </td>
                     <td>
-                      <input type="submit" value="刪除" @click="deleteone(emissor._id)">
+                      <input type="submit" value="認領係數查找" @click="move2collect(emissor._id)">
                     </td>
                   </tr>
               </tbody>
@@ -229,142 +215,108 @@ background-color: rgb(205, 226, 253);
               </tr>
               </table>
         </nav>
-        </template>
+    </template>
+    <template id="sidebarUI">
+        <nav aria-label="...">
+            <div class="sidepart" id="callbell">
+                {{promote}}
 
-  <!-- Vue CDN-->
-  <script src="https://unpkg.com/vue@2.6.14/dist/vue.js"></script>
-  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+            </div>
+        </nav>
+    </template>
+
+    <template id="contacterUI">
+        <nav aria-label="...">
+            <div id="contactpart">
+
+        </div>
+        </nav>
+    </template>
+
+<!-- Vue CDN-->
+<script src="https://unpkg.com/vue@2.6.14/dist/vue.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script src="https://cdn.bootcss.com/qs/6.5.1/qs.min.js"></script>
-  <script>
-  Vue.component("bander",{
-      props:{},
-      data(){
-        return {
-          brand:"dCarbon",
-          workspacepage:"回方法建構作業區",
-          methodorpage:"回方法建構士首頁",
-          workspaceurl:"",
-          methodorurl:"",
-          editformula:"編輯碳權計算公式",
-          statusreport:'<%- statusreport %>',
-          caseID:'<%- caseID %>',
-          personID:'<%- personID %>',
-          previousurl:"",
-          outcomeurl:""
-        }
-      },
-      mounted:function(){
-        let basepath="/base4dcarbon/branch";
-        let querytext="?statusreport=由基線資料管理頁回到本頁&status=5&caseID"+this.caseID;
-        this.workspaceurl=basepath+"/methodor/workspace/"+this.personID+querytext;
-        this.methodorurl=basepath+"/pwa4methodor"+this.personID+querytext;
-      },
-      methods:{
-
-      },
-      template:"#banderUI"
-    });
-    Vue.component("caseinfo",{
-      props:{},
-      data(){
-        return {
-          thecase:JSON.parse(decodeURIComponent('<%=thecase%>')),
-          theactivity:JSON.parse(decodeURIComponent('<%=theactivity%>')),
-          items1:{
-              item:"本減碳活動代碼",
-              item0:"對應之產品代碼",
-              item1:"活動類型",
-              item2:"活動名稱",
-              item3:"本活動描述",
-              item99:"特別註記"
-            },
-            names1:{
-              name0:"a05productID",
-              name1:"a10type",
-              name2:"a15nickname",
-              name3:"a20describe"
-            },
-            items2:{
-              item:"本申請案代碼",
-              item0:"申請人代碼",
-              item1:"申請活動代碼",
-              item2:"申請案場名稱",
-              item3:"申請案場地址",
-              item4:"申請案場中心點GPS",
-              item5:"申請案規模計算單位",
-              item6:"申請案規模數值",
-              item7:"申請案查證人ID列舉",
-              item8:"申請案是否通過",
-              item9:"申請案獲得之碳權噸數",
-              item99:"特別註記"
-            }
-        }
-      },
-
-      methods:{
-
-      },
-      template:"#caseinfoUI"
-    });
-    Vue.component("outputer1",{
-      props:{},
-      data(){
-        return{
-          caseID:'<%- caseID %>',
-          personID:'<%- personID %>',
-          subactlist:JSON.parse(decodeURIComponent('<%=subactlist%>')),
-          termlist:JSON.parse(decodeURIComponent('<%=termlist%>')),
-          nicknames1:[],
-            items3:{
-              item0:"對應之活動代碼",
-              item1:"細部活動階段",
-              item2:"基線細部活動描述",
-              item3:"減碳細部活動描述",
-              item4:"細部活動順序",
-              item5:"活動分解士ID",
-              item99:"特別註記"
-                },
-              }
-      },
-      mounted:function(){
-        for(term of this.termlist){
-            if(term.a15model="subact"&&term.a20field=="a15nickname"){
-                this.nicknames1.push(term)
-            }
-        }
-        for(subact of this.subactlist){
-            if(subact.a10type=="baseline"){
-              let temp=this.nicknames1.find(obj=>obj.a25code==subact.a15nickname)
-              //console.log("a15nickname:"+subact.a15nickname);
-              //console.log("temp.a30mean:"+temp.a30mean)
-              subact.a15nickname=temp.a30mean;
-              subact.a99footnote="(同左)";
-              //console.log("a15nickname:"+subact.a15nickname);
-              //console.log("a99footnote:"+subact.a99footnote)
-              }else{
-                let index1=this.subactlist.findIndex(obj=>obj.a10type=="baseline"&&obj.a25order==subact.a25order);
-                this.subactlist[index1].a99footnote=subact.a20describe
-                console.log("the "+index1+" subact.a99footnote:"+this.subactlist[index1].a99footnote)
-              }
-              }
-                while(this.subactlist.findIndex(obj=>obj.a10type!="baseline")>=0){
-                  let index2=this.subactlist.findIndex(obj=>obj.a10type!="baseline");
-                  console.log("index2:"+index2);
-                  this.subactlist.splice(index2,1)
-                  console.log("length of subactlist: "+this.subactlist.length)
-                 }
-        this.subactlist.sort((a,b)=>{
-            return parseFloat(a.a25order)-parseFloat(b.a25order)
-        })
-      },
-      methods:{
-
-      },
-    template:"#outputer1UI"
-  });
-  Vue.component("outputer2",{
+<script>
+Vue.component("bander",{
     props:{},
-      data(){
+    data(){
+      return {
+        brand:"dCarbon",
+        pwa4collecter:"參數蒐整士首頁",
+        findemissor:"尋找尚未處理中參(係)數",
+        awardmanage:"公評點數管理",
+        awardentry:"公評點數收支",
+        awardtrade:"公評點數移轉",
+        loyalist1:JSON.parse(decodeURIComponent('<%= loyalist1 %>')),
+        personID:'<%- personID %>',
+        collecterurl:"",
+        findemissorurl:"",
+        awardmanageurl:"",
+        awardentryurl:"",
+        awardtradeurl:"",
+        loyalist:"",
+        statusreport:'<%- statusreport %>'
+      }
+    },
+    mounted:function(){
+        let basepath="/base4dcarbon/branch";
+        this.loyalist=this.loyalist1.a05lastname+this.loyalist1.a10firstname;
+        this.collecterurl=basepath+"/pwa4collecter/"+this.personID;
+        this.findemissorurl=basepath+"/collecter/findemissor/"+this.personID;
+        this.awardmanageurl=basepath+"/collecter/awardmanage/"+this.personID;
+        this.awardentryurl=basepath+"/collecter/awardentry"+this.personID;
+        this.awardtradeurl=basepath+"/collecter/awardtrade/"+this.personID
+    },
+    methods:{
+
+    },
+    template:"#banderUI"
+  });
+  Vue.component("sidebar",{
+    props:{},
+    data(){
+      return{
+        promote:"淨零救地球！歡迎協助公評碳權認驗證!!",
+        ipofvisitor:"",
+      inputerUIkey:0
+      }
+    },
+    mounted: async function(){
+        const API_URL = 'https://api.ipify.org?format=json';
+
+        // 取得 IP 位址
+        const response = await axios.get(API_URL);
+        this.ipofvisitor= response.data.ip
+
+    },
+    methods:{
+      viewone:function(id){
+          window.location=url2;
+        },
+      setmethod:function(id){
+        window.location=url2;
+      },
+    },
+    template:"#sidebarUI"
+  });
+  Vue.component("contacter",{
+    props:{},
+    data(){
+      return {
+        address:"臺北市",
+        tel:"02-29293551",
+        email:"service@dcarbon.org"
+      }
+    },
+    methods:{
+
+    },
+    template:"#contacterUI"
+    });
+  Vue.component("content1",{
+    props:{},
+    data(){
         return{
           perPage:8,
           perRound:10,
@@ -388,11 +340,8 @@ background-color: rgb(205, 226, 253);
           emissorShow:[],
           statusreport:'<%- statusreport %>',
           personID:'<%- personID %>',
-          caseID:'<%- caseID %>',
-          inputpageurl:"",
-          inputbatchurl:"",
-          showformulaurl:"",
-          emissorlist:JSON.parse(decodeURIComponent('<%=emissorlist%>')),
+          emissorlist:JSON.parse(decodeURIComponent('<%= emissorlist %>')),
+          loyalist1:JSON.parse(decodeURIComponent('<%= loyalist1 %>')),
         items:{
           item0:"對應之細部活動代碼",
           item1:"對應之投入項目代碼",
@@ -411,10 +360,6 @@ background-color: rgb(205, 226, 253);
         }
       },
       mounted:function(){
-        this.inputpageurl="/base4dcarbon/emissor/inputpage/"+this.personID;
-        this.inputbatchurl="/base4dcarbon/emissor/inputbatch/"+this.personID;
-        this.showformulaurl="/base4dcarbon/method/showformula/"+this.personID;
-
         this.maxRow=this.emissorlist.length;
         this.modRow=this.maxRow%this.perPage;
         this.maxPage=this.modRow==0?this.maxRow/this.perPage:Math.floor(this.maxRow/this.perPage)+1;
@@ -424,18 +369,18 @@ background-color: rgb(205, 226, 253);
 
       },
       methods:{
-        editone:function(id){
-          let querytext="?statusreport=由emissor資料清單頁的編輯按鈕進入本頁&caseID="+this.caseID+"&emissorID="+id;
-          let url2='/base4dcarbon/emissor/editpage/'+this.personID+querytext;
-          window.location=url2;
+        viewone:function(id){
+          let querytext="?statusreport=由處理中參數清單頁的檢視按鈕進入本頁&status=8&emissorID="+id;
+          let url8='/base4dcarbon/emissor/viewpage/'+this.personID+querytext;
+          window.location=url8;
         },
-        deleteone:function(id){
-          let querytext="?statusreport=由emissor資料清單頁的刪除按鈕進入本頁&caseID="+this.caseID+"&emissorID="+id;
-          let url3='/base4dcarbon/emissor/delete/'+id+querytext;
-          window.location=url3
+        move2collect:function(id){
+          let querytext="?statusreport=由尚無係數清單頁的認領鈕進入本頁&status=8&emissorID="+id;
+          let url8='/base4dcarbon/emissor/chooseemissor/'+this.personID+querytext;
+          window.location=url8
            },
 
-        getShowData:function(index){
+          getShowData:function(index){
           this.currentIndex=index;
           this.activeIndex.splice(0);
           this.pageIndex.splice(0);
@@ -459,10 +404,8 @@ background-color: rgb(205, 226, 253);
           console.log("rowNo is:"+rowNo);
           //this.emissorShow=[];
           this.emissorShow=this.emissorlist.slice(startRow,startRow+rowNo)
-          //this.emissorShow=this.emissorlist.slice(8,3)
           console.log("11st emissorlist:"+this.emissorlist[10])
           console.log("1st emissorShow:"+this.emissorShow[0])
-
         },
         goFirstPage:function(){
           this.currentRound=1;
@@ -515,7 +458,21 @@ background-color: rgb(205, 226, 253);
           }
         }
       },
-    template:"#outputer2UI"
+    template:"#content1UI"
+  });
+  Vue.component("content2",{
+    props:{},
+    data(){
+      return{
+      }
+    },
+    computed:{
+
+    },
+    methods:{
+
+    },
+    template:"#content2UI"
   });
     new Vue({
         el:'#show_div',

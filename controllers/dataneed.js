@@ -180,9 +180,10 @@ async batchinput(ctx, next){
         input: fs.createReadStream(filepath+datafile+'.csv')
     });
     var lineno=0;
+    var columnno=7;
     var dataneedArray;
-    var tempstore=new Array(6);
-    for (let i=0;i<6;i++){
+    var tempstore=new Array(columnno);
+    for (let i=0;i<columnno;i++){
         tempstore[i]=new Array();
     };
     let readfile=(()=>{
@@ -191,7 +192,7 @@ async batchinput(ctx, next){
     //當讀入一行資料時
     lineReader.on('line', function(data) {
         var values = data.split(',');
-        for (let i=0;i<6;i++){
+        for (let i=0;i<columnno;i++){
             tempstore[i][lineno]=values[i].trim();
         }
         lineno++;
@@ -215,8 +216,8 @@ async batchinput(ctx, next){
                 })
         });//EOF saveone
         for (let k=0;k<lineno;k++){
-            dataneedArray[k]=new Array(6);
-            for (let m=0;m<6;m++){
+            dataneedArray[k]=new Array(columnno);
+            for (let m=0;m<columnno;m++){
                 dataneedArray[k][m]=tempstore[m][k]
                 //console.log(dataneedArray[k])
             }
@@ -233,7 +234,8 @@ async batchinput(ctx, next){
                   a15timing:dataneedj[2],
                   a20dataname:dataneedj[3],
                   a25describe:dataneedj[4],
-                  a99footnote:dataneedj[5]
+                  a30check:dataneedj[5],
+                  a99footnote:dataneedj[6]
 
                 });//EOF new dataneed
                     saveone(new_dataneed)

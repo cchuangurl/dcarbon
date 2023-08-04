@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+<!-- <script src="/javascripts/jquery-3.4.1.js"></script> -->
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.4.1/jquery.js"></script>
+<style type="text/css">
+body {
+background-color: rgb(205, 226, 253);
+  height: 100vh;
+  width: 100vw;
+  position: relative;
+  display: flex;
+  flex-direction:column;
+	 justify-content: flex-start;
+     align-items:center;
+  	margin: 0;
+}
+#mobilephone{
+  background-color: rgb(249, 252, 247);
+  height: 820px;
+  width: 600px;
+  border-width:medium;
+  border-style:solid;
+  border-color:blue;
+  position: relative;
+  display: flex;
+  flex-direction:column;
+	 justify-content: flex-start;
+     align-items:center;
+  	margin: 20PX;
+    border-radius:25px
+}
+#phonescreen{
+  background-color: rgb(240, 248, 234);
+  height: 700px;
+  width: 540px;
+  position: relative;
+  display: flex;
+  flex-direction:column;
+	 justify-content: flex-start;
+     align-items:center;
+  margin-top: 100px;
+  margin-left:10px;
+}
+caption{caption-side: top;font-size:large;}
+.navbar{background:#cff8c5;}
+.nav-link, .navbar-brand{color: #f4f4f4;cursor:pointer;}
+.nav-link{margin-right:1em !important;}
+.nav-link:hover{background: #f4f4f4;color:#f97300;}
+.navbar-collapse{justify-content:flex-end;}
+.navbar-toggler{background:#fff !important;}
+.page-item {
+    margin-right:12px
+}
+.page-item[active=true]{
+    font-weight: bold;
+    text-decoration:underline
+}
+</style>
+
+  <title>特定申請案驗證進度查詢</title>
+  </head>
+  <body>
+    <div id="show_div">
+        <outputer></outputer>
+    </div>
+
+    <template id="outputerUI">
+        <nav aria-label="...">
+          <div id="mobilephone">
+          <div id="phonescreen">
+        <table border="1" class="table table-striped">
+          <caption>申請案處理進度</caption>
+            <thead>
+            <tr>
+                <th>{{items.item1}}</th>
+                <th>{{items.item2}}</th>
+              <!-- <th>特別註記</th> -->
+            </tr>
+            </thead>
+            <tbody id="progresslist">
+              <!-- <tr v-for="progress of progressshow" :key="progress._id"> -->
+                <tr v-for="progress of progresslist" :key="progress._id">
+                <td>{{progress.a10stage}}</td>
+                <td>{{progress.a15when}}</td>
+                <!-- statusreport="由已擷取資料組清單頁進入本頁"> -->
+
+                  <td>
+                    <input type="submit" value="檢視" @click="editone(progress._id)">
+                  </td>
+                  <td>
+                    <input type="submit" value="需配合事項" @click="cowork(progress._id)">
+                  </td>
+                </tr>
+            </tbody>
+        </table>
+        </div>
+          </div>
+      </nav>
+      </template>
+
+      <template id="outputerUI">
+
+      </template>
+
+  <!-- Vue CDN-->
+  <script src="https://unpkg.com/vue@2.6.14/dist/vue.js"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="https://cdn.bootcss.com/qs/6.5.1/qs.min.js"></script>
+  <script>
+    Vue.component("outputer",{
+      props:{},
+      data(){
+        return{
+          statusreport:'<%- JSON.stringify(statusreport) %>',
+          personID:'<%- personID %>',
+          caseID:'<%- caseID %>',
+          termlist:JSON.parse(decodeURIComponent('<%=termlist%>')),
+          progresslist:JSON.parse(decodeURIComponent('<%=progresslist%>')),
+        items:{
+          item0:"申請案代碼",
+          item1:"進度名稱",
+          item2:"進度時間",
+          item99:"特別註記"
+            }
+        }
+      },
+      mounted:function(){
+        for(progress of this.progresslist){
+              let temp=this.termlist.find(obj=>obj.a25code==progress.a10stage)
+              progress.a10stage=temp.a30mean;
+              }
+        this.progresslist.sort((a,b)=>{
+            return a.a15when-b.a15when
+        })
+      },
+      methods:{
+        editone:function(id){
+          let querytext="?statusreport=由progress查詢結果頁的檢視按鈕進入本頁";
+          let url2='/base4dcarbon/progress/editpage/'+this.personID+querytext;
+          window.location=url2;
+        },
+        cowork:function(id){
+          let querytext="?statusreport=由progress查詢結果頁的需配合事項按鈕進入本頁&caseID="+this.caseID;
+          let url3='/base4dcarbon/case/cowork/'+this.person+querytext;
+          window.location=url3
+           },
+
+      },
+    template:"#outputerUI"
+  });
+    new Vue({
+        el:'#show_div',
+        data:{
+          testdata:'有執行到此。。。。'
+        },
+        /* computed:{
+
+        },
+        watch:{
+
+        },
+        filters:{
+
+        },
+        mixins:[
+
+        ],
+        template:" ",
+
+        components:{
+          "bander":bander,
+          "outputer":outputer,
+          "inputer":inputer
+        },*/
+        beforeCreate:function(){
+          console.log("before create...")
+        },created:function(){
+          console.log("created...")
+        },
+        beforeMount:function(){
+          console.log("before mount...")
+        },
+        mounted:function(){
+          console.log("mounted...")
+        },
+        beforeUpdate:function(){
+          console.log("before update...")
+        },
+        updated:function(){
+          console.log("updated...")
+        },
+        beforeDestroy:function(){
+
+        }
+    })
+</script>
+
+
+  </body>
+</html>

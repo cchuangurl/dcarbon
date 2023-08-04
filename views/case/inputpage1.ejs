@@ -31,6 +31,18 @@ body {
   	margin: 20PX;
     border-radius:25px
 }
+#phonescreen{
+  background-color: rgb(240, 248, 234);
+  height: 700px;
+  width: 540px;
+  position: relative;
+  display: flex;
+  flex-direction:column;
+	 justify-content: flex-start;
+     align-items:center;
+  margin-top: 100px;
+  margin-left:10px;
+}
 .navbar{background:#ddedf8;}
 .nav-link, .navbar-brand{color: #f4f4f4;cursor:pointer;}
 .nav-link{margin-right:1em !important;}
@@ -55,6 +67,7 @@ body {
 
     <template id="inputerUI" ">
     <div id="mobilephone">
+    <div id="phonescreen">
       <div class="card" style="width: 36rem;" >
         <div class="card-body">
           <h5 class="card-title">{{card_title}}</h5>
@@ -96,6 +109,7 @@ body {
             <!-- <a href="#" class="card-link">Card link</a>
             <a href="#" class="card-link">Another link</a> -->
         </div>
+      </div>
       </div>
       </div>
     </template>

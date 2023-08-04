@@ -47,6 +47,10 @@ router.get('/formula/:id', async (ctx, next)=> {
 router.get('/showformula/:id', async (ctx, next)=> {
 	await methodController.showformula(ctx)
 });
+//確認公式更新進度
+router.get('/doneformula/:id', async (ctx, next)=> {
+	await methodController.doneformula(ctx)
+});
 //到測試片段程式頁
 router.get('/codetest', async (ctx, next)=> {
     var {statusreport}=ctx.request.body;

@@ -9,6 +9,10 @@ router.get('/:id', async (ctx, next)=> {
 router.get('/inputpage/:id', async (ctx, next)=> {
     await coefficientController.inputpage(ctx,next)
 });
+//到新增係數頁
+router.get('/inputcoeff/:id', async (ctx, next)=> {
+  await coefficientController.inputpage(ctx,next)
+});
 //到修正單筆資料頁
 router.get('/editpage/:id', async (ctx, next)=> {
     console.log("get id:"+ctx.params.id)
@@ -27,7 +31,7 @@ router.get('/find/:no', async(ctx, next)=> {
 	await coefficientController.findByNo(ctx)
 });
 //寫入一筆資料
-router.post('/add', async (ctx, next)=> {
+router.post('/add/:id', async (ctx, next)=> {
 	console.log(ctx.request.body);
 	await coefficientController.create(ctx)
 });

@@ -39,6 +39,10 @@ router.get('/delete/:id', async (ctx, next)=> {
 router.post('/update', async (ctx, next)=> {
 	await creditController.update(ctx)
 });
+//到申請人的權包
+router.get('/applicant/:id', async (ctx, next)=> {
+	await creditController.wallet4applicant(ctx)
+});
 //到測試片段程式頁
 router.get('/codetest', async (ctx, next)=> {
     var {statusreport}=ctx.request.body;
