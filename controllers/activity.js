@@ -150,7 +150,7 @@ async create(ctx,next){
 async create1(ctx,next){
   var new_activity = new Activity(ctx.request.body);
   var {status}=ctx.request.body;
-  var {statusreport}=ctx.request.brtody;
+  var {statusreport}=ctx.request.body;
   console.log("statusreoprt:"+statusreoprt);
   var personID=ctx.params.id;
   var activityID, nickname;

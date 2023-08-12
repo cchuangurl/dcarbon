@@ -39,9 +39,13 @@ router.get('/delete/:id', async (ctx, next)=> {
 router.post('/update', async (ctx, next)=> {
 	await evidenceController.update(ctx)
 });
-//去上傳既有資料檔
+//去上傳既有資料檔頁
 router.get('/upload/:id', async (ctx, next)=> {
   await evidenceController.uploadpage(ctx,next)
+});
+//去上傳既有資料檔頁
+router.get('/uploadfile/:id', async (ctx, next)=> {
+  await evidenceController.uploadfile(ctx,next)
 });
 //去拍照及上傳頁
 router.get('/photo/:id', async (ctx, next)=> {

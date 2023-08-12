@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.4.1/jquery.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+<style type="text/css">
+body {
+background-color: rgb(248, 243, 243);
+  height: 100vh;
+  width: 100vw;
+  position: relative;
+  display: flex;
+  flex-direction:column;
+	 justify-content: flex-start;
+     align-items:center;
+  	margin: 0;
+}
+#sidearea{
+  background-color: rgb(213, 218, 210);
+  height: 760px;
+  width: 100vw;
+  position: relative;
+  display: flex;
+  flex-direction:column;
+	 justify-content: flex-start;
+     align-items:center
+}
+.sidepart{
+    width: 350px;
+    height:240px;
+    margin-top:10px;
+    border-radius:10px
+}
+#bellcall{
+    background:#f5f5d6
+}
+#messageboard{
+    background:#d6f5de
+}
+#contactpart{
+    background:#d6f5de ;
+    width:100vw;
+    height:100px;
+    align-content: flex-end;
+}
+.contactinfo {
+    margin-left:100px
+}
+.navbar{background:#d6eff5;}
+.nav-link, .navbar-brand{color: #f4f4f4;cursor:pointer;}
+.nav-link{margin-right:1em !important;}
+.nav-link:hover{background: #f4f4f4;color:#f97300;}
+.navbar-collapse{justify-content:flex-end;}
+.navbar-toggler{background:#fff !important;}
+
+</style>
+
+  <title>驗證查驗士PWA示意版-尋找待驗證查驗之案子</title>
+  </head>
+  <body>
+    <div id="show_div">
+      <bander></bander>
+
+        <div class="row" align="justify">
+            <div class="col-lg-3 col-md-6 col-sm-12" id="sidearea">
+                <sidebar></sidebar> </div>
+            <div class="col-lg-9 col-md-6 col-sm-12">
+                        <content1></content1> </div>
+                </div>
+            </div>
+        </div>
+    <contacter></contacter>
+    </div>
+
+    <template id="banderUI">
+        <nav class="navbar navbar-expand-lg navbar-light">
+            <div class="row">
+              <div class="col-lg col-sm-6">
+                <a class="navbar-brand" href="/">{{brand}}</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+                </button>
+            </div>
+            <div class="collapse navbar-collapse" id="navbarText">
+            <ul class="navbar-nav mr-auto">
+                <div class="col-lg col-sm-6">
+                  <li class="nav-item">
+                    <div class="dropdown">
+                        <button
+                            class="btn btn-secondary dropdown-toggle"
+                            type="button"
+                            id="dropdownMenuButton"
+                            data-toggle="dropdown">
+                            {{listcase}}
+                        </button>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" :href="listcaseurl">{{listcase}}</a>
+                        </div>
+                    </div>
+                </li>
+                </div>
+                <div class="col-lg col-sm-6">
+                  <li class="nav-item">
+                    <a class="nav-link active" href="#">{{findcase}}<span class="sr-only">(current)</span></a>
+                    </li>
+                    </div>
+                <div class="col-lg col-sm-6">
+                    <li class="nav-item">
+                        <div class="dropdown">
+                            <button
+                                class="btn btn-secondary dropdown-toggle"
+                                type="button"
+                                id="dropdownMenuButton"
+                                data-toggle="dropdown">
+                                {{awardmanage}}
+                            </button>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" :href="awardentryurl">{{awardentry}}</a>
+                              <a class="dropdown-item" :href="awardtradeurl">{{awardtrade}}</a>
+                          </div>
+                        </div>
+                    </li>
+                </div>
+            <div class="col-lg col-sm-6">
+                <span class="navbar-text">
+                    <font size="2">{{statusreport}}</font>
+                </span>
+            </div>
+            <div class="col"></div>
+            <div class="col-lg col-sm-6">
+                <span class="navbar-text">
+                    <font size="2">親愛的{{loyalist}}</font>
+                </span>
+            </div>
+            </div>
+
+            </div>
+        </nav>
+    </template>
+
+    <template id="content1UI">
+        <nav aria-label="...">
+          <table>
+            <tr class="pagination">
+              <td class="page-item" v-show="firstPage" @click="goFirstPage()">回第1頁</td>
+              <td class="page-item" v-show="previousRound" @click="goPreviousRound()">上{{perRound}}頁</td>
+              <div class="page index"  >
+                  <!--  未來可精進的寫法
+                      <li class="page-item" v-for="page in 10">
+                          <a class="page-link" href>{{page}}></a>
+                      </li>
+                  -->
+              <td class="page-item" :active="activeIndex[0]" v-show="showIndex[0]" @click="getShowData(0)">{{pageIndex[0]}}</td>
+              <td class="page-item" :active="activeIndex[1]" v-show="showIndex[1]" @click="getShowData(1)">{{pageIndex[1]}}</td>
+              <td class="page-item" :active="activeIndex[2]" v-show="showIndex[2]" @click="getShowData(2)">{{pageIndex[2]}}</td>
+              <td class="page-item" :active="activeIndex[3]" v-show="showIndex[3]" @click="getShowData(3)">{{pageIndex[3]}}</td>
+              <td class="page-item" :active="activeIndex[4]" v-show="showIndex[4]" @click="getShowData(4)">{{pageIndex[4]}}</td>
+              <td class="page-item" :active="activeIndex[5]" v-show="showIndex[5]" @click="getShowData(5)">{{pageIndex[5]}}</td>
+              <td class="page-item" :active="activeIndex[6]" v-show="showIndex[6]" @click="getShowData(6)">{{pageIndex[6]}}</td>
+              <td class="page-item" :active="activeIndex[7]" v-show="showIndex[7]" @click="getShowData(7)">{{pageIndex[7]}}</td>
+              <td class="page-item" :active="activeIndex[8]" v-show="showIndex[8]" @click="getShowData(8)">{{pageIndex[8]}}</td>
+              <td class="page-item" :active="activeIndex[9]" v-show="showIndex[9]" @click="getShowData(9)">{{pageIndex[9]}}</td>
+          </div>
+              <td class="page-item" v-show="nextRound" @click="goNextRound()">下{{perRound}}頁</td>
+              <td class="page-item" v-show="endPage" @click="goEndPage()">到最末頁</td>
+            </tr>
+            </table>
+          <table border="1" class="table table-striped">
+              <thead>
+              <tr>
+                  <th>{{items.item2}}</th>
+                  <th>{{items.item3}}</th>
+                  <th>{{items.item5}}</th>
+                  <th>{{items.item6}}</th>
+                <!-- <th>特別註記</th> -->
+              </tr>
+              </thead>
+              <tbody id="caselist">
+                  <tr v-for="casex of caseShow" :key="casex._id">
+                  <td>{{casex.a15casename}}</td>
+                  <td>{{casex.a20caseaddress}}</td>
+                  <td>{{casex.a30caseunit}}</td>
+                  <td>{{casex.a35scale}}</td>
+                  <!-- statusreport="由已擷取資料組清單頁進入本頁"> -->
+
+                    <td>
+                      <input type="submit" value="檢視申請資料" @click="viewone(casex._id)">
+                    </td>
+                    <td>
+                      <input type="submit" value="認領本案之驗證查驗" @click="choose(casex._id)">
+                    </td>
+                  </tr>
+              </tbody>
+          </table>
+          <table>
+              <tr class="pagination">
+                <td class="page-item" v-show="firstPage" @click="goFirstPage()">回第1頁</td>
+                <td class="page-item" v-show="previousRound" @click="goPreviousRound()">上{{perRound}}頁</td>
+                <div class="page index"  >
+                <td class="page-item" :active="activeIndex[0]" v-show="showIndex[0]" @click="getShowData(0)">{{pageIndex[0]}}</td>
+                <td class="page-item" :active="activeIndex[1]" v-show="showIndex[1]" @click="getShowData(1)">{{pageIndex[1]}}</td>
+                <td class="page-item" :active="activeIndex[2]" v-show="showIndex[2]" @click="getShowData(2)">{{pageIndex[2]}}</td>
+                <td class="page-item" :active="activeIndex[3]" v-show="showIndex[3]" @click="getShowData(3)">{{pageIndex[3]}}</td>
+                <td class="page-item" :active="activeIndex[4]" v-show="showIndex[4]" @click="getShowData(4)">{{pageIndex[4]}}</td>
+                <td class="page-item" :active="activeIndex[5]" v-show="showIndex[5]" @click="getShowData(5)">{{pageIndex[5]}}</td>
+                <td class="page-item" :active="activeIndex[6]" v-show="showIndex[6]" @click="getShowData(6)">{{pageIndex[6]}}</td>
+                <td class="page-item" :active="activeIndex[7]" v-show="showIndex[7]" @click="getShowData(7)">{{pageIndex[7]}}</td>
+                <td class="page-item" :active="activeIndex[8]" v-show="showIndex[8]" @click="getShowData(8)">{{pageIndex[8]}}</td>
+                <td class="page-item" :active="activeIndex[9]" v-show="showIndex[9]" @click="getShowData(9)">{{pageIndex[9]}}</td>
+            </div>
+                <td class="page-item" v-show="nextRound" @click="goNextRound()">下{{perRound}}頁</td>
+                <td class="page-item" v-show="endPage" @click="goEndPage()">到最末頁</td>
+              </tr>
+              </table>
+        </nav>
+    </template>
+    <template id="sidebarUI">
+        <nav aria-label="...">
+            <div class="sidepart" id="callbell">
+                {{promote}}
+
+            </div>
+        </nav>
+    </template>
+
+    <template id="contacterUI">
+        <nav aria-label="...">
+            <div id="contactpart">
+
+        </div>
+        </nav>
+    </template>
+
+<!-- Vue CDN-->
+<script src="https://unpkg.com/vue@2.6.14/dist/vue.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="https://cdn.bootcss.com/qs/6.5.1/qs.min.js"></script>
+<script>
+Vue.component("bander",{
+    props:{},
+    data(){
+      return {
+        brand:"dCarbon",
+        listcase:"驗證查驗中案件",
+        findcase:"尋找待驗證查驗之案件",
+        awardmanage:"公評點數管理",
+        awardentry:"公評點數收支",
+        awardtrade:"公評點數移轉",
+        loyalist1:JSON.parse(decodeURIComponent('<%= loyalist1 %>')),
+        personID:'<%- personID %>',
+        listcaseurl:"",
+        findcaseurl:"",
+        awardmanageurl:"",
+        awardentryurl:"",
+        awardtradeurl:"",
+        loyalist:"",
+        statusreport:'<%- statusreport %>'
+      }
+    },
+    mounted:function(){
+        let basepath="/base4dcarbon/branch";
+        this.loyalist=this.loyalist1.a05lastname+this.loyalist1.a10firstname;
+        this.listcaseurl=basepath+"/pwa4investigator/"+this.personID;
+        this.findcaseurl=basepath+"/investigator/findcase/"+this.personID;
+        this.awardmanageurl=basepath+"/investigator/awardmanage/"+this.personID;
+        this.awardentryurl=basepath+"/investigator/awardentry"+this.personID;
+        this.awardtradeurl=basepath+"/investigator/awardtrade/"+this.personID
+    },
+    methods:{
+
+    },
+    template:"#banderUI"
+  });
+  Vue.component("sidebar",{
+    props:{},
+    data(){
+      return{
+        promote:"淨零救地球！歡迎協助公評碳權認驗證!!",
+        ipofvisitor:"",
+      inputerUIkey:0
+      }
+    },
+    mounted: async function(){
+        const API_URL = 'https://api.ipify.org?format=json';
+
+        // 取得 IP 位址
+        const response = await axios.get(API_URL);
+        this.ipofvisitor= response.data.ip
+
+    },
+    methods:{
+
+    },
+    template:"#sidebarUI"
+  });
+  Vue.component("contacter",{
+    props:{},
+    data(){
+      return {
+        address:"臺北市",
+        tel:"02-29293551",
+        email:"service@dcarbon.org"
+      }
+    },
+    methods:{
+
+    },
+    template:"#contacterUI"
+    });
+  Vue.component("content1",{
+    props:{},
+    data(){
+        return{
+          perPage:8,
+          perRound:10,
+          maxRow:1,
+          maxPage:1,
+          maxRound:1,
+          modRow:1,
+          modPage:1,
+          currentIndex:0,
+          currentPage:1,
+          currentRound:1,
+          indexLength:1,
+          previousRound:false,
+          firstPage:false,
+          nextRound:false,
+          endPage:false,
+          fullPage:false,
+          pageIndex:[],
+          showIndex:[],
+          activeIndex:[],
+          caseShow:[],
+          statusreport:'<%- statusreport %>',
+          personID:'<%- personID %>',
+          caselist:JSON.parse(decodeURIComponent('<%= caselist %>')),
+          loyalist1:JSON.parse(decodeURIComponent('<%= loyalist1 %>')),
+        items:{
+          item0:"申請人代碼",
+          item1:"申請活動代碼",
+          item2:"申請案場名稱",
+          item3:"申請案場地址",
+          item4:"申請案場中心點GPS",
+          item5:"申請案規模計算單位",
+          item6:"申請案規模數值",
+          item7:"申請案查證人ID列舉",
+          item8:"申請案是否通過",
+          item9:"申請案獲得之碳權噸數",
+          item99:"特別註記"
+            }
+        }
+      },
+      mounted:function(){
+        this.maxRow=this.caselist.length;
+        this.modRow=this.maxRow%this.perPage;
+        this.maxPage=this.modRow==0?this.maxRow/this.perPage:Math.floor(this.maxRow/this.perPage)+1;
+        this.modPage=this.maxPage%this.perRound;
+        this.maxRound=this.modPage==0?this.maxPage/this.perRound:Math.floor(this.maxPage/this.perRound)+1;
+        this.goFirstPage()
+
+      },
+      methods:{
+        viewone:function(id){
+          let querytext="?statusreport=由待驗證查驗case資料清單頁的檢視鈕進入本頁&status=d&caseID="+id;
+          let urld='/base4dcarbon/case/viewpage1/'+this.personID+querytext;
+          window.location=urld;
+        },
+        choose:function(id){
+          let querytext="?statusreport=由待驗證查驗case資料清單頁的認領案件鈕進入本頁&status=d&caseID="+id;
+          let urld='/base4dcarbon/branch/investigator/choosecase/'+this.personID+querytext;
+          window.location=urld
+           },
+
+          getShowData:function(index){
+          this.currentIndex=index;
+          this.activeIndex.splice(0);
+          this.pageIndex.splice(0);
+          this.showIndex.splice(0);
+          for(let i=0;i<this.indexLength;i++){
+              this.pageIndex.push(((this.currentRound-1)*this.perRound)+i+1);
+              this.showIndex.push(true);
+              this.activeIndex.push(false)
+          }
+          this.activeIndex[index]=true;
+          for(let i=this.indexlength;i<this.perRound;i++){
+              this.showIndex.push(false)
+          };
+          this.currentPage=this.pageIndex[index]
+          console.log("currentPage is:"+this.currentPage)
+          this.fullPage=(this.maxRow>=(this.currentPage*this.perPage))?true:false;
+          this.caseShow.splice(0);
+          let startRow=(this.currentPage-1)*this.perPage;
+            console.log("startRow is:"+startRow)
+          let rowNo=this.fullPage?this.perPage:this.modRow;
+          console.log("rowNo is:"+rowNo);
+          //this.caseShow=[];
+          this.caseShow=this.caselist.slice(startRow,startRow+rowNo)
+          console.log("11st caselist:"+this.caselist[10])
+          console.log("1st caseShow:"+this.caseShow[0])
+        },
+        goFirstPage:function(){
+          this.currentRound=1;
+          this.indexLength=(this.maxPage>this.perRound)?this.perRound:this.modPage;
+          this.previousRound=false;
+          this.firstPage=false;
+          this.nextRound=(this.maxPage<(this.perRound+1))?false:true;
+          this.endPage=(this.maxPage<(this.perRound+1))?false:true;
+          this.currentIndex=0;
+          this.getShowData(this.currentIndex)
+        },
+        goEndPage:function(){
+          this.currentRound=this.maxRound;
+          this.indexLength=(this.modPage==0)?this.perRound:this.modPage;
+          this.previousRound=true;
+          this.firstPage=true;
+          this.nextRound=false;
+          this.endPage=false;
+          this.currentIndex=this.indexLength-1;
+          this.getShowData(this.currentIndex)
+        },
+        goPreviousRound:function(){
+          if(this.currentRound>1){
+          this.currentRound--;
+          this.currentIndex=0;
+          this.indexLength=this.perRound;
+          this.previousRound=this.currentRound>1?true:false;
+          this.firstPage=this.currentRound>1?true:false;
+          this.nextRound=true;
+          this.endPage=true;
+          this.getShowData(this.currentIndex)
+          }else{
+              console.log("There is no previous round!!")
+              this.goFirstpage()
+          }
+        },
+        goNextRound:function(){
+          if(this.currentRound<this.maxRound){
+          this.currentRound++;
+          this.currentIndex=0;
+          this.indexLength=(this.maxPage>this.currentRound*this.perRound)?this.perRound:this.modPage;
+          this.previousRound=true;
+          this.firstPage=true;
+          this.nextRound=(this.maxPage>this.currentRound*this.perRound)?true:false;
+          this.endPage=(this.maxPage>this.currentRound*this.perRound)?true:false;
+          this.getShowData(this.currentIndex)
+          }else{
+            console.log("There is no next round!!")
+            this.goEndPage()
+          }
+        }
+      },
+    template:"#content1UI"
+  });
+  Vue.component("content2",{
+    props:{},
+    data(){
+      return{
+      }
+    },
+    computed:{
+
+    },
+    methods:{
+
+    },
+    template:"#content2UI"
+  });
+    new Vue({
+        el:'#show_div',
+        data:{
+          testdata:'有執行到此。。。。'
+        },
+        /* computed:{
+
+        },
+        watch:{
+
+        },
+        filters:{
+
+        },
+        mixins:[
+
+        ],
+        template:" ",
+
+        components:{
+          "bander":bander,
+          "outputer":outputer,
+          "inputer":inputer
+        },*/
+        beforeCreate:function(){
+          console.log("before create...")
+        },created:function(){
+          console.log("created...")
+        },
+        beforeMount:function(){
+          console.log("before mount...")
+        },
+        mounted:function(){
+          console.log("mounted...")
+        },
+        beforeUpdate:function(){
+          console.log("before update...")
+        },
+        updated:function(){
+          console.log("updated...")
+        },
+        beforeDestroy:function(){
+
+        }
+    })
+</script>
+
+
+  </body>
+</html>

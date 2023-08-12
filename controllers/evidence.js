@@ -1,5 +1,7 @@
+const {Storage} = require('@google-cloud/storage');
 //載入相對應的model
 const Evidence = require('../models/index').evidence;
+const Dataneed = require('../models/index').dataneed;
 module.exports = {
 //列出清單list(req,res)
 async list(ctx,next){
@@ -231,6 +233,211 @@ async update(ctx,next){
         console.log(err)
     })
 },
+//去上傳資料頁
+async uploadpage(ctx,next){
+  console.log("進入evidence controller的uploadpage");
+  var personID=ctx.params.id;
+  console.log("personID:"+personID);
+  var statusreport=ctx.query.statusreport;
+  console.log("got statusreport:"+statusreport);
+  var status=ctx.query.status;
+  console.log("got status:"+status);
+  var dataneedID=ctx.query.dataneedID;
+  console.log("got dataneedID:"+dataneedID);
+  var caseID=ctx.query.caseID;
+  console.log("got caseID:"+caseID);
+  await ctx.render("evidence/uploadpage",{
+    dataneedID,
+    caseID,
+    personID,
+    statusreport,
+    status
+  })
+  },
+//上傳檔案
+async uploadfile(ctx,next){
+  console.log("進入evidence controller的uploadfile");
+  var personID=ctx.params.id;
+  console.log("personID:"+personID);
+  var statusreport=ctx.query.statusreport;
+  console.log("got statusreport:"+statusreport);
+  var status=ctx.query.status;
+  console.log("got status:"+status);
+  var caseID=ctx.query.caseID;
+  console.log("got caseID:"+caseID);
+  var dataneedID=ctx.query.dataneedID;
+  console.log("got dataneedID:"+dataneedID);
+  var file2upload=ctx.query.file2upload;
+  console.log("got file2upload:"+file2upload);
+  var localpath=ctx.query.localpath;
+  console.log("got localpath:"+localpath);
+  var alias=ctx.query.alias;
+  console.log("got alias:"+alias);
+  /*
+  var {statusreport}=ctx.request.body;
+  console.log("got statusreport:"+statusreport);
+  var {status}=ctx.request.body;
+  console.log("got status:"+status);
+  var {dataneedID}=ctx.request.body;
+  console.log("got dataneedID:"+dataneedID);
+  var {caseID}=ctx.request.body;
+  console.log("got caseID:"+caseID);
+  var {localpath}=ctx.request.body;
+  console.log("got localpath:"+localpath);
+  var {file2upload}=ctx.request.body;
+  console.log("got file2upload:"+file2upload);
+  var {mimetype}=ctx.request.body;
+  console.log("got mimetype:"+mimetype);
+  var alias,dotnumber,pathlength;
+  pathlength=localpath.length;
+  dotnumber=localpath.indexOf(".", pathlength-5);
+  alias=localpath.slice(pathlength-dotnumber-1);
+*/
+  const bucketName = 'dcarbon-bucket1';
+  const storename=dataneedID+"."+alias;
+  const destination = 'https://console.cloud.google.com/storage/browser/dcarbon-bucket1/'+storename;
+  /**
+   * TODO(developer):
+   *  1. Uncomment and replace these variables before running the sample.
+   *  2. Set up ADC as described in https://cloud.google.com/docs/authentication/external/set-up-adc
+   *  3. Make sure you have the necessary permission to list storage buckets "storage.buckets.list"
+   *    (https://cloud.google.com/storage/docs/access-control/iam-permissions#bucket_permissions)
+   */
+ // Creates a client
+/*
+  async function authenticateImplicitWithAdc() {
+    // This snippet demonstrates how to list buckets.
+    // NOTE: Replace the client created below with the client required for your application.
+    // Note that the credentials are not specified when constructing the client.
+    // The client library finds your credentials using ADC.
+    const storage = new Storage({
+      projectId:"deep0-340312",
+      keyFilename:"../../pubic/json/deep0-340312-ac0308c9dc4b.json"
+    });
+    const [buckets] = await storage.getBuckets();
+    console.log('Buckets:');
+
+    for (const bucket of buckets) {
+      console.log(`- ${bucket.name}`);
+    }
+
+    console.log('Listed all storage buckets.');
+  }
+
+  authenticateImplicitWithAdc();
+*/
+  async function uploadFile() {
+    // Uploads a local file to the bucket
+    const storage = new Storage({
+      projectId:"deep0-340312",
+      keyFilename:"../../pubic/json/deep0-340312-ac0308c9dc4b.json"
+    });
+    await storage.bucket(bucketName).upload(localpath+file2upload, {
+      destination: destination,
+      // Support for HTTP requests made with `Accept-Encoding: gzip`
+      gzip: true,
+      // By setting the option `destination`, you can change the name of the
+      // object you are uploading to a bucket.
+      metadata: {
+        // Enable long-lived HTTP caching headers
+        // Use only if the contents of the file will never change
+        // (If the contents will change, use cacheControl: 'no-cache')
+        cacheControl: 'public, max-age=31536000',
+      },
+    });
+
+    console.log(`${localpath} uploaded to ${bucketName}.`);
+  }
+
+  uploadFile().catch(console.error);
+
+/* 另一種方法:
+  const fs = require('fs');
+  const axios = require('axios');
+  const FormData =require('form-data');
+
+  var localFile = fs.createReadStream('./'+fileKey);
+
+  var formData = new FormData();
+  formData.append('key',fileKey);
+  formData.append('Signature',data.authorization );
+  formData.append('file',localFile);
+
+  var headers = formData.getHeaders();//獲取headers
+  //獲取form-data長度
+  formData.getLength(async function(err, length){
+   if (err) {
+      return  ;
+    }
+   //設置長度，important!!!
+   headers['content-length']=length;
+
+  await axios.post(data.url,formData,{headers}).then(res=>{
+         console.log("上傳成功",res.data);
+    }).catch(res=>{
+        console.log(res.data);
+   })
+
+  })
+再另一種方法:
+const multer = Multer({
+  storage: Multer.memoryStorage(),
+  limits: {
+    fileSize: 5 * 1024 * 1024, // no larger than 5mb, you can change as needed.
+  },
+});
+
+// A bucket is a container for objects (files).
+const bucket = storage.bucket(process.env.GCLOUD_STORAGE_BUCKET);
+
+// Process the file upload and upload to Google Cloud Storage.
+app.post('/upload', multer.single('file'), (req, res, next) => {
+  if (!req.file) {
+    res.status(400).send('No file uploaded.');
+    return;
+  }
+
+  // Create a new blob in the bucket and upload the file data.
+  const blob = bucket.file(req.file.originalname);
+  const blobStream = blob.createWriteStream();
+
+  blobStream.on('error', err => {
+    next(err);
+  });
+
+  blobStream.on('finish', () => {
+    // The public URL can be used to directly access the file via HTTP.
+    const publicUrl = format(
+      `https://storage.googleapis.com/${bucket.name}/${blob.name}`
+    );
+    res.status(200).send(publicUrl);
+  });
+
+  blobStream.end(req.file.buffer);
+});
+  */
+  await Dataneed.findById(dataneedID)
+    .then(async dataneedx=>{
+      let newcheck;
+      if(dataneedx.a30check==0)
+      {newcheck=1}else{
+      newcheck=dataneedx.a30check++
+      }
+    await Dataneed.findOneAndUpdate({_id:dataneedID},{a30check:newcheck})
+      .then(async ()=>{
+        let querytext="?statusreport="+statusreport+"&status="+status+"&caseID="+caseID;
+      await ctx.redirect('/base4dcarbon/case/preparedata/'+personID+querytext)
+      })
+      .catch(err=>{
+        console.log("Dataneed.findOneAndUpdate({_id}) failed !!");
+        console.log(err)
+      })
+    })
+    .catch(err=>{
+      console.log("Dataneed.findById({dataneedID}) failed !!");
+      console.log(err)
+    })
+  },
 //去拍照後上傳
 async takepicture(ctx,next){
   console.log("to be construct....")

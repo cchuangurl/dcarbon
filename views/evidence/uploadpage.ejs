@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.4.1/jquery.js"></script>
+<script>
+/*
+function handleFileSelect(event){
+          var file = event.target.files[0];
+          mimetype=file.type;
+          var filename=file.name;
+          var reader = new FileReader();
+          reader.onload = function(e) {
+            // do something with the file content
+            console.log("onload result:"+e.target.result);
+          };
+          reader.readAsArrayBuffer(file);
+          localpath= document.getElementById("file2upload").value;
+            console.log("localpath:"+localpath)
+        }
+*/
+</script>
+<style type="text/css">
+body {
+  background-color: #d6d6d3;
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+     flex-direction:column;
+	 justify-content: flex-start;
+     align-items:center;
+  	margin: 0;
+}
+.confirmbutton{
+    height:60px;
+    width:250px;
+    background-color:#d6eff5;
+    font:40px;
+    text-align:center;
+    line-height:60px;
+    margin:5px;
+    border-radius:10px
+}
+.navbar{background:#ddedf8;}
+.nav-link, .navbar-brand{color: #f4f4f4;cursor:pointer;}
+.nav-link{margin-right:1em !important;}
+.nav-link:hover{background: #f4f4f4;color:#f97300;}
+.navbar-collapse{justify-content:flex-end;}
+.navbar-toggler{background:#fff !important;}
+</style>
+
+  <title>上傳vidence檔案資料</title>
+  </head>
+  <body>
+    <div id="show_div">
+      <bander></bander>
+        <inputer></inputer>
+    </div>
+
+    <template id="banderUI">
+      <nav class="navbar navbar-expand-lg navbar-light">
+        <a class="navbar-brand" href="#">{{brand}}</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarText">
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link" :href="noticeurl">{{notice}}<span class="sr-only">(current)</span></a>
+              </li>
+            <li class="nav-item active">
+              <a class="nav-link" href="#">{{input1}}<span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">{{inputbatch}}</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">{{crawl}}</a>
+            </li>
+          </ul>
+          <span class="navbar-text">
+            <font size="1">{{statusreport}}</font>
+          </span>
+        </div>
+      </nav>
+    </template>
+
+    <template id="inputerUI" ">
+      <div>
+      <form enctype="multipart/form-data" novalidate v-if="!isUploaded">
+        <p v-if="!isUploading"> <h3>請點選"選擇檔案"鈕, 並選擇要上傳的佐證檔案:</h3></p><br>
+      <input type="file" id="file2upload" :name="file2upload" @change="handleFileSelect($event.target.name, $event.target.files)" accept="/" class="input-file" :disabled="isUploading"/>
+      <br>
+        <p></p><h4>檔案上傳後:<br>
+        1.存到雲端儲存區dcarbon bucket,<br>
+        2.對檔案進行Hash,<br>
+        (3.預定Hash碼上鏈到goerli鏈)</h4>
+        </p>
+      <p v-if="isUploading">{{ fileName }}上傳中 …</p>
+      </form>
+      <div v-if="isUploaded">
+        <br><br>
+        <p><h3> {{ fileName }}檔已選取<br>將上傳到Google cloud storage的 {{ bucketName }}</h3></p>
+        <p>網址: {{ fileUrl }}</p>
+        <br>
+      <form :action="uploadurl" method="get">
+          <input type="hidden" name="statusreport" value="由上傳一個佐證檔案回到本頁">
+          <input type="hidden" name="status" value="b">
+          <input type="hidden" name="caseID" :value="caseID">
+          <input type="hidden" name="dataneedID" :value="dataneedID">
+          <input type="hidden" name="file2upload" :value="file2upload">
+          <input type="hidden" name="localpath" :value="localpath">
+          <input type="hidden" name="alias" :value="alias">
+          <button type="submit" class="confirmbutton">上傳檔案</button>
+      </form>
+        </div>
+      <br>
+
+      </div>
+    </template>
+
+<!-- Vue CDN-->
+<script src="https://unpkg.com/vue@2.6.14/dist/vue.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script>
+Vue.component("bander",{
+
+    data(){
+      return {
+        brand:"dCarbon內部功能",
+        notice:"回需準備資料清單",
+        input1:"手動新增1筆",
+        inputbatch:"批次輸入",
+        crawl:"從網路抓取",
+        statusreport:'<%- statusreport %>',
+        status:'<%- status %>',
+        caseID:'<%- caseID %>',
+        personID:'<%- personID %>',
+        noticeurl:""
+      }
+    },
+    mounted:function(){
+      let querytext="?statusreport=由佐證檔案上傳頁回到本頁&status=3&caseID="+this.caseID;
+      let noticeurl='/base4dcarbon/case/preparedata/'+this.personID+querytext;
+    },
+    template:"#banderUI"
+  });
+  Vue.component("inputer",{
+    /*
+    new Storage({
+        projectId:"your-project-id",
+        keyFilename:"your-key-file.json"
+    });
+    storage.bucket(“dcarbon-bucket1”);
+    */
+    data(){
+      return {
+        card_title:"新增1個上傳佐證資料",
+        card_subtitle:"請輸入以下各項資料:",
+        statusreport:'<%- statusreport %>',
+        status:'<%- status %>',
+        dataneedID:'<%- dataneedID %>',
+        caseID:'<%- caseID %>',
+        personID:'<%- personID %>',
+        uploadurl:"",
+        file2upload: "",
+        alias:"",
+        localpath:"",
+        isUploading: false,
+        isUploaded: false,
+        fileName:"",
+        bucketName: "dcarbon-bucket1",
+        fileUrl:"",
+        items:{
+          item0:"申請案代碼",
+          item1:"資料名稱ID",
+          item2:"資料上傳時間",
+          item3:"基線資料或佐證資料",
+          item4:"資料檔類型",
+          item5:"資料檔名",
+          item6:"本佐證資料的hash",
+          item7:"本佐證資料hash所在區塊",
+          item99:"特別註記"
+          },
+        names:{
+          name0:"a05caseID",
+          name1:"a10needdataID",
+          name2:"a15uploadtime",
+          name3:"a20datatype",
+          name4:"a25filetype",
+          name5:"a30filename",
+          name6:"a35datahash",
+          name7:"a40datablock"
+            },
+        holders:{
+          holder0:"物件識別碼,",
+          holder1:"物件識別碼,",
+          holder2:"日期時間,",
+          holder3:"字串,基線資料，佐證資料",
+          holder4:"字串,附檔名, 例pdf, doc, ppt等",
+          holder5:"字串,",
+          holder6:"字串,",
+          holder7:"數字,>0",
+          holder99:"字串"
+            },
+      inputerUIkey:0
+
+      }
+    },
+    mounted:function(){
+      this.uploadurl="/base4dcarbon/evidence/uploadfile/"+this.personID;
+
+    },
+    methods:{
+        rerender:function() {
+      this.inputerUIkey += 1;
+      console.log("inputerUIkey:"+this.inputerUIkey)
+        },
+        handleFileSelect:function(fieldName, fileList){
+          // Check if there is a file
+          if(!fileList.length) return;
+            // Get the first file
+            const file = fileList[0];
+            //this.localpath=URL.createObjectURL(file);
+            //this.localpath=file.webkitRelativePath;
+            this.localpath="c:/使用者/cchua/圖片/手機相簿/";
+            // Set the file name
+            this.fileName = file.name;
+            let dotlocat=this.fileName.indexOf(".");
+            this.alias=this.fileName.substring(dotlocat+1)
+            this.file2upload=this.fileName
+            // Start uploading
+            console.log("alias:"+this.alias)
+            this.isUploading = true;
+
+            /**
+            // Create a new blob in the bucket and upload the file data
+            const blob = bucket.file(file.name);
+            const blobStream = blob.createWriteStream();
+
+            // Handle errors
+            blobStream.on("error", (err) => {
+              console.error(err);
+              alert("Something went wrong!");
+              this.isUploading = false;
+            });
+
+            // Handle finish event
+            blobStream.on("finish", () => {
+*/
+              // The public URL can be used to directly access the file via HTTP.
+              const publicUrl = `https://storage.googleapis.com/`+this.bucketName+"/"+this.dataneedID+"."+this.alias;
+              // Set the file URL
+              this.fileUrl = publicUrl;
+
+              // Finish uploading
+              this.isUploading = false;
+              this.isUploaded = true;
+            //});
+
+            // Send the file data to the stream
+            //blobStream.end(file)
+
+        }
+
+    },
+    template:"#inputerUI"
+  });
+
+    new Vue({
+        el:'#show_div',
+        data:{
+          testdata:'有執行到此。。。。'
+        },
+        /* computed:{
+
+        },
+        watch:{
+
+        },
+        filters:{
+
+        },
+        mixins:[
+
+        ],
+        template:" ",
+        components:{
+
+        },*/
+        beforeCreate:function(){
+          console.log("before create...")
+        },created:function(){
+          console.log("created...")
+        },
+        beforeMount:function(){
+          console.log("before mount...")
+        },
+        mounted:function(){
+          console.log("mounted...")
+        },
+        beforeUpdate:function(){
+          console.log("before update...")
+        },
+        updated:function(){
+          console.log("updated...")
+        },
+        beforeDestroy:function(){
+
+        }
+    })
+</script>
+
+
+  </body>
+</html>

@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.4.1/jquery.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+<style type="text/css">
+body {
+background-color: rgb(248, 243, 243);
+  height: 100vh;
+  width: 100vw;
+  position: relative;
+  display: flex;
+  flex-direction:column;
+	 justify-content: flex-start;
+     align-items:center;
+  	margin: 0;
+}
+#mobilephone{
+  background-color: rgb(249, 252, 247);
+  height: 820px;
+  width: 600px;
+  border-width:medium;
+  border-style:solid;
+  border-color:blue;
+  position: relative;
+  display: flex;
+  flex-direction:column;
+	 justify-content: flex-start;
+     align-items:center;
+  	margin: 20PX;
+    border-radius:25px
+}
+#phonescreen{
+  background-color: rgb(240, 248, 234);
+  height: 700px;
+  width: 540px;
+  position: relative;
+  display: flex;
+  flex-direction:column;
+	 justify-content: flex-start;
+     align-items:center;
+    margin-top: 100px;
+    margin-left:10px;
+    overflow:auto
+}
+caption{caption-side: top;font-size:large;}
+#sidearea{
+  background-color: rgb(213, 218, 210);
+  height: 760px;
+  width: 100vw;
+  position: relative;
+  display: flex;
+  flex-direction:column;
+	 justify-content: flex-start;
+     align-items:center
+}
+.sidepart{
+    width: 350px;
+    height:240px;
+    margin-top:10px;
+    border-radius:10px
+}
+#bellcall{
+    background:#f5f5d6
+}
+#messageboard{
+    background:#d6f5de
+}
+#contactpart{
+    background:#d6f5de ;
+    width:100vw;
+    height:100px;
+    align-content: flex-end;
+}
+.contactinfo {
+    margin-left:100px
+}
+.navbar{background:#d6eff5;}
+.nav-link, .navbar-brand{color: #f4f4f4;cursor:pointer;}
+.nav-link{margin-right:1em !important;}
+.nav-link:hover{background: #f4f4f4;color:#f97300;}
+.navbar-collapse{justify-content:flex-end;}
+.navbar-toggler{background:#fff !important;}
+
+</style>
+
+  <title>驗證查驗士示意版-佐證資料清單與查證</title>
+  </head>
+  <body>
+    <div id="show_div">
+      <bander></bander>
+
+        <div class="row" align="justify">
+            <div class="col-lg-3 col-md-6 col-sm-12" id="sidearea">
+                <sidebar></sidebar> </div>
+            <div class="col-lg-9 col-md-6 col-sm-12">
+                        <content1></content1> </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <template id="banderUI">
+        <nav class="navbar navbar-expand-lg navbar-light">
+            <div class="row">
+              <div class="col-lg col-sm-6">
+                <a class="navbar-brand" href="/">{{brand}}</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+                </button>
+            </div>
+            <div class="collapse navbar-collapse" id="navbarText">
+            <ul class="navbar-nav mr-auto">
+            <div class="col-lg col-sm-6">
+              <li class="nav-item">
+                <a class="nav-link active" href="#">{{listcase}}<span class="sr-only">(current)</span></a>
+                </li>
+                </div>
+                <div class="col-lg col-sm-6">
+                  <li class="nav-item">
+                    <div class="dropdown">
+                        <button
+                            class="btn btn-secondary dropdown-toggle"
+                            type="button"
+                            id="dropdownMenuButton"
+                            data-toggle="dropdown">
+                            {{findcase}}
+                        </button>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" :href="findcaseurl">{{findcase}}</a>
+                        </div>
+                    </div>
+                </li>
+                </div>
+                <div class="col-lg col-sm-6">
+                    <li class="nav-item">
+                        <div class="dropdown">
+                            <button
+                                class="btn btn-secondary dropdown-toggle"
+                                type="button"
+                                id="dropdownMenuButton"
+                                data-toggle="dropdown">
+                                {{awardmanage}}
+                            </button>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" :href="awardentryurl">{{awardentry}}</a>
+                              <a class="dropdown-item" :href="awardtradeurl">{{awardtrade}}</a>
+                          </div>
+                        </div>
+                    </li>
+                </div>
+            <div class="col-lg col-sm-6">
+                <span class="navbar-text">
+                    <font size="2">{{statusreport}}</font>
+                </span>
+            </div>
+            <div class="col"></div>
+            <div class="col-lg col-sm-6">
+                <span class="navbar-text">
+                    <font size="2">親愛的{{loyalist}}</font>
+                </span>
+            </div>
+            </div>
+
+            </div>
+        </nav>
+    </template>
+    <template id="content1UI">
+        <nav aria-label="...">
+          <table border="1" class="table table-striped">
+            <caption>基線需提供之佐證資料</caption>
+              <thead>
+              <tr>
+                  <th>{{items.item2}}</th>
+                  <th>{{items.item4}}</th>
+                  <th>{{items.item5}}</th>
+                <!-- <th>特別註記</th> -->
+              </tr>
+              </thead>
+              <tbody id="baseline">
+                  <tr v-for="datum of baselines" :key="datum._id">
+                  <td>{{datum.a15timing}}</td>
+                  <td>{{datum.a25describe}}</td>
+                  <td>{{datum.a30check}}</td>
+                  <!-- statusreport="由已擷取資料組清單頁進入本頁"> -->
+
+                    <td>
+                      <input type="submit" value="檢視佐證資料" @click="viewfile(datum._id)">
+                    </td>
+                    <td>
+                      <input type="checkbox" value="是否合格">
+                    </td>
+                  </tr>
+              </tbody>
+          </table>
+          <table border="1" class="table table-striped">
+            <caption>減碳活動需提供之佐證資料</caption>
+              <thead>
+              <tr>
+                  <th>{{items.item2}}</th>
+                  <th>{{items.item4}}</th>
+                  <th>{{items.item5}}</th>
+                <!-- <th>特別註記</th> -->
+              </tr>
+              </thead>
+              <tbody id="newitem">
+                  <tr v-for="datum of newitems" :key="datum._id">
+                  <td>{{datum.a15timing}}</td>
+                  <td>{{datum.a25describe}}</td>
+                  <td>{{datum.a30check}}</td>
+                  <!-- statusreport="由已擷取資料組清單頁進入本頁"> -->
+
+                  <td>
+                    <input type="submit" value="檢視佐證資料" @click="viewfile(datum._id)">
+                  </td>
+                  <td>
+                    <input type="checkbox" value="是否合格">
+                  </td>
+                  </tr>
+              </tbody>
+          </table>
+          <table border="1" class="table table-striped">
+            <caption>認證後需持續提供之佐證資料</caption>
+              <thead>
+              <tr>
+                  <th>{{items.item2}}</th>
+                  <th>{{items.item4}}</th>
+                  <th>{{items.item5}}</th>
+                <!-- <th>特別註記</th> -->
+              </tr>
+              </thead>
+              <tbody id="postitem">
+                  <tr v-for="datum of postitems" :key="datum._id">
+                  <td>{{datum.a15timing}}</td>
+                  <td>{{datum.a25describe}}</td>
+                  <td>{{datum.a30check}}</td>
+                  <!-- statusreport="由已擷取資料組清單頁進入本頁"> -->
+
+                  <td>
+                    <input type="submit" value="檢視佐證資料" @click="viewfile(datum._id)">
+                  </td>
+                  <td>
+                    <input type="checkbox" value="是否合格">
+                  </td>
+                  </tr>
+              </tbody>
+          </table>
+        </nav>
+    </template>
+
+<!-- Vue CDN-->
+<script src="https://unpkg.com/vue@2.6.14/dist/vue.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="https://cdn.bootcss.com/qs/6.5.1/qs.min.js"></script>
+<script>
+Vue.component("bander",{
+    props:{},
+    data(){
+      return {
+        brand:"dCarbon",
+        listcase:"驗證查驗中的案件",
+        findcase:"尋找待驗證查驗的案件",
+        awardmanage:"公評點數管理",
+        awardentry:"公評點數收支",
+        awardtrade:"公評點數移轉",
+        loyalist1:JSON.parse(decodeURIComponent('<%= loyalist1 %>')),
+        personID:'<%- personID %>',
+        listcaseurl:"",
+        findcaseurl:"",
+        awardmanageurl:"",
+        awardentryurl:"",
+        awardtradeurl:"",
+        loyalist:"",
+        statusreport:'<%- statusreport %>'
+      }
+    },
+    mounted:function(){
+        let basepath="/base4dcarbon/branch";
+        this.loyalist=this.loyalist1.a05lastname+this.loyalist1.a10firstname;
+        this.listcaseurl=basepath+"/PWA4investigator/"+this.personID;
+        this.findcaseurl=basepath+"/investigator/findcase/"+this.personID;
+        this.awardmanageurl=basepath+"/investigator/awardmanage/"+this.personID;
+        this.awardentryurl=basepath+"/investigator/awardentry"+this.personID;
+        this.awardtradeurl=basepath+"/investigator/awardtrade/"+this.personID
+    },
+    methods:{
+
+    },
+    template:"#banderUI"
+  });
+  Vue.component("content1",{
+    props:{},
+    data(){
+        return{
+          statusreport:'<%- statusreport %>',
+          personID:'<%- personID %>',
+          caseID:'<%- caseID %>',
+          dataneedlist:JSON.parse(decodeURIComponent('<%= dataneedlist %>')),
+          baselines:[],
+          newitems:[],
+          postitems:[],
+        items:{
+          item0:"細部活動代碼",
+          item1:"資料需求階段",
+          item2:"資料提供期限",
+          item3:"所需資料名稱",
+          item4:"所需資料描述",
+        item5:"上傳次",
+          item99:"特別註記"
+            }
+        }
+      },
+      mounted:function(){
+        for(dataneedx of this.dataneedlist){
+          if(dataneedx.a10datatype=="baseline"){
+              this.baselines.push(dataneedx)
+          }
+        }
+        for(dataneedx of this.dataneedlist){
+          if(dataneedx.a10datatype=="evidence"){
+              this.newitems.push(dataneedx)
+          }
+        }
+        for(dataneedx of this.dataneedlist){
+          if(dataneedx.a10datatype=="persist"){
+              this.postitems.push(dataneedx)
+          }
+        }
+        this.baselines.sort((a,b)=>{
+            return a._id<b._id
+        })
+        this.newitems.sort((a,b)=>{
+            return a._id<b._id
+        })
+        this.postitems.sort((a,b)=>{
+            return a._id<b._id
+        })
+      },
+      methods:{
+        uploadfile:function(id){
+          let querytext="?statusreport=由需上傳資料清單頁的上傳鈕進入本頁&status=3&caseID="+this.caseID+"&dataneedID="+id;
+          let url3='/base4dcarbon/evidence/upload/'+this.personID+querytext;
+          window.location=url3;
+        },
+        photo:function(id){
+          let querytext="?statusreport=由需上傳資料清單頁拍照後上傳鈕進入本頁&status=4&caseID="+this.caseID+"&dataneedID="+id;
+          let url3='/base4dcarbon/evidence/photo/'+this.personID+querytext;
+          window.location=url3
+           }
+      },
+    template:"#content1UI"
+  });
+
+    new Vue({
+        el:'#show_div',
+        data:{
+          testdata:'有執行到此。。。。'
+        },
+        /* computed:{
+
+        },
+        watch:{
+
+        },
+        filters:{
+
+        },
+        mixins:[
+
+        ],
+        template:" ",
+
+        components:{
+          "bander":bander,
+          "outputer":outputer,
+          "inputer":inputer
+        },*/
+        beforeCreate:function(){
+          console.log("before create...")
+        },created:function(){
+          console.log("created...")
+        },
+        beforeMount:function(){
+          console.log("before mount...")
+        },
+        mounted:function(){
+          console.log("mounted...")
+        },
+        beforeUpdate:function(){
+          console.log("before update...")
+        },
+        updated:function(){
+          console.log("updated...")
+        },
+        beforeDestroy:function(){
+
+        }
+    })
+</script>
+
+
+  </body>
+</html>

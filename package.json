@@ -9,6 +9,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
+    "@google-cloud/storage": "^7.0.0",
     "@koa/router": "^10.1.1",
     "axios": "0.25.0",
     "cheerio": "^1.0.0-rc.10",
@@ -33,11 +34,11 @@
     "serve-favicon": "^2.5.0",
     "vue": "^3.2.30",
     "vue-axios": "^3.4.1",
-    "web3":"1.10.0"
+    "web3": "1.10.0"
   },
   "devDependencies": {
-    "nodemon": "^1.19.4",
     "babel-eslint": "7.1.1",
-    "eslint": "3.18.0"
+    "eslint": "3.18.0",
+    "nodemon": "^1.19.4"
   }
 }

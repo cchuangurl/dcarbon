@@ -67,6 +67,18 @@ router.get('/collecter/findemissor/:id', async (ctx, next)=> {
 router.get('/pwa4investigator/:id', async (ctx, next)=> {
   await branchController.goinvestigator(ctx,next)
 });
+//到Investigator的findcase
+router.get('/investigator/findcase/:id', async (ctx, next)=> {
+  await branchController.investigatorfindcase(ctx,next)
+});
+//到Investigator的choosecase
+router.get('/investigator/choosecase/:id', async (ctx, next)=> {
+  await branchController.investigatorchoosecase(ctx,next)
+});
+//到Investigator的workspace
+router.get('/investigator/workspace/:id', async (ctx, next)=> {
+  await branchController.investigatorworkspace(ctx,next)
+});
 //到Accepterweb
 router.get('/pwa4receiver/:id', async (ctx, next)=> {
   await branchController.goreceiver(ctx,next)
