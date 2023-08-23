@@ -362,7 +362,7 @@ async gocheckpage(ctx,next){
     projectId:"deep0-340312",
     keyFilename:"./public/json/deep0-340312-ac0308c9dc4b.json"
   });
-  var fakepath="https://console.cloud.google.com/storage/browser/_details/dcarbon-bucket1/64c91892e0c21a6bf023f8f11.jpg?project=deep0-340312"
+  var fakepath="https://storage.cloud.google.com/dcarbon-bucket1/64c91892e0c21a6bf023f8f21.jpg";
   var apiResponse;
   const bucket = storage.bucket('dcarbon-bucket1');
   const file2get=dataneedID+"1.jpg"

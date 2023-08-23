@@ -5,23 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.4.1/jquery.js"></script>
-<script>
-/*
-function handleFileSelect(event){
-          var file = event.target.files[0];
-          mimetype=file.type;
-          var filename=file.name;
-          var reader = new FileReader();
-          reader.onload = function(e) {
-            // do something with the file content
-            console.log("onload result:"+e.target.result);
-          };
-          reader.readAsArrayBuffer(file);
-          localpath= document.getElementById("file2upload").value;
-            console.log("localpath:"+localpath)
-        }
-*/
-</script>
+
 <style type="text/css">
 body {
   background-color: #d6d6d3;
@@ -32,6 +16,33 @@ body {
 	 justify-content: flex-start;
      align-items:center;
   	margin: 0;
+}
+#mobilephone{
+  background-color: rgb(249, 252, 247);
+  height: 820px;
+  width: 600px;
+  border-width:medium;
+  border-style:solid;
+  border-color:blue;
+  position: relative;
+  display: flex;
+  flex-direction:column;
+	 justify-content: flex-start;
+     align-items:center;
+  	margin: 20PX;
+    border-radius:25px
+}
+#phonescreen{
+  background-color: rgb(240, 248, 234);
+  height: 700px;
+  width: 540px;
+  position: relative;
+  display: flex;
+  flex-direction:column;
+	 justify-content: flex-start;
+     align-items:center;
+  margin-top: 100px;
+  margin-left:10px;
 }
 .confirmbutton{
     height:60px;
@@ -51,46 +62,17 @@ body {
 .navbar-toggler{background:#fff !important;}
 </style>
 
-  <title>上傳vidence檔案資料</title>
+  <title>上傳evidence檔案資料</title>
   </head>
   <body>
     <div id="show_div">
-      <bander></bander>
         <inputer></inputer>
     </div>
 
-    <template id="banderUI">
-      <nav class="navbar navbar-expand-lg navbar-light">
-        <a class="navbar-brand" href="#">{{brand}}</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarText">
-          <ul class="navbar-nav mr-auto">
-            <li class="nav-item">
-                <a class="nav-link" :href="noticeurl">{{notice}}<span class="sr-only">(current)</span></a>
-              </li>
-            <li class="nav-item active">
-              <a class="nav-link" href="#">{{input1}}<span class="sr-only">(current)</span></a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">{{inputbatch}}</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">{{crawl}}</a>
-            </li>
-          </ul>
-          <span class="navbar-text">
-            <font size="1">{{statusreport}}</font>
-          </span>
-        </div>
-      </nav>
-    </template>
-
     <template id="inputerUI" ">
-      <div>
-        <div>
-
+      <nav aria-label="...">
+        <div id="mobilephone">
+          <div id="phonescreen">
           <p v-if="!isUploading"> <h3>請點選"選擇檔案"鈕, 並選擇要上傳的佐證檔案:</h3></p><br>
 
       <input type="file" id="file2upload" :name="file2upload" @change="handleFileSelect($event.target.name, $event.target.files)" accept="/" class="input-file" :disabled="isUploading" />
@@ -109,45 +91,16 @@ body {
         <p>網址: {{ fileUrl }}</p>
         <br>
         </div>
-      <br>
-
       </div>
+      </div>
+      </nav>
     </template>
 
 <!-- Vue CDN-->
 <script src="https://unpkg.com/vue@2.6.14/dist/vue.js"></script>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script>
-Vue.component("bander",{
-
-    data(){
-      return {
-        brand:"dCarbon內部功能",
-        notice:"回需準備資料清單",
-        input1:"手動新增1筆",
-        inputbatch:"批次輸入",
-        crawl:"從網路抓取",
-        statusreport:'<%- statusreport %>',
-        status:'<%- status %>',
-        caseID:'<%- caseID %>',
-        personID:'<%- personID %>',
-        noticeurl:""
-      }
-    },
-    mounted:function(){
-      let querytext="?statusreport=由佐證檔案上傳頁回到本頁&status=3&caseID="+this.caseID;
-      let noticeurl='/base4dcarbon/case/preparedata/'+this.personID+querytext;
-    },
-    template:"#banderUI"
-  });
   Vue.component("inputer",{
-    /*
-    new Storage({
-        projectId:"your-project-id",
-        keyFilename:"your-key-file.json"
-    });
-    storage.bucket(“dcarbon-bucket1”);
-    */
     data(){
       return {
         card_title:"新增1個上傳佐證資料",

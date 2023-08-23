@@ -101,6 +101,22 @@ caption{caption-side: top;font-size:large;color: #f97300;}
                 <a class="nav-link active" href="#">{{evidencelist}}<span class="sr-only">(current)</span></a>
                 </li>
                 </div>
+                    <div class="col-lg col-sm-6">
+                      <li class="nav-item">
+                        <div class="dropdown">
+                            <button
+                                class="btn btn-secondary dropdown-toggle"
+                                type="button"
+                                id="dropdownMenuButton"
+                                data-toggle="dropdown">
+                                {{script}}
+                            </button>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" :href="scripturl">{{script}}</a>
+                            </div>
+                        </div>
+                    </li>
+                    </div>
                 <div class="col-lg col-sm-6">
                   <li class="nav-item">
                     <div class="dropdown">
@@ -256,13 +272,16 @@ Vue.component("bander",{
         brand:"dCarbon",
         investigatorpage:"驗證查驗中的案件",
         evidencelist:"需查驗之佐證資料的項目",
+        script:"產生驗證報告稿",
         awardmanage:"公評點數管理",
         awardentry:"公評點數收支",
         awardtrade:"公評點數移轉",
         loyalist1:JSON.parse(decodeURIComponent('<%= loyalist1 %>')),
         personID:'<%- personID %>',
+        caseID:'<%- caseID %>',
         evidencelisturl:"",
         investigatorurl:"",
+        scripturl:"",
         awardmanageurl:"",
         awardentryurl:"",
         awardtradeurl:"",
@@ -275,6 +294,7 @@ Vue.component("bander",{
         this.loyalist=this.loyalist1.a05lastname+this.loyalist1.a10firstname;
         this.investigatorurl=basepath+"/PWA4investigator/"+this.personID;
         this.evidencelisturl=basepath+"/investigator/workspace/"+this.personID;
+        this.scripturl=basepath+"/report/generatescript/"+this.personID+this.caseID;
         this.awardmanageurl=basepath+"/investigator/awardmanage/"+this.personID;
         this.awardentryurl=basepath+"/investigator/awardentry"+this.personID;
         this.awardtradeurl=basepath+"/investigator/awardtrade/"+this.personID
@@ -288,7 +308,7 @@ Vue.component("bander",{
     props:{},
     data(){
       return{
-        promote:"淨零救地球！歡迎協助公評碳權認驗證!!",
+        promote:"淨零救地球！歡迎協助共識碳權認驗證!!",
         ipofvisitor:"",
       inputerUIkey:0
       }

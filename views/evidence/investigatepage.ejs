@@ -53,16 +53,10 @@ body {
         <div class="collapse navbar-collapse" id="navbarText">
           <ul class="navbar-nav mr-auto">
             <li class="nav-item">
-                <a class="nav-link" :href="noticeurl">{{notice}}<span class="sr-only">(current)</span></a>
+                <a class="nav-link" :href="workspaceurl">{{workspace}}</span></a>
               </li>
             <li class="nav-item active">
-              <a class="nav-link" href="#">{{input1}}<span class="sr-only">(current)</span></a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">{{inputbatch}}</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">{{crawl}}</a>
+              <a class="nav-link" href="#">{{investigating}}<span class="sr-only">(current)</span></a>
             </li>
           </ul>
           <span class="navbar-text">
@@ -74,10 +68,26 @@ body {
 
     <template id="outputerUI" ">
       <div>
+        <br>
 
+        <label></label>
+      </form>
+      <fieldset>
+        <legend>本項資料查驗結果: </legend>
+        <form :action="result4thisurl" method="get">
+        <div>
+          <input type="checkbox" id="pass" name="result" value="pass" />
+          <label for="pass" fontsize="large">合格</label>
+        </div>
+        <div>
+          <input type="checkbox" id="lack" name="result" value="lack" />
+          <label for="lack" fontsize="large">需請申請人補送</label>
+        </div>
+        <input type="submit" value="確認"/>
+      </form>
+      </fieldset>
       <br>
-      <img id="view_img" :src="fakepath" width="60%">
-
+      <img id="view_img" :src="fakepath" width="50%">
 
       </div>
     </template>
@@ -90,11 +100,9 @@ Vue.component("bander",{
 
     data(){
       return {
-        brand:"dCarbon內部功能",
-        notice:"回需準備資料清單",
-        input1:"手動新增1筆",
-        inputbatch:"批次輸入",
-        crawl:"從網路抓取",
+        brand:"dCarbon",
+        workspace:"回需準備資料清單",
+        investigating:"查驗單筆資料",
         statusreport:'<%- statusreport %>',
         status:'<%- status %>',
         caseID:'<%- caseID %>',
@@ -103,8 +111,8 @@ Vue.component("bander",{
       }
     },
     mounted:function(){
-      let querytext="?statusreport=由佐證檔案上傳頁回到本頁&status=3&caseID="+this.caseID;
-      let noticeurl='/base4dcarbon/case/preparedata/'+this.personID+querytext;
+      let querytext="?statusreport=由佐證檔案查驗頁回到本頁&status=c&caseID="+this.caseID;
+      let workspaceurl='/base4dcarbon/case/preparedata/'+this.personID+querytext;
     },
     template:"#banderUI"
   });
