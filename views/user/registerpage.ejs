@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.4.1/jquery.js"></script>
+<style type="text/css">
+body {
+  background-color: #d6d6d3;
+  height: 100vh;
+  width: 80vw;
+  display: flex;
+     flex-direction:column;
+	 justify-content: flex-start;
+     align-items:center;
+  	margin: 0;
+}
+caption{caption-side: top;font-size:large;color:#f97300;margin-left: 40px;}
+#roletable{
+  background-color: rgb(240, 248, 234);
+  height: 480px;
+  width: 800px;
+  position: relative;
+  display: flex;
+  flex-direction:column;
+	 justify-content: flex-start;
+     align-items:center;
+    margin-top: 10px;
+    margin-left:100px;
+    overflow:auto
+}
+.backcolor{background-color: aqua;}
+.navbar{background:#ddedf8;}
+.nav-link, .navbar-brand{color: #f4f4f4;cursor:pointer;}
+.nav-link{margin-right:1em !important;}
+.nav-link:hover{background: #f4f4f4;color:#f97300;}
+.navbar-collapse{justify-content:flex-end;}
+.navbar-toggler{background:#fff !important;}
+</style>
+
+  <title>訪客自行註冊頁</title>
+  </head>
+  <body>
+    <div id="show_div">
+      <bander></bander>
+        <inputer></inputer>
+    </div>
+
+    <template id="banderUI">
+      <nav class="navbar navbar-expand-lg navbar-light">
+        <a class="navbar-brand" href="#">{{brand}}</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarText">
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="/">{{lastpage}}<span class="sr-only">(current)</span></a>
+              </li>
+          </ul>
+          <span class="navbar-text">
+            <font size="1">{{statusreport}}</font>
+          </span>
+        </div>
+      </nav>
+    </template>
+
+    <template id="inputerUI" ">
+      <nav>
+<table border="1" class="table table-striped">
+<caption>角色介紹</caption>
+<tr>
+<th>角色</th>
+<th>人員或資格</th>
+<th>分工及操作</th>
+</tr>
+<tbody>
+<tr>
+<td class="backcolor">減排或增匯活動行為者(共識碳權申請人)</td>
+<td>有在減排或增匯活動之企業、個人、團體</td>
+<td>提出驗證申請，輸入或上傳活動監測資料，通過認驗證後取得共識碳權及運用</td>
+</tr>
+<tr>
+  <td class="backcolor">活動分解士</td>
+  <td>對某項減排或增匯活動有所瞭解的人或申請者本身</td>
+  <td>其產銷活動依碳排放的可衡量性分成細部環節；經採用可行後，可獲得獎勵</td>
+  </tr>
+  <tr>
+    <td class="backcolor">方法建構士</td>
+    <td>對某項減排或增匯活動認證方法有所瞭解的人或申請者本身</td>
+    <td>將該活動各環節所需監測資料及相關係數與基線資料組成一套估算方法；經採用可行後，可獲得獎勵</td>
+    </tr>
+    <tr>
+      <td class="backcolor">參數蒐整士</td>
+      <td>對碳排放資料有所瞭解的任何人</td>
+      <td>找到某一產品某一環節的情境排放或增匯係數或基線資料；被檢核通過列入參數資料表後，可獲得獎勵</td>
+      </tr>
+      <tr>
+        <td class="backcolor">驗證查驗士</td>
+        <td>對驗證工作有所瞭解或有經驗的人員</td>
+        <td>就某項減排或增匯活動申請案進行比對驗證或複核；完成驗證報告後，可獲得獎勵</td>
+        </tr>
+      </tbody>
+</table>
+      <div class="card" style="width: 36rem;" >
+        <div class="card-body">
+          <h5 class="card-title">{{card_title}}</h5>
+          <h6 class="card-subtitle mb-2 text-muted">{{card_subtitle}}</h6>
+          <form action="/base4dcarbon/user/save2group" method="post">
+            <div class="form-group" :key="inputerUIkey">
+
+              <label for="formGroupExampleInput2">{{items.item0}}</label>
+              <select :name="names.name0" class="form-select">
+                <optgroup v-for="role of roles">
+                  <option :value="role.rolecode">{{role.rolename}}</option>
+                  </optgroup>
+                  </select>
+                <br>
+
+              <label for="formGroupExampleInput2">{{items.item1}}</label>
+              <input type="text" :name="names.name1" class="form-control" id="formGroupExampleInput1" :placeholder="holders.holder1">
+
+              <label for="formGroupExampleInput2">{{items.item2}}</label>
+              <input type="text" :name="names.name2" class="form-control" id="formGroupExampleInput2" :placeholder="holders.holder2">
+
+              <label for="formGroupExampleInput2">{{items.item3}}</label>
+              <input type="text" :name="names.name3" class="form-control" id="formGroupExampleInput3" :placeholder="holders.holder3">
+
+              <label for="formGroupExampleInput2">{{items.item4}}</label>
+              <input type="text" :name="names.name4" class="form-control" id="formGroupExampleInput4" :placeholder="holders.holder4">
+
+              <label for="formGroupExampleInput2">{{items.item5}}</label>
+              <input type="text" :name="names.name5" class="form-control" id="formGroupExampleInput5" :placeholder="holders.holder5">
+
+              <label for="formGroupExampleInput2">{{items.item6}}</label>
+              <input type="text" :name="names.name6" class="form-control" id="formGroupExampleInput6" :placeholder="holders.holder6">
+
+              <input type="hidden" name="statusreport" class="form-control" id="msg1" value="由訪客輸入冊資料月後入本頁">
+              <input type="hidden" name="status" class="form-control" id="msg2" value="0">
+              <input type="submit" id="button1" value="確定送出" class="btn btn-info">
+            </div>
+          </form>
+          <input type="submit" id="button2" value="重新輸入" class="btn btn-info" @click="rerender()">
+            <!-- <a href="#" class="card-link">Card link</a>
+            <a href="#" class="card-link">Another link</a> -->
+        </div>
+      </div>
+    </nav>
+    </template>
+
+<!-- Vue CDN-->
+<script src="https://unpkg.com/vue@2.6.14/dist/vue.js"></script>
+<script>
+Vue.component("bander",{
+
+    data(){
+      return {
+        brand:"dCarbon",
+        lastpage:"回前頁",
+        input1:"手動新增1筆",
+        inputbatch:"批次輸入",
+        crawl:"從網路抓取"
+      }
+    },
+
+    template:"#banderUI"
+  });
+  Vue.component("inputer",{
+
+    data(){
+      return {
+        card_title:"新增1個使用者帳號",
+        card_subtitle:"請輸入以下各項資料:",
+        items:{
+          item0:"擬註冊角色",
+          item1:"姓",
+          item2:"名",
+          item3:"有效E-mail",
+          item4:"使用者自訂帳號",
+          item5:"使用者自訂密碼",
+          item6:"上格的密碼再輸一次"
+          },
+        names:{
+          name0:"role",
+          name1:"lastname",
+          name2:"firstname",
+          name3:"email",
+          name4:"account",
+          name5:"email",
+          name6:"account"
+                      },
+        holders:{
+          holder0:"請選擇",
+          holder1:"字串, 註冊者真實的姓",
+          holder2:"字串, 註冊者真實的名",
+          holder3:"字串, 註冊者有效的E-mail",
+          holder4:"字串, 註冊者自獨特帳號",
+          holder5:"字串, 含有英文字母及數字, 長度8碼以上",
+          holder6:"字串, 再輸入與上格完全相同的字串"
+            },
+          roles:[
+            {"rolecode":"applicant",
+                "rolename":"共識碳權申請人"
+                },
+            {"rolecode":"decomposor",
+                "rolename":"活動分解士"
+                },
+            {"rolecode":"methodor",
+                "rolename":"方法建構士"
+                },
+            {"rolecode":"collecter",
+                "rolename":"參數蒐整士"
+                },
+            {"rolecode":"investigator",
+                "rolename":"驗證查驗士"
+                }
+              ],
+      inputerUIkey:0
+      }
+    },
+    mounted:function(){
+
+    },
+    methods:{
+        rerender:function() {
+      this.inputerUIkey += 1;
+      console.log("inputerUIkey:"+this.inputerUIkey)
+    }
+    },
+
+    template:"#inputerUI"
+  });
+
+    new Vue({
+        el:'#show_div',
+        data:{
+          testdata:'有執行到此。。。。'
+        },
+        /* computed:{
+
+        },
+        watch:{
+
+        },
+        filters:{
+
+        },
+        mixins:[
+
+        ],
+        template:" ",
+        components:{
+
+        },*/
+        beforeCreate:function(){
+          console.log("before create...")
+        },created:function(){
+          console.log("created...")
+        },
+        beforeMount:function(){
+          console.log("before mount...")
+        },
+        mounted:function(){
+          console.log("mounted...")
+        },
+        beforeUpdate:function(){
+          console.log("before update...")
+        },
+        updated:function(){
+          console.log("updated...")
+        },
+        beforeDestroy:function(){
+
+        }
+    })
+</script>
+
+
+  </body>
+</html>

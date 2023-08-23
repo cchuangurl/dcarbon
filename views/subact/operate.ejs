@@ -273,6 +273,9 @@ background-color: rgb(205, 226, 253);
       mounted:function(){
         this.inputoneurl="/base4dcarbon/subact/inputpage1/"+this.personID;
         this.inputbatchurl="/base4dcarbon/subact/inputbatch/"+this.personID;
+        this.subactlist.sort((a,b)=>{
+            return parseFloat(a.a25order)-parseFloat(b.a25order)
+        })
         this.maxRow=this.subactlist.length;
         this.modRow=this.maxRow%this.perPage;
         this.maxPage=this.modRow==0?this.maxRow/this.perPage:Math.floor(this.maxRow/this.perPage)+1;

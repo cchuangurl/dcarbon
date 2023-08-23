@@ -18,38 +18,23 @@ background-color: rgb(248, 243, 243);
      align-items:center;
   	margin: 0;
 }
-#mobilephone{
-  background-color: rgb(249, 252, 247);
-  height: 820px;
-  width: 600px;
-  border-width:medium;
-  border-style:solid;
-  border-color:blue;
-  position: relative;
-  display: flex;
-  flex-direction:column;
-	 justify-content: flex-start;
-     align-items:center;
-  	margin: 20PX;
-    border-radius:25px
-}
-#phonescreen{
+caption{caption-side: top;font-size:large;color: #f97300;}
+#rollable{
   background-color: rgb(240, 248, 234);
-  height: 700px;
-  width: 540px;
+  height: 720px;
+  width: 800px;
   position: relative;
   display: flex;
   flex-direction:column;
 	 justify-content: flex-start;
      align-items:center;
-    margin-top: 100px;
+    margin-top: 10px;
     margin-left:10px;
     overflow:auto
 }
-caption{caption-side: top;font-size:large;}
 #sidearea{
   background-color: rgb(213, 218, 210);
-  height: 760px;
+  height: 720px;
   width: 100vw;
   position: relative;
   display: flex;
@@ -92,15 +77,12 @@ caption{caption-side: top;font-size:large;}
   <body>
     <div id="show_div">
       <bander></bander>
-
-        <div class="row" align="justify">
-            <div class="col-lg-3 col-md-6 col-sm-12" id="sidearea">
-                <sidebar></sidebar> </div>
-            <div class="col-lg-9 col-md-6 col-sm-12">
-                        <content1></content1> </div>
-                </div>
+      <div class="row" align="justify">
+        <div class="col-lg-3 col-md-3 col-sm-12" id="sidearea">
+            <sidebar></sidebar> </div>
+        <div class="col-lg-9 col-md-9 col-sm-12">
+                    <content1></content1> </div>
             </div>
-        </div>
     </div>
 
     <template id="banderUI">
@@ -116,7 +98,7 @@ caption{caption-side: top;font-size:large;}
             <ul class="navbar-nav mr-auto">
             <div class="col-lg col-sm-6">
               <li class="nav-item">
-                <a class="nav-link active" href="#">{{listcase}}<span class="sr-only">(current)</span></a>
+                <a class="nav-link active" href="#">{{evidencelist}}<span class="sr-only">(current)</span></a>
                 </li>
                 </div>
                 <div class="col-lg col-sm-6">
@@ -127,10 +109,10 @@ caption{caption-side: top;font-size:large;}
                             type="button"
                             id="dropdownMenuButton"
                             data-toggle="dropdown">
-                            {{findcase}}
+                            {{investigatorpage}}
                         </button>
                         <div class="dropdown-menu">
-                            <a class="dropdown-item" :href="findcaseurl">{{findcase}}</a>
+                            <a class="dropdown-item" :href="investigatorurl">{{investigatorpage}}</a>
                         </div>
                     </div>
                 </li>
@@ -168,15 +150,25 @@ caption{caption-side: top;font-size:large;}
             </div>
         </nav>
     </template>
+    <template id="sidebarUI">
+      <nav aria-label="...">
+          <div class="sidepart" id="callbell">
+              {{promote}}
+
+          </div>
+      </nav>
+  </template>
     <template id="content1UI">
         <nav aria-label="...">
+          <div id="rollable">
           <table border="1" class="table table-striped">
-            <caption>基線需提供之佐證資料</caption>
+            <caption>基線需查驗之佐證資料</caption>
               <thead>
               <tr>
                   <th>{{items.item2}}</th>
                   <th>{{items.item4}}</th>
                   <th>{{items.item5}}</th>
+                  <th>合格?</th>
                 <!-- <th>特別註記</th> -->
               </tr>
               </thead>
@@ -186,23 +178,23 @@ caption{caption-side: top;font-size:large;}
                   <td>{{datum.a25describe}}</td>
                   <td>{{datum.a30check}}</td>
                   <!-- statusreport="由已擷取資料組清單頁進入本頁"> -->
-
+                  <td>
+                    <input type="checkbox">
+                  </td>
                     <td>
                       <input type="submit" value="檢視佐證資料" @click="viewfile(datum._id)">
-                    </td>
-                    <td>
-                      <input type="checkbox" value="是否合格">
                     </td>
                   </tr>
               </tbody>
           </table>
           <table border="1" class="table table-striped">
-            <caption>減碳活動需提供之佐證資料</caption>
+            <caption>減碳活動需查驗之佐證資料</caption>
               <thead>
               <tr>
                   <th>{{items.item2}}</th>
                   <th>{{items.item4}}</th>
                   <th>{{items.item5}}</th>
+                  <th>合格?</th>
                 <!-- <th>特別註記</th> -->
               </tr>
               </thead>
@@ -212,23 +204,23 @@ caption{caption-side: top;font-size:large;}
                   <td>{{datum.a25describe}}</td>
                   <td>{{datum.a30check}}</td>
                   <!-- statusreport="由已擷取資料組清單頁進入本頁"> -->
-
                   <td>
-                    <input type="submit" value="檢視佐證資料" @click="viewfile(datum._id)">
+                    <input type="checkbox">
                   </td>
                   <td>
-                    <input type="checkbox" value="是否合格">
+                    <input type="submit" value="檢視佐證資料" @click="viewfile(datum._id)">
                   </td>
                   </tr>
               </tbody>
           </table>
           <table border="1" class="table table-striped">
-            <caption>認證後需持續提供之佐證資料</caption>
+            <caption>認證後需持續查驗之佐證資料</caption>
               <thead>
               <tr>
                   <th>{{items.item2}}</th>
                   <th>{{items.item4}}</th>
                   <th>{{items.item5}}</th>
+                  <th>合格?</th>
                 <!-- <th>特別註記</th> -->
               </tr>
               </thead>
@@ -238,16 +230,17 @@ caption{caption-side: top;font-size:large;}
                   <td>{{datum.a25describe}}</td>
                   <td>{{datum.a30check}}</td>
                   <!-- statusreport="由已擷取資料組清單頁進入本頁"> -->
-
+                  <td>
+                    <input type="checkbox">
+                  </td>
                   <td>
                     <input type="submit" value="檢視佐證資料" @click="viewfile(datum._id)">
                   </td>
-                  <td>
-                    <input type="checkbox" value="是否合格">
-                  </td>
+
                   </tr>
               </tbody>
           </table>
+          </div>
         </nav>
     </template>
 
@@ -261,15 +254,15 @@ Vue.component("bander",{
     data(){
       return {
         brand:"dCarbon",
-        listcase:"驗證查驗中的案件",
-        findcase:"尋找待驗證查驗的案件",
+        investigatorpage:"驗證查驗中的案件",
+        evidencelist:"需查驗之佐證資料的項目",
         awardmanage:"公評點數管理",
         awardentry:"公評點數收支",
         awardtrade:"公評點數移轉",
         loyalist1:JSON.parse(decodeURIComponent('<%= loyalist1 %>')),
         personID:'<%- personID %>',
-        listcaseurl:"",
-        findcaseurl:"",
+        evidencelisturl:"",
+        investigatorurl:"",
         awardmanageurl:"",
         awardentryurl:"",
         awardtradeurl:"",
@@ -280,8 +273,8 @@ Vue.component("bander",{
     mounted:function(){
         let basepath="/base4dcarbon/branch";
         this.loyalist=this.loyalist1.a05lastname+this.loyalist1.a10firstname;
-        this.listcaseurl=basepath+"/PWA4investigator/"+this.personID;
-        this.findcaseurl=basepath+"/investigator/findcase/"+this.personID;
+        this.investigatorurl=basepath+"/PWA4investigator/"+this.personID;
+        this.evidencelisturl=basepath+"/investigator/workspace/"+this.personID;
         this.awardmanageurl=basepath+"/investigator/awardmanage/"+this.personID;
         this.awardentryurl=basepath+"/investigator/awardentry"+this.personID;
         this.awardtradeurl=basepath+"/investigator/awardtrade/"+this.personID
@@ -290,6 +283,29 @@ Vue.component("bander",{
 
     },
     template:"#banderUI"
+  });
+  Vue.component("sidebar",{
+    props:{},
+    data(){
+      return{
+        promote:"淨零救地球！歡迎協助公評碳權認驗證!!",
+        ipofvisitor:"",
+      inputerUIkey:0
+      }
+    },
+
+    mounted: async function(){
+        const API_URL = 'https://api.ipify.org?format=json';
+
+        // 取得 IP 位址
+        const response = await axios.get(API_URL);
+        this.ipofvisitor= response.data.ip
+
+    },
+    methods:{
+
+    },
+    template:"#sidebarUI"
   });
   Vue.component("content1",{
     props:{},
@@ -302,13 +318,13 @@ Vue.component("bander",{
           baselines:[],
           newitems:[],
           postitems:[],
-        items:{
+          items:{
           item0:"細部活動代碼",
           item1:"資料需求階段",
           item2:"資料提供期限",
           item3:"所需資料名稱",
           item4:"所需資料描述",
-        item5:"上傳次",
+          item5:"上傳次",
           item99:"特別註記"
             }
         }
@@ -340,16 +356,11 @@ Vue.component("bander",{
         })
       },
       methods:{
-        uploadfile:function(id){
-          let querytext="?statusreport=由需上傳資料清單頁的上傳鈕進入本頁&status=3&caseID="+this.caseID+"&dataneedID="+id;
-          let url3='/base4dcarbon/evidence/upload/'+this.personID+querytext;
+        viewfile:function(id){
+          let querytext="?statusreport=由需查驗資料清單頁的檢視資料鈕進入本頁&status=3&caseID="+this.caseID+"&dataneedID="+id;
+          let url3='/base4dcarbon/evidence/checkevidence/'+this.personID+querytext;
           window.location=url3;
         },
-        photo:function(id){
-          let querytext="?statusreport=由需上傳資料清單頁拍照後上傳鈕進入本頁&status=4&caseID="+this.caseID+"&dataneedID="+id;
-          let url3='/base4dcarbon/evidence/photo/'+this.personID+querytext;
-          window.location=url3
-           }
       },
     template:"#content1UI"
   });

@@ -1,5 +1,5 @@
 var router = require('@koa/router')();
-
+const multer = require('multer');
 const evidenceController = require('../controllers/index').evidence;
 //列出清單
 router.get('/:id', async (ctx, next)=> {
@@ -44,12 +44,16 @@ router.get('/upload/:id', async (ctx, next)=> {
   await evidenceController.uploadpage(ctx,next)
 });
 //去上傳既有資料檔頁
-router.get('/uploadfile/:id', async (ctx, next)=> {
+router.post('/uploadfile/:id', async (ctx, next)=> {
   await evidenceController.uploadfile(ctx,next)
 });
 //去拍照及上傳頁
 router.get('/photo/:id', async (ctx, next)=> {
 	await evidenceController.takepicture(ctx)
+});
+//去查驗某一佐證資料檔頁
+router.get('/checkevidence/:id', async (ctx, next)=> {
+  await evidenceController.gocheckpage(ctx,next)
 });
 //到測試片段程式頁
 router.get('/codetest', async (ctx, next)=> {

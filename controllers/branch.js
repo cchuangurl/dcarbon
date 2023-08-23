@@ -3,6 +3,8 @@ const User = require('../models/index').user;
 const Loyalist = require('../models/index').loyalist;
 const Case = require('../models/index').case;
 const Activity = require('../models/index').activity;
+const Subact = require('../models/index').subact;
+const Dataneed = require('../models/index').dataneed;
 const Emissor = require('../models/index').emissor;
 const Progress = require('../models/index').progress;
 module.exports = {
@@ -24,7 +26,7 @@ async dispatch(ctx, next) {
         case "decomposer":pwaroute="/base4dcarbon/branch/pwa4decomposer";break;
         case "methodor":pwaroute="/base4dcarbon/branch/pwa4methodor";break;
         case "collecter":pwaroute="/base4dcarbon/branch/pwa4collecter";break;
-        case "invesgator":pwaroute="/base4dcarbon/branch/pwa4investigator";break;
+        case "investigator":pwaroute="/base4dcarbon/branch/pwa4investigator";break;
         case "admin":pwaroute="/base4dcarbon/branch/maintainer";break;
         case "management":pwaroute="/base4dcarbon/branch/maintainer";break;
         case "tester":pwaroute="/base4dcarbon/branch/collecter";break;
@@ -839,12 +841,25 @@ async investigatorworkspace(ctx, next) {
             console.log("Subact.find({}) failed !!");
             console.log(err)
         })
-    await ctx.render("branch/investigator/workspace",{
-            dataneedlist,
-            caseID,
-            personID,
-            statusreport
-        })
+  await Loyalist.findOne({_id:personID})
+        .then(async loyalistx=>{
+          console.log("type of loyalistx:"+typeof(loyalistx));
+          console.log("loyalistx:"+loyalistx)
+          loyalist1=encodeURIComponent(JSON.stringify(loyalistx));
+          console.log("type of loyalist1:"+typeof(loyalist1));
+          console.log("loyalist1:"+loyalist1)
+          await ctx.render("branch/investigator/workspace",{
+                  dataneedlist,
+                  loyalist1,
+                  caseID,
+                  personID,
+                  statusreport
+              })
+            })
+            .catch(err=>{
+              console.log("Loyalist.findOne() failed !!");
+              console.log(err)
+            })
 },
 //到Receiverweb
 async goreceiver(ctx, next) {

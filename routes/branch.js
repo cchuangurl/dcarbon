@@ -1,11 +1,17 @@
 var router = require('@koa/router')();
 
+const userController = require('../controllers/index').user;
 const branchController = require('../controllers/index').branch;
 const subactController = require('../controllers/index').subact;
 const caseController = require('../controllers/index').case;
 //依帳號決定轉頁
 router.post('/', async (ctx, next)=> {
 	await branchController.dispatch(ctx)
+});
+//到訪客註冊頁
+router.get('/register', async (ctx, next)=> {
+  console.log("有讀到register router")
+  await userController.registerpage(ctx,next)
 });
 //到Applicantweb
 router.get('/app4applicant/:id', async (ctx, next)=> {

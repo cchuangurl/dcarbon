@@ -42,6 +42,7 @@ background-color: rgb(248, 243, 243);
     line-height:60px;
     margin:5px;
     border-radius:10px
+
 }
 .navbar{background:#d6eff5;}
 .nav-link, .navbar-brand{color: #f4f4f4;cursor:pointer;}
@@ -61,6 +62,7 @@ background-color: rgb(248, 243, 243);
 
     <template id="content1UI">
         <div id="mobilephone">
+            <br><br>
             <h3>共識碳權申請人App</h3>
             <div class="row" id="tablefy" v-for="work of work2dos" :key="work._id">
               <div class="col-lg-12 col-md-12 col-sm-12">
@@ -83,10 +85,12 @@ background-color: rgb(248, 243, 243);
     data(){
       return {
         work2dos:[
-            {"route":"/base4dcarbon",
+        /*
+        {"route":"/base4dcarbon",
                 "label":"登入.註冊",
                 "status":"1"
                 },
+                */
             {"route":"/base4dcarbon/activity/inputpage1",
             "label":"申請共識碳權",
                 "status":"2"
@@ -95,10 +99,12 @@ background-color: rgb(248, 243, 243);
             "label":"上傳佐證資料",
                 "status":"3"
             },
+            /*
             {"route":"/base4dcarbon/evidence/photo",
             "label":"拍照後上傳",
                 "status":"4"
             },
+          */
             {"route":"/base4dcarbon/case/applycase",
             "label":"認驗證進度查詢",
                 "status":"5"

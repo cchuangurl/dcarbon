@@ -1,6 +1,9 @@
 //載入相對應的model
 const User = require('../models/index').user;
 const Term = require('../models/index').term;
+const Applicant = require('../models/index').applicant;
+const Loyalist = require('../models/index').loyalist;
+
 module.exports = {
 //列出清單list(req,res)
 async list(ctx,next){
@@ -69,6 +72,11 @@ async inputpage(ctx, next) {
         console.log(err)
     })
 },
+//到使用者註冊頁
+async registerpage(ctx, next) {
+  console.log("進入user controller的registerpage!!")
+  await ctx.render("user/registerpage")
+},
 //到修正單筆資料頁
 async editpage(ctx, next) {
     var statusreport=ctx.query.statusreport;
@@ -118,6 +126,100 @@ async create(ctx,next){
         console.log("User.save() failed !!")
         console.log(err)
     })
+},
+//寫入訪客註冊資料
+async save2group(ctx,next){
+  console.log("進入user controller的save2group!!")
+  var statusreport=ctx.query.statusreport;
+  console.log("got statusreport:"+statusreport);
+  var status=ctx.query.status;
+  console.log("got status:"+status);
+  var rolecode=ctx.query.rolecode;
+  console.log("got rolecode:"+rolecode);
+  var lastname=ctx.query.lastname;
+  console.log("got lastname:"+lastname);
+  var firstname=ctx.query.firstname;
+  console.log("got firstname:"+firstname);
+  var email=ctx.query.email;
+  console.log("got email:"+email);
+  var account=ctx.query.account;
+  console.log("got account:"+account);
+  var password=ctx.query.password;
+  console.log("got password:"+password);
+  var personID;
+  if(rolecode=="applicant"){
+    new_applicant=new Applicant({
+      a05lastname:lastname,
+      a10firstname:firstname,
+      a30email:req.body.a30email,
+      a99footnote:"訪客註冊"
+    });
+    await new_applicant.save()
+      .then(async applicantx=>{
+        console.log("save applicantx:"+applicantx.a05lastname+applicantx.firstname);
+        var new_user = new User({
+          a05status:"stakeholder",
+          a10personID:applicantx._id,
+          a15account:account,
+          a20password:password,
+          a25group:rolecode,
+          a99footnote:"依訪客註冊產生"
+        });
+        await new_user.save()
+        .then(async userx=>{
+            console.log("Saving new_user:"+userx.a15account);
+            personID=userx.a10personID;
+        })
+        .catch((err)=>{
+            console.log("User.save() failed !!")
+            console.log(err)
+        })
+      })
+      .catch((err)=>{
+        console.log("User.save() failed !!")
+        console.log(err)
+    })
+    }else{
+      new_loyalist=new Loyalist({
+        a05lastname:lastname,
+        a10firstname:firstname,
+        a15role:rolecode,
+        a30email:email,
+        a99footnote:"訪客註冊"
+      });
+      await new_loyalist.save()
+        .then(async loyalistx=>{
+          console.log("save loyalistx:"+loyalistx.a05lastname+loyalistx.firstname);
+          var new_user = new User({
+            a05status:"stakeholder",
+            a10personID:loyalistx._id,
+            a15account:account,
+            a20password:password,
+            a25group:rolecode,
+            a99footnote:"依訪客註冊產生"
+          });
+          await new_user.save()
+          .then(async userx=>{
+              console.log("Saving new_user:"+userx.a15account);
+              personID=userx.a10personID;
+          })
+          .catch((err)=>{
+              console.log("User.save() failed !!")
+              console.log(err)
+          })
+        })
+        .catch((err)=>{
+          console.log("User.save() failed !!")
+          console.log(err)
+      })
+    }
+  statusreport="儲存訪客註冊資料後進入本頁";
+  await ctx.render("user/successpage",{
+    statusreport,
+    personID,
+    account,
+    password
+  })
 },
 //批次新增資料
 async batchinput(ctx, next){
@@ -252,5 +354,16 @@ async update(ctx,next){
         console.log("User.findOneAndUpdate() failed !!")
         console.log(err)
     })
+},
+//送出使用手冊檔案供下載
+async downloadmenu(ctx, next) {
+  const name ="20230816demomenu.pdf";
+  // 引用需要的模組
+  //const path=require("path");
+  let foldpath="public/pdf/";
+  let filepath=foldpath+name;
+  console.log("going to download menu...");
+ctx.attachment(filepath);
+  await send(ctx, filepath)
 }
 }//EOF export

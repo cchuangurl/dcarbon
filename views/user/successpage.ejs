@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.4.1/jquery.js"></script>
+<style type="text/css">
+body {
+  background-color: #d6d6d3;
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+     flex-direction:column;
+	 justify-content: flex-start;
+     align-items:center;
+  	margin: 0;
+}
+caption{caption-side: top;font-size:large;}
+.appbutton{
+    height:60px;
+    width:200px;
+    background-color:#d6eff5;
+    font:40px;
+    text-align:center;
+    line-height:60px;
+    margin:5px;
+    border-radius:10px
+}
+.navbar{background:#ddedf8;}
+.nav-link, .navbar-brand{color: #f4f4f4;cursor:pointer;}
+.nav-link{margin-right:1em !important;}
+.nav-link:hover{background: #f4f4f4;color:#f97300;}
+.navbar-collapse{justify-content:flex-end;}
+.navbar-toggler{background:#fff !important;}
+</style>
+
+  <title>註冊成功回應頁</title>
+  </head>
+  <body>
+    <div id="show_div">
+      <bander></bander>
+        <inputer></inputer>
+    </div>
+
+    <template id="banderUI">
+      <nav class="navbar navbar-expand-lg navbar-light">
+        <a class="navbar-brand" href="#">{{brand}}</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarText">
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="/base4dcarbon/user/register">{{register}}</a>
+              </li>
+          </ul>
+          <span class="navbar-text">
+            <font size="1">{{statusreport}}</font>
+          </span>
+        </div>
+      </nav>
+    </template>
+
+    <template id="inputerUI" ">
+      <nav>
+      <br>
+        <P><h5>註冊成功!!</h5></P><br>
+        <button class="appbutton" @click="download()">下載使用手冊</button>
+      <br>
+      <form action="/base4dcarbon/branch" method="post">
+            <input type="hidden" name="account" :value="account"/>
+            <input type="hidden" name="password" :value="passord"/>
+            <input type="hidden" name="statusreport" class="form-control" id="msg1" value="由帳號註冊成功後進入本頁">
+            <input type="submit" value="以所註冊身分開始使用" class="btn btn-info" >
+        </form>
+    </nav>
+    </template>
+
+<!-- Vue CDN-->
+<script src="https://unpkg.com/vue@2.6.14/dist/vue.js"></script>
+<script>
+Vue.component("bander",{
+
+    data(){
+      return {
+        brand:"dCarbon",
+        register:"註冊另一帳號",
+        input1:"手動新增1筆",
+        inputbatch:"批次輸入",
+        crawl:"從網路抓取",
+        statusreport:'<%- statusreport %>'
+      }
+    },
+
+    template:"#banderUI"
+  });
+  Vue.component("inputer",{
+
+    data(){
+      return {
+        statusreport:'<%- statusreport %>',
+        personID:'<%- personID %>',
+        account:'<%- account %>',
+        passord:'<%- password %>',
+      inputerUIkey:0
+      }
+    },
+    mounted:function(){
+
+    },
+    methods:{
+        rerender:function() {
+      this.inputerUIkey += 1;
+      console.log("inputerUIkey:"+this.inputerUIkey)
+    },
+    download:function(){
+        let routerstring="/base4dcarbon/user/menu/"+this.personID;
+        window.open(routerstring, '_self');
+    }
+    },
+
+    template:"#inputerUI"
+  });
+
+    new Vue({
+        el:'#show_div',
+        data:{
+          testdata:'有執行到此。。。。'
+        },
+        /* computed:{
+
+        },
+        watch:{
+
+        },
+        filters:{
+
+        },
+        mixins:[
+
+        ],
+        template:" ",
+        components:{
+
+        },*/
+        beforeCreate:function(){
+          console.log("before create...")
+        },created:function(){
+          console.log("created...")
+        },
+        beforeMount:function(){
+          console.log("before mount...")
+        },
+        mounted:function(){
+          console.log("mounted...")
+        },
+        beforeUpdate:function(){
+          console.log("before update...")
+        },
+        updated:function(){
+          console.log("updated...")
+        },
+        beforeDestroy:function(){
+
+        }
+    })
+</script>
+
+
+  </body>
+</html>

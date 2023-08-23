@@ -9,6 +9,7 @@ router.get('/:id', async (ctx, next)=> {
 router.get('/inputpage/:id', async (ctx, next)=> {
     await userController.inputpage(ctx,next)
 });
+
 //到修正單筆資料頁
 router.get('/editpage/:id', async (ctx, next)=> {
     console.log("get id:"+ctx.params.id)
@@ -26,6 +27,11 @@ router.get('/:id', async(ctx, next)=> {
 router.get('/find/:no', async(ctx, next)=> {
 	await userController.findByNo(ctx)
 });
+//寫入訪客註冊資料
+router.post('/save2group', async (ctx, next)=> {
+	console.log(ctx.request.body);
+	await userController.save2group(ctx)
+});
 //寫入一筆資料
 router.post('/add', async (ctx, next)=> {
 	console.log(ctx.request.body);
@@ -39,6 +45,11 @@ router.get('/delete/:id', async (ctx, next)=> {
 router.post('/update', async (ctx, next)=> {
 	await userController.update(ctx)
 });
+//送出使用手冊檔案供下載
+router.get('/menu/:id', async (ctx, next)=> {
+	console.log("type of menu:"+typeof(ctx.request.files.file));
+	await userController.downloadmenu(ctx)
+});
 //到測試片段程式頁
 router.get('/codetest', async (ctx, next)=> {
     var {statusreport}=ctx.request.body;
@@ -50,4 +61,5 @@ router.get('/codetest', async (ctx, next)=> {
 		statusreport:statusreport
 	})
 });
+
 module.exports = router;

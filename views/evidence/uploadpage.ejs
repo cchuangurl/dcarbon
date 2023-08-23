@@ -89,32 +89,25 @@ body {
 
     <template id="inputerUI" ">
       <div>
-      <form enctype="multipart/form-data" novalidate v-if="!isUploaded">
-        <p v-if="!isUploading"> <h3>請點選"選擇檔案"鈕, 並選擇要上傳的佐證檔案:</h3></p><br>
-      <input type="file" id="file2upload" :name="file2upload" @change="handleFileSelect($event.target.name, $event.target.files)" accept="/" class="input-file" :disabled="isUploading"/>
+        <div>
+
+          <p v-if="!isUploading"> <h3>請點選"選擇檔案"鈕, 並選擇要上傳的佐證檔案:</h3></p><br>
+
+      <input type="file" id="file2upload" :name="file2upload" @change="handleFileSelect($event.target.name, $event.target.files)" accept="/" class="input-file" :disabled="isUploading" />
       <br>
+      <img id="preview_img" :src="filepath" alt="(這裡應該出現圖像預覽)" width="40%">
         <p></p><h4>檔案上傳後:<br>
         1.存到雲端儲存區dcarbon bucket,<br>
         2.對檔案進行Hash,<br>
         (3.預定Hash碼上鏈到goerli鏈)</h4>
         </p>
-      <p v-if="isUploading">{{ fileName }}上傳中 …</p>
+      <p v-if="isUploading">{{ file2upload}}上傳中 …</p>
       </form>
       <div v-if="isUploaded">
         <br><br>
-        <p><h3> {{ fileName }}檔已選取<br>將上傳到Google cloud storage的 {{ bucketName }}</h3></p>
+        <p><h3> {{ file2upload }}檔已選取<br>將上傳到Google cloud storage的 {{ bucketName }}</h3></p>
         <p>網址: {{ fileUrl }}</p>
         <br>
-      <form :action="uploadurl" method="get">
-          <input type="hidden" name="statusreport" value="由上傳一個佐證檔案回到本頁">
-          <input type="hidden" name="status" value="b">
-          <input type="hidden" name="caseID" :value="caseID">
-          <input type="hidden" name="dataneedID" :value="dataneedID">
-          <input type="hidden" name="file2upload" :value="file2upload">
-          <input type="hidden" name="localpath" :value="localpath">
-          <input type="hidden" name="alias" :value="alias">
-          <button type="submit" class="confirmbutton">上傳檔案</button>
-      </form>
         </div>
       <br>
 
@@ -165,12 +158,12 @@ Vue.component("bander",{
         caseID:'<%- caseID %>',
         personID:'<%- personID %>',
         uploadurl:"",
+        filepath:"",
         file2upload: "",
         alias:"",
         localpath:"",
         isUploading: false,
         isUploaded: false,
-        fileName:"",
         bucketName: "dcarbon-bucket1",
         fileUrl:"",
         items:{
@@ -222,47 +215,43 @@ Vue.component("bander",{
           // Check if there is a file
           if(!fileList.length) return;
             // Get the first file
-            const file = fileList[0];
-            //this.localpath=URL.createObjectURL(file);
-            //this.localpath=file.webkitRelativePath;
-            this.localpath="c:/使用者/cchua/圖片/手機相簿/";
+            const originfile = fileList[0];
+            console.log("type of originfile:"+typeof(originfile))
             // Set the file name
-            this.fileName = file.name;
-            let dotlocat=this.fileName.indexOf(".");
-            this.alias=this.fileName.substring(dotlocat+1)
-            this.file2upload=this.fileName
-            // Start uploading
+            this.filepath=URL.createObjectURL(originfile);
+            this.file2upload = originfile.name;
+            let dotlocat=this.file2upload.indexOf(".");
+            this.alias=this.file2upload.substring(dotlocat+1)
             console.log("alias:"+this.alias)
-            this.isUploading = true;
-
-            /**
-            // Create a new blob in the bucket and upload the file data
-            const blob = bucket.file(file.name);
-            const blobStream = blob.createWriteStream();
-
-            // Handle errors
-            blobStream.on("error", (err) => {
-              console.error(err);
-              alert("Something went wrong!");
-              this.isUploading = false;
-            });
-
-            // Handle finish event
-            blobStream.on("finish", () => {
-*/
-              // The public URL can be used to directly access the file via HTTP.
-              const publicUrl = `https://storage.googleapis.com/`+this.bucketName+"/"+this.dataneedID+"."+this.alias;
-              // Set the file URL
-              this.fileUrl = publicUrl;
-
-              // Finish uploading
+            /*
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                $("#preview_img").attr("src", e.target.result);
+            }
+            reader.readAsBinaryString(file2upload);
+            */
+            var formData=new FormData();
+            formData.append('thefile', originfile);
+            formData.append('caseID', this.caseID);
+            formData.append('dataneedID', this.dataneedID);
+            formData.append('statusreport', this.statusreport);
+            formData.append('status', this.status);
+            formData.append('file2upload', this.file2upload);
+            formData.append('filepath', this.filepath);
+            formData.append('alias', this.alias);
+            formData.forEach((val,key)=>{
+              console.log(key+":"+val)
+            })
+            axios.post('/base4dcarbon/evidence/uploadfile/'+this.personID,formData,{
+            Headers:{
+              "Content-type":"multipart/form-data"
+            }
+            })
+            // The public URL can be used to directly access the file via HTTP.
+            this.fileUrl= `https://storage.googleapis.com/`+this.bucketName+"/"+this.dataneedID+"."+this.alias;
+            // Finish uploading
               this.isUploading = false;
               this.isUploaded = true;
-            //});
-
-            // Send the file data to the stream
-            //blobStream.end(file)
-
         }
 
     },

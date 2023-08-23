@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@google-cloud/storage": "^7.0.0",
+    "@koa/multer": "^3.0.2",
     "@koa/router": "^10.1.1",
     "axios": "0.25.0",
     "cheerio": "^1.0.0-rc.10",
@@ -20,6 +21,7 @@
     "ejs": "~3.1.6",
     "http-errors": "^2.0.0",
     "koa": "~2.13.4",
+    "koa-body": "^6.0.1",
     "koa-bodyparser": "^2.5.0",
     "koa-cors": "0.0.16",
     "koa-json": "^1.1.3",

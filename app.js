@@ -5,10 +5,13 @@ var koa = require('koa')
   , onerror = require('koa-onerror')
   , path =require("path")
   , koastatic=require('koa-static')
+  , cors=require('koa-cors')
   , cookieParser=require("cookie-parser")
-  , bodyparser=require("koa-bodyparser")
+  //, bodyparser=require("koa-bodyparser")
+  //, bodyparser=require("koa-body")
   , koarouter=require("@koa/router");
-
+  const koabody= require('koa-body').default;
+  //import { koabody } from 'koa-body';
 //var index = require('./routes/index');
 //var users = require('./routes/users');
 var app=new koa();
@@ -17,12 +20,21 @@ var app=new koa();
 onerror(app);
 
 // global middlewares
-
+app.use(cors());
 app.use(views(__dirname+'/views', {
     //extension: 'ejs'
     extension: 'ejs'
 }));
-app.use(bodyparser());
+//app.use(bodyparser());
+app.use(koabody({
+    enableTypes:["json","form","text"],
+    multipart:true
+}));
+/*
+app.use(ctx=>{
+    ctx.body=`Request Body:${JSON.Stringify(ctx.request.body)}`
+})
+*/
 app.use(json());
 app.use(logger());
 //app.use(koa.urlencoded({ extended: false }));
