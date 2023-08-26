@@ -39,6 +39,17 @@ async dispatch(ctx, next) {
       console.log(err)
   })
 },
+//送出使用手冊檔案供下載
+async seemenu(ctx, next) {
+  const name ="20230824dcarbonmenu.pdf";
+  // 引用需要的模組
+  //const path=require("path");
+  let folderpath="public/pdf/";
+  let filepath=folderpath+name;
+  console.log("going to download menu..."+filepath);
+  ctx.attachment(decodeURI(filepath));
+  await ctx.send(ctx, filepath)
+},
 //到Applicantweb
 async goapplicant(ctx, next) {
   console.log("進入branch controller的goapplicant");
@@ -108,6 +119,7 @@ async decomposerfindcase(ctx, next){
     console.log("type of cases:"+typeof(cases));
     console.log("1st case:"+cases[0]);
     console.log("No. of case:"+cases.length)
+/*
     for(casex of cases){
         if(casex.a40loyalistID.length==0){
         case2choose.push(casex)
@@ -115,6 +127,8 @@ async decomposerfindcase(ctx, next){
     }
     console.log("No. of case2choose:"+case2choose.length)
     caselist=encodeURIComponent(JSON.stringify(case2choose));
+*/
+    caselist=encodeURIComponent(JSON.stringify(cases));
     console.log("type of caselist:"+typeof(caselist))
     })
     .catch(err=>{

@@ -365,14 +365,14 @@ Vue.component("bander",{
       methods:{
         viewone:function(id){
           let basepath="/base4dcarbon/branch";
-          let status3="?statusreport=由case資料清單頁的檢視解構果鈕進入本頁&status=3";
+          let status6="?statusreport=由建構中case資料清單頁的檢視案鈕進入本頁&status=6";
           let casequery="&caseID="+id;
-          let outcomeurl=basepath+"/decomposer/outcome/"+this.personID+status3+casequery;
+          let outcomeurl=basepath+"/decomposer/outcome/"+this.personID+status6+casequery;
           window.location=outcomeurl;
         },
         setmethod:function(id){
           let basepath="/base4dcarbon/branch";
-          let status3="?statusreport=由case資料清單頁的建構方法鈕進入本頁&status=3";
+          let status6="?statusreport=由case資料清單頁的建構方法鈕進入本頁&status=6";
           let casequery="&caseID="+id;
           let setmethodurl=basepath+'/methodor/workspace/'+this.personID+status3+casequery;
           window.location=setmethodurl;

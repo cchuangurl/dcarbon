@@ -45,16 +45,24 @@ caption{caption-side: top;font-size:large;}
 
     <template id="banderUI">
       <nav class="navbar navbar-expand-lg navbar-light">
-        <a class="navbar-brand" href="#">{{brand}}</a>
+        <a class="navbar-brand" href="/">{{brand}}</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarText">
           <ul class="navbar-nav mr-auto">
             <li class="nav-item">
+                <a class="nav-link" :href="menuurl">{{downloadmenu}}</a>
+              </li>
+          </ul>
+        </div>
+        <div class="collapse navbar-collapse" id="navbarText">
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
                 <a class="nav-link" href="/base4dcarbon/user/register">{{register}}</a>
               </li>
           </ul>
+        </div>
           <span class="navbar-text">
             <font size="1">{{statusreport}}</font>
           </span>
@@ -66,14 +74,19 @@ caption{caption-side: top;font-size:large;}
       <nav>
       <br>
         <P><h5>註冊成功!!</h5></P><br>
+<!--
+        <form>
         <button class="appbutton" @click="download()">下載使用手冊</button>
+      </form>
       <br>
+    -->
       <form action="/base4dcarbon/branch" method="post">
             <input type="hidden" name="account" :value="account"/>
             <input type="hidden" name="password" :value="passord"/>
             <input type="hidden" name="statusreport" class="form-control" id="msg1" value="由帳號註冊成功後進入本頁">
             <input type="submit" value="以所註冊身分開始使用" class="btn btn-info" >
         </form>
+
     </nav>
     </template>
 
@@ -86,13 +99,14 @@ Vue.component("bander",{
       return {
         brand:"dCarbon",
         register:"註冊另一帳號",
-        input1:"手動新增1筆",
-        inputbatch:"批次輸入",
-        crawl:"從網路抓取",
-        statusreport:'<%- statusreport %>'
+        downloadmenu:"下載使用操作手冊",
+        statusreport:'<%- statusreport %>',
+        menuurl:""
       }
     },
-
+    mounted:function(){
+      let menuurl="/base4dcarbon/user/getmenu/"+this.personID;
+    },
     template:"#banderUI"
   });
   Vue.component("inputer",{
@@ -103,6 +117,7 @@ Vue.component("bander",{
         personID:'<%- personID %>',
         account:'<%- account %>',
         passord:'<%- password %>',
+
       inputerUIkey:0
       }
     },
@@ -113,10 +128,6 @@ Vue.component("bander",{
         rerender:function() {
       this.inputerUIkey += 1;
       console.log("inputerUIkey:"+this.inputerUIkey)
-    },
-    download:function(){
-        let routerstring="/base4dcarbon/user/menu/"+this.personID;
-        window.open(routerstring, '_self');
     }
     },
 

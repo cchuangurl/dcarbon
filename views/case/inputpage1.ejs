@@ -18,8 +18,8 @@ body {
 }
 #mobilephone{
   background-color: rgb(249, 252, 247);
-  height: 820px;
-  width: 600px;
+  height: 700px;
+  width: 420px;
   border-width:medium;
   border-style:solid;
   border-color:blue;
@@ -33,15 +33,16 @@ body {
 }
 #phonescreen{
   background-color: rgb(240, 248, 234);
-  height: 700px;
-  width: 540px;
+  height: 600px;
+  width: 400px;
   position: relative;
   display: flex;
   flex-direction:column;
 	 justify-content: flex-start;
      align-items:center;
-  margin-top: 100px;
+  margin-top: 50px;
   margin-left:10px;
+  overflow:auto
 }
 .navbar{background:#ddedf8;}
 .nav-link, .navbar-brand{color: #f4f4f4;cursor:pointer;}
@@ -68,7 +69,7 @@ body {
     <template id="inputerUI" ">
     <div id="mobilephone">
     <div id="phonescreen">
-      <div class="card" style="width: 36rem;" >
+      <div class="card" style="width: 24rem;" >
         <div class="card-body">
           <h5 class="card-title">{{card_title}}</h5>
           <h6 class="card-subtitle mb-2 text-muted">{{card_subtitle}}</h6>

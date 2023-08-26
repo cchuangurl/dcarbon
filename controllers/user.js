@@ -7,7 +7,7 @@ const Loyalist = require('../models/index').loyalist;
 module.exports = {
 //列出清單list(req,res)
 async list(ctx,next){
-    console.log("found route /base4dcarbon/user !!");
+    console.log("進入 controller /base4dcarbon/user/ !!");
     var statusreport=ctx.query.statusreport;
     console.log("gotten query:"+statusreport);
     var personID=ctx.params.id;
@@ -130,33 +130,33 @@ async create(ctx,next){
 //寫入訪客註冊資料
 async save2group(ctx,next){
   console.log("進入user controller的save2group!!")
-  var statusreport=ctx.query.statusreport;
+  var {statusreport}=ctx.request.body;
   console.log("got statusreport:"+statusreport);
-  var status=ctx.query.status;
+  var {status}=ctx.request.body;
   console.log("got status:"+status);
-  var rolecode=ctx.query.rolecode;
+  var {rolecode}=ctx.request.body;
   console.log("got rolecode:"+rolecode);
-  var lastname=ctx.query.lastname;
+  var {lastname}=ctx.request.body;
   console.log("got lastname:"+lastname);
-  var firstname=ctx.query.firstname;
+  var {firstname}=ctx.request.body;
   console.log("got firstname:"+firstname);
-  var email=ctx.query.email;
+  var {email}=ctx.request.body;
   console.log("got email:"+email);
-  var account=ctx.query.account;
+  var {account}=ctx.request.body;
   console.log("got account:"+account);
-  var password=ctx.query.password;
+  var {password}=ctx.request.body;
   console.log("got password:"+password);
   var personID;
   if(rolecode=="applicant"){
-    new_applicant=new Applicant({
+    var new_applicant=new Applicant({
       a05lastname:lastname,
       a10firstname:firstname,
-      a30email:req.body.a30email,
+      a30email:email,
       a99footnote:"訪客註冊"
     });
     await new_applicant.save()
       .then(async applicantx=>{
-        console.log("save applicantx:"+applicantx.a05lastname+applicantx.firstname);
+        console.log("save applicantx:"+applicantx.a05lastname+applicantx.a10firstname);
         var new_user = new User({
           a05status:"stakeholder",
           a10personID:applicantx._id,
@@ -180,7 +180,7 @@ async save2group(ctx,next){
         console.log(err)
     })
     }else{
-      new_loyalist=new Loyalist({
+      var new_loyalist=new Loyalist({
         a05lastname:lastname,
         a10firstname:firstname,
         a15role:rolecode,
@@ -357,13 +357,13 @@ async update(ctx,next){
 },
 //送出使用手冊檔案供下載
 async downloadmenu(ctx, next) {
-  const name ="20230816demomenu.pdf";
+  const name ="20230824dcarbonmenu.pdf";
   // 引用需要的模組
   //const path=require("path");
-  let foldpath="public/pdf/";
-  let filepath=foldpath+name;
-  console.log("going to download menu...");
-ctx.attachment(filepath);
+  let folderpath="public/pdf/";
+  let filepath=folderpath+name;
+  console.log("going to download menu..."+filepath);
+  ctx.attachment(filepath);
   await send(ctx, filepath)
 }
 }//EOF export

@@ -69,7 +69,7 @@ caption{caption-side: top;font-size:large;color:#f97300;margin-left: 40px;}
     <template id="inputerUI" ">
       <nav>
 <table border="1" class="table table-striped">
-<caption>角色介紹</caption>
+<caption>角色介紹 (要填註冊資料請往下滑)</caption>
 <tr>
 <th>角色</th>
 <th>人員或資格</th>
@@ -136,7 +136,7 @@ caption{caption-side: top;font-size:large;color:#f97300;margin-left: 40px;}
               <label for="formGroupExampleInput2">{{items.item6}}</label>
               <input type="text" :name="names.name6" class="form-control" id="formGroupExampleInput6" :placeholder="holders.holder6">
 
-              <input type="hidden" name="statusreport" class="form-control" id="msg1" value="由訪客輸入冊資料月後入本頁">
+              <input type="hidden" name="statusreport" class="form-control" id="msg1" value="由訪客輸入註冊資料月後入本頁">
               <input type="hidden" name="status" class="form-control" id="msg2" value="0">
               <input type="submit" id="button1" value="確定送出" class="btn btn-info">
             </div>
@@ -182,13 +182,13 @@ Vue.component("bander",{
           item6:"上格的密碼再輸一次"
           },
         names:{
-          name0:"role",
+          name0:"rolecode",
           name1:"lastname",
           name2:"firstname",
           name3:"email",
           name4:"account",
-          name5:"email",
-          name6:"account"
+          name5:"password",
+          name6:"checkpw"
                       },
         holders:{
           holder0:"請選擇",

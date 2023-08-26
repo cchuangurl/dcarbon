@@ -46,8 +46,7 @@ router.post('/update', async (ctx, next)=> {
 	await userController.update(ctx)
 });
 //送出使用手冊檔案供下載
-router.get('/menu/:id', async (ctx, next)=> {
-	console.log("type of menu:"+typeof(ctx.request.files.file));
+router.get('/getmenu/:id', async (ctx, next)=> {
 	await userController.downloadmenu(ctx)
 });
 //到測試片段程式頁

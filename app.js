@@ -28,7 +28,10 @@ app.use(views(__dirname+'/views', {
 //app.use(bodyparser());
 app.use(koabody({
     enableTypes:["json","form","text"],
-    multipart:true
+    multipart:true,
+    formdiable:{
+      multipart:true
+      }
 }));
 /*
 app.use(ctx=>{

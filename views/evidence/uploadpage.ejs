@@ -19,8 +19,8 @@ body {
 }
 #mobilephone{
   background-color: rgb(249, 252, 247);
-  height: 820px;
-  width: 600px;
+  height: 700px;
+  width: 420px;
   border-width:medium;
   border-style:solid;
   border-color:blue;
@@ -34,8 +34,8 @@ body {
 }
 #phonescreen{
   background-color: rgb(240, 248, 234);
-  height: 700px;
-  width: 540px;
+  height: 600px;
+  width: 400px;
   position: relative;
   display: flex;
   flex-direction:column;
@@ -43,6 +43,7 @@ body {
      align-items:center;
   margin-top: 100px;
   margin-left:10px;
+  overflow:auto
 }
 .confirmbutton{
     height:60px;
@@ -74,8 +75,7 @@ body {
         <div id="mobilephone">
           <div id="phonescreen">
           <p v-if="!isUploading"> <h3>請點選"選擇檔案"鈕, 並選擇要上傳的佐證檔案:</h3></p><br>
-
-      <input type="file" id="file2upload" :name="file2upload" @change="handleFileSelect($event.target.name, $event.target.files)" accept="/" class="input-file" :disabled="isUploading" />
+          <input type="file" id="file2upload" :name="file2upload" @change="handleFileSelect($event.target.name, $event.target.files)"  accept="/" class="input-file" :disabled="isUploading" />
       <br>
       <img id="preview_img" :src="filepath" alt="(這裡應該出現圖像預覽)" width="40%">
         <p></p><h4>檔案上傳後:<br>
@@ -84,7 +84,6 @@ body {
         (3.預定Hash碼上鏈到goerli鏈)</h4>
         </p>
       <p v-if="isUploading">{{ file2upload}}上傳中 …</p>
-      </form>
       <div v-if="isUploaded">
         <br><br>
         <p><h3> {{ file2upload }}檔已選取<br>將上傳到Google cloud storage的 {{ bucketName }}</h3></p>

@@ -13,6 +13,11 @@ router.get('/register', async (ctx, next)=> {
   console.log("有讀到register router")
   await userController.registerpage(ctx,next)
 });
+//檢視使用手冊
+router.get('/menu', async (ctx, next)=> {
+  console.log("有讀到menu router")
+  await branchController.seemenu(ctx,next)
+});
 //到Applicantweb
 router.get('/app4applicant/:id', async (ctx, next)=> {
     await branchController.goapplicant(ctx,next)

@@ -148,7 +148,73 @@ retrieve(req,res){
 findByNo(req,res){
 
 },
-
+//檢視某一個申請案資料
+async caseinfo(ctx,next){
+  console.log("進入case controller caseinfo() !!");
+  var statusreport=ctx.query.statusreport;
+  console.log("got statusreport:"+statusreport);
+  var status=ctx.query.status;
+  console.log("got status:"+status);
+  var caseID=ctx.query.caseID;
+  console.log("got caseID:"+caseID);
+  var personID=ctx.params.id;
+  var activityID,renderurl;
+  var thecase, theactivity,termlist;
+  await Case.findById(caseID)
+    .then(async casex=>{
+        console.log("Casex:"+casex);
+        thecase=encodeURIComponent(JSON.stringify(casex));
+        console.log("case:"+thecase);
+        console.log("type of case:"+typeof(thecase));
+        activityID=casex.a10activityID;
+        console.log("activityID:"+activityID);
+        })
+      .catch(err=>{
+          console.log("Case.findById() failed !!");
+          console.log(err)
+        })
+      await Activity.findById(activityID)
+      .then(async activityx=>{
+          console.log("activityx:"+activityx);
+          theactivity=encodeURIComponent(JSON.stringify(activityx));
+          console.log("the activity:"+theactivity);
+          console.log("type of theactivity:"+typeof(theactivity));
+          })
+      .catch(err=>{
+          console.log("Case.findById() failed !!");
+          console.log(err)
+        })
+        await Term.find({a15model:{$in:["case","activity"]}})
+          .then(async terms=>{
+              console.log("type of terms:"+typeof(terms));
+              console.log("type of 1st term:"+typeof(terms[0]));
+              console.log("1st term:"+terms[0])
+              console.log("No. of term:"+terms.length)
+              termlist=encodeURIComponent(JSON.stringify(terms));
+              console.log("type of termlist:"+typeof(termlist));
+            })
+          switch(status){
+              case 1:renderurl="case/caseinfopage2";break;
+              case 2:renderurl="case/caseinfopage2";break;
+              case 3:renderurl="case/caseinfopage1";break;
+              case 5:renderurl="case/caseinfopage1";break;
+              case 7:renderurl="case/caseinfopage2";break;
+              default:renderurl="case/caseinfopage1"
+          }
+          await ctx.render(renderurl,{
+              termlist,
+              thecase,
+              theactivity,
+              statusreport,
+              personID,
+              caseID,
+              status
+        })
+      .catch(err=>{
+          console.log("Term.find({}) failed !!");
+          console.log(err)
+      })
+},
 //寫入一筆資料
 async create(ctx,next){
     var new_case = new Case(ctx.request.body);
@@ -422,16 +488,17 @@ async preparedata(ctx, next) {
                 dataneedlist=encodeURIComponent(JSON.stringify(alldataneed));
                 console.log("type of dataneedlist:"+typeof(dataneedlist));
               })
+            await ctx.render("dataneed/noticepage",{
+              dataneedlist,
+              caseID,
+              personID,
+              statusreport
+            })
         .catch(err=>{
             console.log("Subact.find({}) failed !!");
             console.log(err)
         })
-    await ctx.render("dataneed/noticepage",{
-            dataneedlist,
-            caseID,
-            personID,
-            statusreport
-        })
+
 },
 //檢視活動解構結果
 async decomposed(ctx,next){

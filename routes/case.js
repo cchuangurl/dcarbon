@@ -30,6 +30,10 @@ router.get('/:id', async(ctx, next)=> {
 router.get('/find/:no', async(ctx, next)=> {
 	await caseController.findByNo(ctx)
 });
+////檢視某一個申請案資料
+router.get('/caseinfo/:id', async(ctx, next)=> {
+	await caseController.caseinfo(ctx)
+});
 //寫入一筆資料
 router.post('/add', async (ctx, next)=> {
 	console.log(ctx.request.body);

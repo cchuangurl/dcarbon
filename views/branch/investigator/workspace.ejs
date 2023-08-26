@@ -198,7 +198,7 @@ caption{caption-side: top;font-size:large;color: #f97300;}
                     <input type="checkbox">
                   </td>
                     <td>
-                      <input type="submit" value="檢視佐證資料" @click="viewfile(datum._id)">
+                      <input type="submit" value="驗證佐證資料" @click="checkfile(datum._id,datum.a30check)">
                     </td>
                   </tr>
               </tbody>
@@ -224,7 +224,7 @@ caption{caption-side: top;font-size:large;color: #f97300;}
                     <input type="checkbox">
                   </td>
                   <td>
-                    <input type="submit" value="檢視佐證資料" @click="viewfile(datum._id)">
+                    <input type="submit" value="驗證佐證資料" @click="checkfile(datum._id,datum.a30check)">
                   </td>
                   </tr>
               </tbody>
@@ -250,7 +250,7 @@ caption{caption-side: top;font-size:large;color: #f97300;}
                     <input type="checkbox">
                   </td>
                   <td>
-                    <input type="submit" value="檢視佐證資料" @click="viewfile(datum._id)">
+                    <input type="submit" value="驗證佐證資料" @click="checkfile(datum._id,datum.a30check)">
                   </td>
 
                   </tr>
@@ -376,8 +376,9 @@ Vue.component("bander",{
         })
       },
       methods:{
-        viewfile:function(id){
-          let querytext="?statusreport=由需查驗資料清單頁的檢視資料鈕進入本頁&status=3&caseID="+this.caseID+"&dataneedID="+id;
+        checkfile:function(id,fileno){
+          let querytext="?statusreport=由需查驗資料清單頁的查驗人資料鈕進入本頁&status=3&caseID="+this.caseID+"&dataneedID="+id+"&fileno="+fileno;
+          console.log("no of files:"+fileno);
           let url3='/base4dcarbon/evidence/checkevidence/'+this.personID+querytext;
           window.location=url3;
         },

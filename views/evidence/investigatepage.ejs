@@ -87,8 +87,8 @@ body {
       </form>
       </fieldset>
       <br>
-      <img id="view_img" :src="fakepath" width="50%">
-
+          <img id="view_img" :src="fakepath" width="50%">
+      </div>
       </div>
     </template>
 
@@ -107,7 +107,7 @@ Vue.component("bander",{
         status:'<%- status %>',
         caseID:'<%- caseID %>',
         personID:'<%- personID %>',
-        noticeurl:""
+        workspaceurl:""
       }
     },
     mounted:function(){
@@ -126,13 +126,12 @@ Vue.component("bander",{
     */
     data(){
       return {
-        fakepath:"<%-fakepath%>",
+        fakepath:'<%=fakepath%>',
+        result4thisurl:"#",
         inputerUIkey:0
-
       }
     },
     mounted:function(){
-      //this.filepath="data:image/base64,"+filebuffer;
 
     },
     methods:{

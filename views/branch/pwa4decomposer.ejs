@@ -361,8 +361,8 @@ Vue.component("bander",{
       },
       methods:{
         viewone:function(id){
-          let querytext="?statusreport=由case資料清單頁的活動解構鈕進入本頁&status=1&caseID="+id;
-          let url2='/base4dcarbon/case/viewpage1/'+id+querytext;
+          let querytext="?statusreport=由case資料清單頁的檢案件十鈕進入本頁&status=1&caseID="+id;
+          let url2='/base4dcarbon/case/caseinfo/'+this.personID+querytext;
           window.location=url2;
         },
         decompose:function(id){

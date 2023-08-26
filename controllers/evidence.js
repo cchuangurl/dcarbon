@@ -270,19 +270,18 @@ async uploadfile(ctx,next){
   console.log("got caseID:"+caseID);
   var dataneedID=ctx.request.body.dataneedID;
   console.log("got dataneedID:"+dataneedID);
-  //var localpath=ctx.request.file.path;
-  //console.log("got localpath:"+localpath);
   var alias=ctx.request.body.alias;
   console.log("got alias:"+alias);
   var file2upload=ctx.request.body.file2upload;
   console.log("got file2upload:"+file2upload);
-  var filepath=ctx.request.body.filepath;
-  console.log("got filepath:"+filepath);
   const thefile = ctx.request.files.thefile;
+  const thefilestring=thefile.toString();
   console.log("type of thefile:"+typeof(thefile));
   console.log("thefile:"+thefile);
-  const fakepath=ctx.request.files.thefile.path;
-  console.log("fakepath of thefile:"+fakepath);
+  console.log("thefile to string:"+thefilestring);
+  let indexofslash=thefilestring.indexOf("/");
+  const bufferpath=thefilestring.substring(indexofslash);
+  console.log("bufferpath of thefile:"+bufferpath);
   var newcheck;
   await Dataneed.findById(dataneedID)
   .then(async dataneedx=>{
@@ -305,7 +304,6 @@ async uploadfile(ctx,next){
     });
     const options = {
       destination:storename,
-      //destination: destFileName,
       // Optional:
       // Set a generation-match precondition to avoid potential race conditions
       // and data corruptions. The request to upload is aborted if the object's
@@ -317,19 +315,7 @@ async uploadfile(ctx,next){
     };
 
     // The `path` here is the location of the file that you want to upload.
-    await storage.bucket('dcarbon-bucket1').upload(fakepath, options);
-    /*
-    const file = storage.bucket('dcarbon-bucket1').file(storename);
-    await file.save(thefile.buffer, {
-      //metadata: { contentType: ctx.file.mimetype },
-      //public: true,
-      //validation: 'md5',
-    })
-    .catch(err=>{
-      console.log("Storage.bucket.file.save failed !!");
-      console.log(err)
-    })
-        */
+    await storage.bucket('dcarbon-bucket1').upload(bufferpath, options);
     console.log(`${file2upload} uploaded to dcarbon-bucket1`);
  await Dataneed.findOneAndUpdate({_id:dataneedID},{a30check:newcheck})
       .then(async ()=>{
@@ -358,10 +344,25 @@ async gocheckpage(ctx,next){
   console.log("got dataneedID:"+dataneedID);
   var caseID=ctx.query.caseID;
   console.log("got caseID:"+caseID);
+  var fileno=ctx.query.fileno;
+  console.log("got fileno:"+fileno);
+  var srcurls=new Array();
   const storage = new Storage({
     projectId:"deep0-340312",
     keyFilename:"./public/json/deep0-340312-ac0308c9dc4b.json"
   });
+  const baseurl="https://storage.cloud.google.com/dcarbon-bucket1/";
+  let fakepath=baseurl+dataneedID+'1.jpg';
+/*
+  const baseurl=storage.bucket("dcarbon-bucket1")
+  const projectId="deep0-340312";
+  for(i=1;i<fileno+1;i++){
+    let srcurl=baseurl+dataneedID+i+".jpg";
+    console.log("made the "+i+"th url:"+srcurl)
+    srcurls.push(srcurl)
+  }
+  //srcurllist=encodeURIComponent(JSON.stringify(srcurls));
+
   var fakepath="https://storage.cloud.google.com/dcarbon-bucket1/64c91892e0c21a6bf023f8f21.jpg";
   var apiResponse;
   const bucket = storage.bucket('dcarbon-bucket1');
@@ -373,8 +374,10 @@ async gocheckpage(ctx,next){
     //fakepath=URL.createObjectURL(file);
     console.log("type of get file:"+typeof(file))
   });
+*/
   await ctx.render("evidence/investigatepage",{
     fakepath,
+    //srcurls,
     dataneedID,
     caseID,
     personID,

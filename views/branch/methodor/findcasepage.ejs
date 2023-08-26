@@ -364,9 +364,9 @@ Vue.component("bander",{
       },
       methods:{
         viewone:function(id){
-          let querytext="?statusreport=由待方法建構case資料清單頁的檢視鈕進入本頁&status=4&caseID="+id;
-          let url4='/base4dcarbon/case/viewpage1/'+this.personID+querytext;
-          window.location=url4;
+          let querytext="?statusreport=由待方法建構case資料清單頁的檢視申請資料鈕進入本頁&status=7&caseID="+id;
+          let url7='/base4dcarbon/case/caseinfo/'+this.personID+querytext;
+          window.location=url7;
         },
         choose:function(id){
           let querytext="?statusreport=由待方法建構case資料清單頁的認領案件鈕進入本頁&status=4&caseID="+id;

@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+<!-- <script src="/javascripts/jquery-3.4.1.js"></script> -->
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.4.1/jquery.js"></script>
+<style type="text/css">
+body {
+background-color: rgb(205, 226, 253);
+  height: 100vh;
+  width: 100vw;
+  position: relative;
+  display: flex;
+  flex-direction:column;
+	 justify-content: flex-start;
+     align-items:center;
+  	margin: 0;
+}
+#mobilephone{
+  background-color: rgb(249, 252, 247);
+  height: 700px;
+  width: 420px;
+  border-width:medium;
+  border-style:solid;
+  border-color:blue;
+  position: relative;
+  display: flex;
+  flex-direction:column;
+	 justify-content: flex-start;
+     align-items:center;
+  	margin: 20PX;
+    border-radius:25px
+}
+#phonescreen{
+  background-color: rgb(240, 248, 234);
+  height: 600px;
+  width: 400px;
+  position: relative;
+  display: flex;
+  flex-direction:column;
+	 justify-content: flex-start;
+     align-items:center;
+  margin-top: 50px;
+  margin-left:10px;
+  overflow:auto
+}
+.needcolor{
+  color:rgb(72, 188, 5);
+  font-size:large;
+  font-weight:bold;
+  }
+caption{caption-side: top;font-size:large;}
+.appbutton{
+    height:60px;
+    width:100px;
+    background-color:#d6eff5;
+    font:40px;
+    text-align:center;
+    line-height:60px;
+    margin:5px;
+    border-radius:10px
+
+}
+.column1{background:lightblue}
+.column2{background:rgb(246, 197, 128)}
+.navbar{background:#cff8c5;}
+.nav-link, .navbar-brand{color: #f4f4f4;cursor:pointer;}
+.nav-link{margin-right:1em !important;}
+.nav-link:hover{background: #f4f4f4;color:#f97300;}
+.navbar-collapse{justify-content:flex-end;}
+.navbar-toggler{background:#fff !important;}
+.page-item {
+    margin-right:12px
+}
+.page-item[active=true]{
+    font-weight: bold;
+    text-decoration:underline
+}
+</style>
+
+  <title>檢視案件申請資料</title>
+  </head>
+  <body>
+    <div id="show_div">
+        <outputer></outputer>
+        <!-- <inputer></inputer> -->
+    </div>
+
+    <template id="outputerUI">
+        <nav aria-label="...">
+
+          <div id="mobilephone">
+            <div id="phonescreen">
+          <div id="activity_info">
+            {{items1.item}}:<span class="needcolor">{{theactivity._id}}</span><br>
+
+            {{items1.item0}}:<span class="needcolor">{{theactivity.a05productID}}</span><br>
+
+            {{items1.item1}}:<span class="needcolor">{{theactivity.a10type}}</span><br>
+
+            {{items1.item2}}:<span class="needcolor">{{theactivity.a15nickname}}</span><br>
+
+            {{items1.item3}}:<span class="needcolor">{{theactivity.a20describe}}</span><br>
+
+          </div>
+          <div id="case_info">
+            {{items2.item0}}:<span class="needcolor">{{thecase.a05applicantID}}</span><br>
+
+            {{items2.item2}}:<span class="needcolor">{{thecase.a15casename}}</span><br>
+
+            {{items2.item3}}:<span class="needcolor">{{thecase.a20caseaddress}}</span><br>
+
+            {{items2.item4}}:<span class="needcolor">{{thecase.a25caseGPS}}</span><br>
+
+            {{items2.item5}}:<span class="needcolor">{{thecase.a30caseunit}}</span><br>
+
+            {{items2.item6}}:<span class="needcolor">{{thecase.a35scale}}</span>
+
+          </div>
+          <form  :action="lasepageurl" method="get">
+            <input type="submit" value="回前頁" class="appbutton">
+          </form>
+        </div>
+        </div>
+      </nav>
+      </template>
+
+      <!-- Vue CDN-->
+<script src="https://unpkg.com/vue@2.6.14/dist/vue.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="https://cdn.bootcss.com/qs/6.5.1/qs.min.js"></script>
+  <script>
+    Vue.component("outputer",{
+      props:{},
+      data(){
+        return{
+          statusreport:'<%- statusreport %>',
+          status:'<%- status %>',
+          caseID:'<%- caseID %>',
+          personID:'<%- personID %>',
+          termlist:JSON.parse(decodeURIComponent('<%=termlist%>')),
+          thecase:JSON.parse(decodeURIComponent('<%=thecase%>')),
+          theactivity:JSON.parse(decodeURIComponent('<%=theactivity%>')),
+          lastpageurl:"",
+          items1:{
+              item:"本減碳活動代碼",
+              item0:"對應之產品代碼",
+              item1:"活動類型",
+              item2:"活動名稱",
+              item3:"本活動描述",
+              item99:"特別註記"
+            },
+            names1:{
+              name0:"a05productID",
+              name1:"a10type",
+              name2:"a15nickname",
+              name3:"a20describe"
+            },
+            items2:{
+              item:"本申請案代碼",
+              item0:"申請人代碼",
+              item1:"申請活動代碼",
+              item2:"申請案場名稱",
+              item3:"申請案場地址",
+              item4:"申請案場中心點GPS",
+              item5:"申請案規模計算單位",
+              item6:"申請案規模數值",
+              item7:"申請案查證人ID列舉",
+              item8:"申請案是否通過",
+              item9:"申請案獲得之碳權噸數",
+              item99:"特別註記"
+            },
+            names2:{
+              name0:"a05applicantID",
+              name1:"a10activityID",
+              name2:"a15casename",
+              name3:"a20caseaddress",
+              name4:"a25caseGPS",
+              name5:"a30caseunit",
+              name6:"a35scale",
+              name7:"a40loyalistID",
+              name8:"a55pass",
+              name9:"a60right"
+            }
+          }
+      },
+      mounted:function(){
+        let basepath="/base4dcarbon/case/applycase/";
+        let querytext="?statusreport="+this.statusreport+"&status="+this.status+"&case="+this.caseID;
+        //this.lastpageurl=basepath+this.personID+querytext
+
+      },
+      methods:{
+
+      },
+    template:"#outputerUI"
+  });
+    new Vue({
+        el:'#show_div',
+        data:{
+          testdata:'有執行到此。。。。'
+        },
+        /* computed:{
+
+        },
+        watch:{
+
+        },
+        filters:{
+
+        },
+        mixins:[
+
+        ],
+        template:" ",
+
+        components:{
+          "bander":bander,
+          "outputer":outputer,
+          "inputer":inputer
+        },*/
+        beforeCreate:function(){
+          console.log("before create...")
+        },created:function(){
+          console.log("created...")
+        },
+        beforeMount:function(){
+          console.log("before mount...")
+        },
+        mounted:function(){
+          console.log("mounted...")
+        },
+        beforeUpdate:function(){
+          console.log("before update...")
+        },
+        updated:function(){
+          console.log("updated...")
+        },
+        beforeDestroy:function(){
+
+        }
+    })
+</script>
+
+
+  </body>
+</html>

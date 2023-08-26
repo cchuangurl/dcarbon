@@ -20,8 +20,8 @@ background-color: rgb(248, 243, 243);
 }
 #mobilephone{
   background-color: rgb(249, 252, 247);
-  height: 820px;
-  width: 600px;
+  height: 700px;
+  width: 420px;
   border-width:medium;
   border-style:solid;
   border-color:blue;
@@ -35,15 +35,16 @@ background-color: rgb(248, 243, 243);
 }
 #phonescreen{
   background-color: rgb(240, 248, 234);
-  height: 700px;
-  width: 540px;
+  height: 600px;
+  width: 400px;
   position: relative;
   display: flex;
   flex-direction:column;
 	 justify-content: flex-start;
      align-items:center;
-  margin-top: 100px;
+  margin-top: 50px;
   margin-left:10px;
+  overflow:auto
 }
 caption{caption-side: top;font-size:large;}
 #sidearea{
@@ -160,7 +161,7 @@ caption{caption-side: top;font-size:large;}
       methods:{
         viewone:function(id){
           let querytext="?statusreport=由申請中case資料清單頁的檢視鈕進入本頁&status=3&caseID="+id;
-          let url3='/base4dcarbon/case/viewpage1/'+this.personID+querytext;
+          let url3='/base4dcarbon/case/caseinfo/'+this.personID+querytext;
           window.location=url3;
         },
         prepare:function(id){
