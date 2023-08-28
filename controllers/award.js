@@ -1,5 +1,6 @@
 //載入相對應的model
 const Award = require('../models/index').award;
+const Loyalist = require('../models/index').loyalist;
 module.exports = {
 //列出清單list(req,res)
 async list(ctx,next){
@@ -235,10 +236,22 @@ async update(ctx,next){
 async awardentry(ctx,next){
  console.log("進入award controller的awardentry!!")
   var personID=ctx.params.id;
-  var loyalist1=ctx.query.loyalisttemp;
   //var loyalist1=JSON.parse(decodeURIComponent(loyalisttemp));
   var awardbalance=0;
+  var loyalist1;
   var awardlist;
+  await Loyalist.findOne({_id:personID})
+  .then(async loyalistx=>{
+    console.log("type of loyalistx:"+typeof(loyalistx));
+    console.log("loyalistx:"+loyalistx)
+    loyalist1=encodeURIComponent(JSON.stringify(loyalistx));
+    console.log("type of loyalist1:"+typeof(loyalist1));
+    console.log("loyalist1:"+loyalist1)
+      })
+    .catch(err=>{
+      console.log("Loyalist.findOne() failed !!");
+      console.log(err)
+    })
   await Award.find({a10loyalistID:personID}).then(async awards=>{
     //console.log("found awards:"+awards);
     console.log("type of awards:"+typeof(awards));

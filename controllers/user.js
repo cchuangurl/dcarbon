@@ -211,6 +211,7 @@ async save2group(ctx,next){
           console.log("save award for:"+loyalistx.a05lastname+loyalistx.firstname);
           var new_award = new Award({
             a05when:new Date(),
+            a10loyalistID:loyalistx._id,
             a15point:100,
             a99footnote:"系統提供新註冊獎勵"
           });

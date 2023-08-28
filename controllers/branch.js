@@ -23,7 +23,8 @@ async dispatch(ctx, next) {
       personID=userx.a10personID;
       switch(group){
         case "applicant":pwaroute="/base4dcarbon/branch/app4applicant";break;
-        case "decomposer":pwaroute="/base4dcarbon/branch/pwa4decomposer";break;
+        case "decomposor":pwaroute="/base4dcarbon/branch/pwa4decomposer";break;
+        case "decompose":pwaroute="/base4dcarbon/branch/pwa4decomposer";break;
         case "methodor":pwaroute="/base4dcarbon/branch/pwa4methodor";break;
         case "collecter":pwaroute="/base4dcarbon/branch/pwa4collecter";break;
         case "investigator":pwaroute="/base4dcarbon/branch/pwa4investigator";break;
