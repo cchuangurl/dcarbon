@@ -69,7 +69,7 @@ caption{caption-side: top;}
               <a class="nav-link" :href="workspaceurl">{{workspacepage}}</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" :href="methodorurl">{{methodorpage}}</a>
+              <a class="nav-link" :href="lastpageurl">{{lastpage}}</a>
             </li>
           </ul>
           <span class="navbar-text">
@@ -184,18 +184,23 @@ caption{caption-side: top;}
           workspacepage:"回方法建構作業區",
           methodorpage:"回方法建構士首頁",
           workspaceurl:"",
-          methodorurl:"",
+          lastpageurl:"",
           formula:"本案碳權計算公式",
           statusreport:'<%- statusreport %>',
+          status:'<%- status %>',
           caseID:'<%- caseID %>',
           personID:'<%- personID %>'
         }
       },
       mounted:function(){
-        let basepath="/base4dcarbon/branch";
-        let querytext="?statusreport=由公式顯示頁回到本頁&status=5&caseID"+this.caseID;
+        let basepath="/base4dcarbon";
+        let querytext="?statusreport=由公式顯示頁回到本頁&status="+this.status+"&caseID"+this.caseID;
         this.workspaceurl=basepath+"/methodor/workspace/"+this.personID+querytext;
-        this.methodorurl=basepath+"/pwa4methodor"+this.personID+querytext;
+        switch(this.status){
+          case "8":routerkey="/mehtod/formula";break;
+          case "c":routerkey="/branch/pwa4investigator";
+        }
+        this.lastpageurl=basepath+routerkey+"/"+this.personID+querytext;
       },
       methods:{
 

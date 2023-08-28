@@ -87,7 +87,9 @@ body {
       </form>
       </fieldset>
       <br>
-          <img id="view_img" :src="fakepath" width="50%">
+          <img :src="fileUrl" alt="image" width="60%">
+      </div>
+
       </div>
       </div>
     </template>
@@ -126,13 +128,20 @@ Vue.component("bander",{
     */
     data(){
       return {
-        fakepath:'<%=fakepath%>',
+        fileUrl:'<%=fileUrl%>',
         result4thisurl:"#",
         inputerUIkey:0
       }
     },
     mounted:function(){
-
+      /*
+          for(imageUrl of this.imageUrls){
+        console.log("the name of a file:"+imageUrl)
+        imageUrl=this.bucketurl+imageUrl
+        console.log("the url of a file:"+imageUrl)
+      }
+      console.log("the bucket url:"+this.bucketurl);
+      */
     },
     methods:{
         rerender:function() {

@@ -58,20 +58,17 @@ background-color: rgb(248, 243, 243);
 
 </style>
 
-  <title>驗證查驗士PWA示意版-尋找待驗證查驗之案子</title>
+  <title>活動解構士PWA示意版</title>
   </head>
   <body>
     <div id="show_div">
       <bander></bander>
-
         <div class="row" align="justify">
             <div class="col-lg-3 col-md-6 col-sm-12" id="sidearea">
                 <sidebar></sidebar> </div>
             <div class="col-lg-9 col-md-6 col-sm-12">
                         <content1></content1> </div>
                 </div>
-            </div>
-        </div>
     <contacter></contacter>
     </div>
 
@@ -94,19 +91,14 @@ background-color: rgb(248, 243, 243);
                             type="button"
                             id="dropdownMenuButton"
                             data-toggle="dropdown">
-                            {{listcase}}
+                            {{pwa4loyalist}}
                         </button>
                         <div class="dropdown-menu">
-                            <a class="dropdown-item" :href="listcaseurl">{{listcase}}</a>
+                            <a class="dropdown-item" :href="pwaurl">{{pwa4loyalist}}</a>
                         </div>
                     </div>
                 </li>
                 </div>
-                <div class="col-lg col-sm-6">
-                  <li class="nav-item">
-                    <a class="nav-link active" href="#">{{findcase}}<span class="sr-only">(current)</span></a>
-                    </li>
-                    </div>
                 <div class="col-lg col-sm-6">
                     <li class="nav-item">
                         <div class="dropdown">
@@ -118,7 +110,7 @@ background-color: rgb(248, 243, 243);
                                 {{awardmanage}}
                             </button>
                             <div class="dropdown-menu">
-                                <a class="dropdown-item" :href="awardentryurl">{{awardentry}}</a>
+                              <a class="nav-link active" href="#">{{awardentry}}<span class="sr-only">(current)</span></a>
                               <a class="dropdown-item" :href="awardtradeurl">{{awardtrade}}</a>
                           </div>
                         </div>
@@ -143,6 +135,8 @@ background-color: rgb(248, 243, 243);
 
     <template id="content1UI">
         <nav aria-label="...">
+<br>
+<h3>您的公評點數餘額:{{pointbalance}}點</h3>
           <table>
             <tr class="pagination">
               <td class="page-item" v-show="firstPage" @click="goFirstPage()">回第1頁</td>
@@ -171,26 +165,21 @@ background-color: rgb(248, 243, 243);
           <table border="1" class="table table-striped">
               <thead>
               <tr>
-                  <th>{{items.item2}}</th>
-                  <th>{{items.item3}}</th>
-                  <th>{{items.item5}}</th>
-                  <th>{{items.item6}}</th>
+                  <th>發生日期</th>
+                  <th>收支事由</th>
+                  <th>收支點數</th>
                 <!-- <th>特別註記</th> -->
               </tr>
               </thead>
-              <tbody id="caselist">
-                  <tr v-for="casex of caseShow" :key="casex._id">
-                  <td>{{casex.a15casename}}</td>
-                  <td>{{casex.a20caseaddress}}</td>
-                  <td>{{casex.a30caseunit}}</td>
-                  <td>{{casex.a35scale}}</td>
+              <tbody id="awardlist">
+                  <tr v-for="award of awardShow" :key="award._id">
+                  <td>{{award.a05when}}</td>
+                  <td>{{award.a99footnote}}</td>
+                  <td>{{award.a15point}}</td>
                   <!-- statusreport="由已擷取資料組清單頁進入本頁"> -->
 
                     <td>
-                      <input type="submit" value="檢視申請資料" @click="viewone(casex._id)">
-                    </td>
-                    <td>
-                      <input type="submit" value="認領本案之驗證查驗" @click="choose(casex._id)">
+                      <input type="submit" value="檢視此筆資料" @click="viewone(award._id)">
                     </td>
                   </tr>
               </tbody>
@@ -244,16 +233,13 @@ Vue.component("bander",{
     data(){
       return {
         brand:"dCarbon",
-        listcase:"驗證查驗中案件",
-        findcase:"尋找待驗證查驗之案件",
+        pwa4loyalist:"回處理中清單頁",
         awardmanage:"公評點數管理",
         awardentry:"公評點數收支",
         awardtrade:"公評點數移轉",
         loyalist1:JSON.parse(decodeURIComponent('<%= loyalist1 %>')),
         personID:'<%- personID %>',
-        listcaseurl:"",
-        findcaseurl:"",
-        awardmanageurl:"",
+        pwaurl:"",
         awardentryurl:"",
         awardtradeurl:"",
         loyalist:"",
@@ -263,11 +249,14 @@ Vue.component("bander",{
     mounted:function(){
         let basepath="/base4dcarbon/branch";
         this.loyalist=this.loyalist1.a05lastname+this.loyalist1.a10firstname;
-        this.listcaseurl=basepath+"/pwa4investigator/"+this.personID;
-        this.findcaseurl=basepath+"/investigator/findcase/"+this.personID;
-        let loyalisttemp=encodeURIComponent(JSON.stringify(this.loyalist1));
-        this.awardentryurl="/base4dcarbon/award/awardentry/"+this.personID+"?loyalist="+loyalisttemp;
-        this.awardtradeurl="/base4dcarbon/award/awardtrade/"+this.personID
+        let pwaname;
+        switch(this.loyalist1.a15role){
+          case "decomposor":pwaname="pwa4decomposer";break;
+          case "methodor":pwaname="pwa4methodor";break;
+          case "investigator":pwaname="pwa4investigator";break;
+          case "collecter":pwaname="pwa4collecter"
+        }
+        this.pwaurl=basepath+"/"+pwaname+"/"+this.personID
     },
     methods:{
 
@@ -333,28 +322,28 @@ Vue.component("bander",{
           pageIndex:[],
           showIndex:[],
           activeIndex:[],
-          caseShow:[],
+          awardShow:[],
           statusreport:'<%- statusreport %>',
+          awardbalance:'<%- awardbalance %>',
           personID:'<%- personID %>',
-          caselist:JSON.parse(decodeURIComponent('<%= caselist %>')),
+          awardlist:JSON.parse(decodeURIComponent('<%= awardlist %>')),
           loyalist1:JSON.parse(decodeURIComponent('<%= loyalist1 %>')),
         items:{
-          item0:"申請人代碼",
-          item1:"申請活動代碼",
-          item2:"申請案場名稱",
-          item3:"申請案場地址",
-          item4:"申請案場中心點GPS",
-          item5:"申請案規模計算單位",
-          item6:"申請案規模數值",
-          item7:"申請案查證人ID列舉",
-          item8:"申請案是否通過",
-          item9:"申請案獲得之碳權噸數",
+          item0:"核發時間",
+          item1:"首次核給對象代碼",
+          item2:"核給點數",
+          item3:"點數證明內容的hash碼(亦為權證編號)",
+          item4:"首發點數hash所在區塊",
+          item5:"本次移轉的交易hash",
+          item6:"本次移轉has所在區塊",
+          item7:"目前權利人",
+          item8:"權利人權利持分",
           item99:"特別註記"
             }
         }
       },
       mounted:function(){
-        this.maxRow=this.caselist.length;
+        this.maxRow=this.awardlist.length;
         this.modRow=this.maxRow%this.perPage;
         this.maxPage=this.modRow==0?this.maxRow/this.perPage:Math.floor(this.maxRow/this.perPage)+1;
         this.modPage=this.maxPage%this.perRound;
@@ -364,16 +353,10 @@ Vue.component("bander",{
       },
       methods:{
         viewone:function(id){
-          let querytext="?statusreport=由待驗證查驗case資料清單頁的檢視鈕進入本頁&status=d&caseID="+id;
-          let urld='/base4dcarbon/case/viewpage1/'+this.personID+querytext;
-          window.location=urld;
+          let querytext="?statusreport=由award資料清單頁的檢案件十鈕進入本頁&status=1&awardID="+id;
+          let url2='/base4dcarbon/award/awardinfo/'+this.personID+querytext;
+          window.location=url2;
         },
-        choose:function(id){
-          let querytext="?statusreport=由待驗證查驗case資料清單頁的認領案件鈕進入本頁&status=d&caseID="+id;
-          let urld='/base4dcarbon/branch/investigator/choosecase/'+this.personID+querytext;
-          window.location=urld
-           },
-
           getShowData:function(index){
           this.currentIndex=index;
           this.activeIndex.splice(0);
@@ -391,15 +374,15 @@ Vue.component("bander",{
           this.currentPage=this.pageIndex[index]
           console.log("currentPage is:"+this.currentPage)
           this.fullPage=(this.maxRow>=(this.currentPage*this.perPage))?true:false;
-          this.caseShow.splice(0);
+          this.awardShow.splice(0);
           let startRow=(this.currentPage-1)*this.perPage;
             console.log("startRow is:"+startRow)
           let rowNo=this.fullPage?this.perPage:this.modRow;
           console.log("rowNo is:"+rowNo);
-          //this.caseShow=[];
-          this.caseShow=this.caselist.slice(startRow,startRow+rowNo)
-          console.log("11st caselist:"+this.caselist[10])
-          console.log("1st caseShow:"+this.caseShow[0])
+          //this.awardShow=[];
+          this.awardShow=this.awardlist.slice(startRow,startRow+rowNo)
+          console.log("11st awardlist:"+this.awardlist[10])
+          console.log("1st awardShow:"+this.awardShow[0])
         },
         goFirstPage:function(){
           this.currentRound=1;

@@ -46,10 +46,10 @@ body {
   overflow:auto
 }
 .confirmbutton{
-    height:60px;
-    width:250px;
+    height:48px;
+    width:180px;
     background-color:#d6eff5;
-    font:40px;
+    font:24px;
     text-align:center;
     line-height:60px;
     margin:5px;
@@ -85,8 +85,10 @@ body {
         </p>
       <p v-if="isUploading">{{ file2upload}}上傳中 …</p>
       <div v-if="isUploaded">
-        <br><br>
-        <p><h3> {{ file2upload }}檔已選取<br>將上傳到Google cloud storage的 {{ bucketName }}</h3></p>
+        <br>
+      <button type="submit" class="confirmbutton" @click="backprepare()">回需提供資料清單</button>
+        <br>
+        <p><h2> {{ file2upload }}檔已選取<br>將上傳到Google cloud storage的 {{ bucketName }}</h2></p>
         <p>網址: {{ fileUrl }}</p>
         <br>
         </div>
@@ -155,8 +157,7 @@ body {
       }
     },
     mounted:function(){
-      this.uploadurl="/base4dcarbon/evidence/uploadfile/"+this.personID;
-
+      this.uploadurl="/base4dcarbon/evidence/uploadfile/"+this.personID
     },
     methods:{
         rerender:function() {
@@ -204,8 +205,12 @@ body {
             // Finish uploading
               this.isUploading = false;
               this.isUploaded = true;
-        }
-
+        },
+        backprepare:function(){
+          let querytext="?statusreport=由上傳1筆佐證資料回到本頁&status=3&caseID="+this.caseID;
+          let url3='/base4dcarbon/case/preparedata/'+this.personID+querytext;
+          window.location=url3
+           }
     },
     template:"#inputerUI"
   });

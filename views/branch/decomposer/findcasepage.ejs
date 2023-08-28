@@ -265,9 +265,9 @@ Vue.component("bander",{
         this.loyalist=this.loyalist1.a05lastname+this.loyalist1.a10firstname;
         this.listcaseurl=basepath+"/pwa4decomposer/"+this.personID;
         this.findcaseurl=basepath+"/decomposer/findcase/"+this.personID;
-        this.awardmanageurl=basepath+"/decomposer/awardmanage/"+this.personID;
-        this.awardentryurl=basepath+"/decomposer/awardentry"+this.personID;
-        this.awardtradeurl=basepath+"/decomposer/awardtrade/"+this.personID
+        let loyalisttemp=encodeURIComponent(JSON.stringify(this.loyalist1));
+        this.awardentryurl="/base4dcarbon/award/awardentry/"+this.personID+"?loyalist="+loyalisttemp;
+        this.awardtradeurl="/base4dcarbon/award/awardtrade/"+this.personID
     },
     methods:{
 

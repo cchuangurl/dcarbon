@@ -52,7 +52,7 @@ caption{caption-side: top;font-size:large;}
         <div class="collapse navbar-collapse" id="navbarText">
           <ul class="navbar-nav mr-auto">
             <li class="nav-item">
-                <a class="nav-link" :href="menuurl">{{downloadmenu}}</a>
+                <a class="nav-link" href="/pdf/20230824dcarbonmenu.pdf">{{downloadmenu}}</a>
               </li>
           </ul>
         </div>
@@ -100,12 +100,11 @@ Vue.component("bander",{
         brand:"dCarbon",
         register:"註冊另一帳號",
         downloadmenu:"下載使用操作手冊",
-        statusreport:'<%- statusreport %>',
-        menuurl:""
+        statusreport:'<%- statusreport %>'
       }
     },
     mounted:function(){
-      let menuurl="/base4dcarbon/user/getmenu/"+this.personID;
+
     },
     template:"#banderUI"
   });

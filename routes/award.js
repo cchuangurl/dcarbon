@@ -1,10 +1,11 @@
 var router = require('@koa/router')();
 
 const awardController = require('../controllers/index').award;
-//列出清單
+/*列出清單
 router.get('/:id', async (ctx, next)=> {
 	await awardController.list(ctx)
 });
+*/
 //到新增資料頁
 router.get('/inputpage/:id', async (ctx, next)=> {
     await awardController.inputpage(ctx,next)
@@ -38,6 +39,14 @@ router.get('/delete/:id', async (ctx, next)=> {
 //依參數id更新資料
 router.post('/update', async (ctx, next)=> {
 	await awardController.update(ctx)
+});
+//到公評點數收支帳
+router.get('/awardentry/:id', async (ctx, next)=> {
+	await awardController.awardentry(ctx)
+});
+//到公評點數移轉
+router.get('/awardtrade/:id', async (ctx, next)=> {
+	await awardController.awardtrade(ctx)
 });
 //到測試片段程式頁
 router.get('/codetest', async (ctx, next)=> {

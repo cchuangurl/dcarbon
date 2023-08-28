@@ -230,5 +230,52 @@ async update(ctx,next){
         console.log("Award.findOneAndUpdate() failed !!")
         console.log(err)
     })
-}
+},
+//到公評點數收支帳
+async awardentry(ctx,next){
+ console.log("進入award controller的awardentry!!")
+  var personID=ctx.params.id;
+  var loyalist1=ctx.query.loyalisttemp;
+  //var loyalist1=JSON.parse(decodeURIComponent(loyalisttemp));
+  var awardbalance=0;
+  var awardlist;
+  await Award.find({a10loyalistID:personID}).then(async awards=>{
+    //console.log("found awards:"+awards);
+    console.log("type of awards:"+typeof(awards));
+    console.log("type of 1st award:"+typeof(awards[0]));
+    //console.log("1st award:"+awards[0].a15point)
+    console.log("No. of award:"+awards.length)
+    for(award of awards){
+      if(award.a15point==null){
+        award.a15point=0
+      }
+      awardbalance=awardbalance+award.a15point
+    }
+    awardlist=encodeURIComponent(JSON.stringify(awards));
+    console.log("type of awards:"+typeof(awardlist));
+    if(statusreport===undefined){
+        statusreport="未截到status"
+    }
+    await ctx.render("award/walletpage",{
+    //ctx.response.send({
+        awardbalance,
+        awardlist,
+        loyalist1,
+        personID,
+        statusreport
+    })
+})
+.catch(err=>{
+    console.log("Award.find({}) failed !!");
+    console.log(err)
+})
+
+
+},
+//到公評點數移轉
+async awardtrade(ctx,next){
+  console.log("webpage constructing.... ")
+ }
+
+
 }//EOF export

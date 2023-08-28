@@ -437,7 +437,7 @@ var statusreport="由查詢申請案件進度鈕進入本頁"
     switch(status){
       case "3":renderurl="branch/applicant/applycasepage3";statusreport="由資料上傳鈕進入本頁";break;
       case "5":renderurl="branch/applicant/applycasepage5";statusreport="由查詢申請案件進度鈕進入本頁";break;
-      default:case "5":renderurl="branch/applicant/applycasepage5";statusreport="由查詢申請案件進度鈕進入本頁";break;
+      default:renderurl="branch/applicant/applycasepage5";statusreport="由查詢申請案件進度鈕進入本頁"
     }
   await ctx.render(renderurl ,{
         caselist,

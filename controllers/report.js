@@ -1,5 +1,13 @@
 //載入相對應的model
 const Report = require('../models/index').report;
+const Method = require('../models/index').method;
+const Case = require('../models/index').case;
+const Term = require('../models/index').term;
+const Activity = require('../models/index').activity;
+const Subact = require('../models/index').subact;
+const Input = require('../models/index').input;
+const Emissor = require('../models/index').emissor;
+const Dataneed = require('../models/index').dataneed;
 module.exports = {
 //列出清單list(req,res)
 async list(ctx,next){
@@ -229,5 +237,157 @@ async update(ctx,next){
         console.log("Report.findOneAndUpdate() failed !!")
         console.log(err)
     })
+},
+//產生驗證報告稿
+async generatescript(ctx,next){
+  console.log("進入report controller的generatescript!!");
+  var statusreport=ctx.query.statusreport;
+  console.log("got statusreport:"+statusreport);
+  var status=ctx.query.status;
+  console.log("got status:"+status);
+  var caseID=ctx.query.caseID;
+  console.log("got caseID:"+caseID);
+  var personID=ctx.params.id;
+  var activityID;
+  var thecase, theactivity;
+  var subactlist, inputlist, emissorlist, termlist,dataneedlist;
+  var alldataneed=new Array();
+  await Case.findById(caseID)
+    .then(async casex=>{
+        console.log("Casex:"+casex);
+        thecase=encodeURIComponent(JSON.stringify(casex));
+        console.log("case:"+thecase);
+        console.log("type of case:"+typeof(thecase));
+        activityID=casex.a10activityID;
+        console.log("activityID:"+activityID);
+        })
+      .catch(err=>{
+          console.log("Case.findById() failed !!");
+          console.log(err)
+        })
+      await Activity.findById(activityID)
+      .then(async activityx=>{
+          console.log("activityx:"+activityx);
+          theactivity=encodeURIComponent(JSON.stringify(activityx));
+          console.log("the activity:"+theactivity);
+          console.log("type of theactivity:"+typeof(theactivity));
+          })
+      .catch(err=>{
+          console.log("Case.findById() failed !!");
+          console.log(err)
+        })
+        await Subact.find({a05activityID:activityID})
+        .then(async subacts=>{
+          //console.log("found subacts:"+subacts);
+          console.log("type of subacts:"+typeof(subacts));
+          console.log("type of 1st subact:"+typeof(subacts[0]));
+          //console.log("1st subact:"+subacts[0].a15nickname)
+          console.log("No. of subact:"+subacts.length)
+          subactlist=encodeURIComponent(JSON.stringify(subacts));
+          console.log("type of subacts:"+typeof(subactlist));
+          let inputarray=new Array();
+          let emissorarray=new Array();
+          for(subact of subacts){
+            let basesubactID,nonbaseID;
+            let orderno;
+            let baseinputs=new Array();
+            let emissors=new Array();
+            if(subact.a10type!="baseline"){
+              orderno=subact.a25order;
+              let basesubact=subacts.find(subact1=>subact1.a25order==orderno);
+              basesubactID=basesubact._id;
+              nonbaseID=subact._id;
+              await Input.find({a05subactID:basesubactID})
+                .then(async inputs0=>{
+                    console.log("no. of inputs0:"+inputs0.length)
+                    console.log("1st inputs0:"+inputs0[0]);
+                      for(let i=0;i<inputs0.length;i++){
+                        baseinputs[i]=inputs0[i];
+                        }
+                })
+                .catch(err=>{
+                    console.log("input.find(basesubact) failed !!");
+                    console.log(err)
+                })
+              await Input.find({a05subactID:nonbaseID})
+                .then(async inputs1=>{
+                    console.log("no. of inputs1:"+inputs1.length)
+                    console.log("1st inputs1:"+inputs1[0]);
+                    for(let [index,input0] of baseinputs.entries()){
+                      let input1=inputs1.find(input=>input.a15nickname==input0.a15nickname);
+                        if(input0.a20describe==input1.a20describe){
+                          baseinputs[index].a99footnote="(同左)";
+                        }else{
+                          baseinputs[index].a99footnote=input1.a20describe;
+                        }
+                        }
+                    })
+                .catch(err=>{
+                    console.log("input.find() failed !!");
+                    console.log(err)
+                    })
+                }
+                await Emissor.find({a05subactID:subact._id})
+                .then(async emissors0=>{
+                    console.log("no. of emissors0:"+emissors0.length)
+                    console.log("1st emissors0:"+emissors0[0]);
+                    for(let [index,emissorx] of emissors0.entries()){
+                    emissors[index]=emissorx;
+                    }
+                })
+                .catch(err=>{
+                    console.log("Emissor.find(subact) failed !!");
+                    console.log(err)
+                })
+                await Dataneed.find({a05subactID:subactx._id})
+                .then(async dataneeds=>{
+                    console.log("type of dataneeds:"+typeof(dataneeds));
+                    console.log("1st dataneeds:"+dataneeds[0]);
+                    console.log("No. of dataneeds:"+dataneeds.length);
+                    alldataneed=alldataneed.concat(dataneeds)
+                    })
+                .catch(err=>{
+                    console.log("Dataneed.find({}) failed !!");
+                    console.log(err)
+                })
+              inputarray=inputarray.concat(baseinputs);
+              console.log("no of inputarray: "+inputarray.length)
+              emissorarray=emissorarray.concat(emissors);
+              console.log("no of emissorarray: "+emissorarray.length)
+              dataneedlist=encodeURIComponent(JSON.stringify(alldataneed));
+              console.log("type of dataneedlist:"+typeof(dataneedlist));
+            }
+            console.log("1st of inputarray: "+inputarray[0])
+            inputlist=encodeURIComponent(JSON.stringify(inputarray));
+            console.log("type of inputlist:"+typeof(inputlist));
+            console.log("1st of emsissorearray: "+emissorarray[0])
+            emissorlist=encodeURIComponent(JSON.stringify(emissorarray));
+            console.log("type of emissorlist:"+typeof(emisorslist));
+            })
+          .catch(err=>{
+            console.log("Subact.find({}) failed !!");
+            console.log(err)
+            })
+        await Term.find({a15model:{$in:["case","activity","subact","input"]}}).then(async terms=>{
+            console.log("type of terms:"+typeof(terms));
+            console.log("type of 1st term:"+typeof(terms[0]));
+            console.log("1st term:"+terms[0])
+            console.log("No. of term:"+terms.length)
+            termlist=encodeURIComponent(JSON.stringify(terms));
+            console.log("type of termlist:"+typeof(termlist));
+          })
+    await ctx.render("report/scriptpage",{
+        subactlist,
+        inputlist,
+        termlist,
+        emissorlist,
+        dataneedlist,
+        thecase,
+        theactivity,
+        statusreport,
+        personID,
+        caseID,
+        status
+      })
 }
 }//EOF export

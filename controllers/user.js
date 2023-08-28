@@ -3,6 +3,7 @@ const User = require('../models/index').user;
 const Term = require('../models/index').term;
 const Applicant = require('../models/index').applicant;
 const Loyalist = require('../models/index').loyalist;
+const Award = require('../models/index').award;
 
 module.exports = {
 //列出清單list(req,res)
@@ -207,6 +208,20 @@ async save2group(ctx,next){
               console.log("User.save() failed !!")
               console.log(err)
           })
+          console.log("save award for:"+loyalistx.a05lastname+loyalistx.firstname);
+          var new_award = new Award({
+            a05when:new Date(),
+            a15point:100,
+            a99footnote:"系統提供新註冊獎勵"
+          });
+          await new_award.save()
+          .then(async awardx=>{
+              console.log("Saving new_award:"+awardx.a99footnote+awardx.a15point+"點")
+          })
+          .catch((err)=>{
+              console.log("User.save() failed !!")
+              console.log(err)
+          })
         })
         .catch((err)=>{
           console.log("User.save() failed !!")
@@ -354,16 +369,5 @@ async update(ctx,next){
         console.log("User.findOneAndUpdate() failed !!")
         console.log(err)
     })
-},
-//送出使用手冊檔案供下載
-async downloadmenu(ctx, next) {
-  const name ="20230824dcarbonmenu.pdf";
-  // 引用需要的模組
-  //const path=require("path");
-  let folderpath="public/pdf/";
-  let filepath=folderpath+name;
-  console.log("going to download menu..."+filepath);
-  ctx.attachment(filepath);
-  await send(ctx, filepath)
 }
 }//EOF export

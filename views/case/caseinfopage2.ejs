@@ -128,9 +128,13 @@ caption{caption-side: top;font-size:large;}
       },
           mounted:function(){
             let status1="?statusreport=檢視案件申請資料頁回到本頁&status="+this.status;
-            let casequery="&caseID="+this.caseID;
-            this.lastpageurl='/base4dcarbon/case/caseinfo/'+this.personID+status1+casequery;
-            //inputoperateurl='/base4dcarbon/input/operate/'+this.personID+status1+subactquery;
+            switch(this.status){
+              case "1":routerkey="/pwa4decomposor";break;
+              case "2":routerkey="/decomposor/findcase";break;
+              case "7":routerkey="/methodor/findcase";break;
+              case "d":routerkey="/investigator/findcase";break;
+            }
+            this.lastpageurl='/base4dcarbon/branch'+routerkey+'/'+this.personID+status1
           },
       methods:{
 

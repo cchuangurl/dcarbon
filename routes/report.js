@@ -39,6 +39,10 @@ router.get('/delete/:id', async (ctx, next)=> {
 router.post('/update', async (ctx, next)=> {
 	await reportController.update(ctx)
 });
+//產生驗證報告稿
+router.get('/generatescript/:id', async (ctx, next)=> {
+	await reportController.generatescript(ctx)
+});
 //到測試片段程式頁
 router.get('/codetest', async (ctx, next)=> {
     var {statusreport}=ctx.request.body;

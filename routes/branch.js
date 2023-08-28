@@ -4,6 +4,7 @@ const userController = require('../controllers/index').user;
 const branchController = require('../controllers/index').branch;
 const subactController = require('../controllers/index').subact;
 const caseController = require('../controllers/index').case;
+const methodController = require('../controllers/index').method;
 //依帳號決定轉頁
 router.post('/', async (ctx, next)=> {
 	await branchController.dispatch(ctx)
@@ -90,6 +91,10 @@ router.get('/investigator/choosecase/:id', async (ctx, next)=> {
 router.get('/investigator/workspace/:id', async (ctx, next)=> {
   await branchController.investigatorworkspace(ctx,next)
 });
+//到Investigator的檢視其認驗方法
+router.get('/investigator/showformula/:id', async (ctx, next)=> {
+  await methodController.showformula(ctx,next)
+});
 //到Accepterweb
 router.get('/pwa4receiver/:id', async (ctx, next)=> {
   await branchController.goreceiver(ctx,next)
@@ -99,6 +104,4 @@ router.get('/pwa4receiver/:id', async (ctx, next)=> {
 router.get('/maintainer/:id', async (ctx, next)=> {
   await branchController.gomaintainer(ctx,next)
 });
-module.exports = router;
-
 module.exports = router;

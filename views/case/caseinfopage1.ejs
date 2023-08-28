@@ -119,7 +119,7 @@ caption{caption-side: top;font-size:large;}
             {{items2.item6}}:<span class="needcolor">{{thecase.a35scale}}</span>
 
           </div>
-          <form  :action="lasepageurl" method="get">
+          <form  :action="lastpageurl" method="get">
             <input type="submit" value="回前頁" class="appbutton">
           </form>
         </div>
@@ -189,7 +189,7 @@ caption{caption-side: top;font-size:large;}
       mounted:function(){
         let basepath="/base4dcarbon/case/applycase/";
         let querytext="?statusreport="+this.statusreport+"&status="+this.status+"&case="+this.caseID;
-        //this.lastpageurl=basepath+this.personID+querytext
+        this.lastpageurl=basepath+this.personID+querytext
 
       },
       methods:{
