@@ -12,6 +12,7 @@ var EvidenceSchema = new Schema(
     a30filename:{type:String,required:false},
     a35datahash:{type:String,required:false},
     a40datablock:{type:Number,required:false},
+    a45score:{type:Number,required:false},
     a99footnote:{type:String,required:false}
   }
 );

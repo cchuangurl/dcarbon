@@ -70,27 +70,71 @@ body {
       <div>
         <br>
 
-        <label></label>
+
       </form>
       <fieldset>
         <legend>本項資料查驗結果: </legend>
+        <P><label>查驗資料項目: </label>{{dataneedname}}</P>
         <form :action="result4thisurl" method="get">
         <div>
-          <input type="checkbox" id="pass" name="result" value="pass" />
-          <label for="pass" fontsize="large">合格</label>
+          <input type="hidden" id="itemresult" name="itemresult" :value="itemresult" />
+          <label for="itemresult" fontsize="large">{{resultname}}</label>
         </div>
-        <div>
-          <input type="checkbox" id="lack" name="result" value="lack" />
-          <label for="lack" fontsize="large">需請申請人補送</label>
-        </div>
-        <input type="submit" value="確認"/>
+        <input type="submit" value="確認送出"/>
       </form>
       </fieldset>
       <br>
-          <img :src="fileUrl" alt="image" width="60%">
-      </div>
+<!--
+<img :src="fileUrl1" :alt="fileUrl1" width="60%">
+<img :src="fileUrl2" :alt="fileUrl2" width="60%">
+<img :src="fileUrl3" :alt="fileurl3" width="60%">
 
-      </div>
+<img :src="fileUrls[3]" :alt="fileurl3" width="60%">
+-->
+<h3>請逐一檢視以下各圖, 並逐一勾選是否採認為佐證</h3>
+          <p v-if="pdfshow">
+            <div v-for="index in pdfvalue" :key="index">
+                <table>
+                  <tr>
+                  <td>
+                    <label>可採認:</label>
+                    <input type="radio" id="adopt1" :name="radioname1[index]" value="true" v-model="isadopt1[index]">
+        {{isadopt1[index]}}
+                </td>
+                    <td><H3>{{space}}</H3></td>
+                    <td>
+                      <label>不採認:</label>
+                      <input type="radio" id="reject1" :name="radioname1[index]" value="false" v-model="isadopt1[index]">
+        {{isadopt1[index]}}
+                </td>
+                  </tr>
+                </table>
+          <embed :src="pdfUrls[index-1]" :alt="pdfUrls[index-1]" type="application/pdf" width="90%"><br>
+          <br>
+            </div>
+        </p>
+        <p v-if="imageshow">
+            <div v-for="index in imagevalue" :key="index">
+              <table>
+                <tr>
+                <td>
+                  <label>可採認:</label>
+                  <input type="radio" id="adopt2" :name="radioname2[index]" value="true" v-model="isadopt2[index]">
+      {{isadopt2[index]}}
+              </td>
+                  <td><H3>{{space}}</H3></td>
+                  <td>
+                    <label>不採認:</label>
+                    <input type="radio" id="reject1" :name="radioname2[index]" value="false" v-model="isadopt2[index]">
+      {{isadopt2[index]}}
+              </td>
+                </tr>
+              </table>
+
+                <img :src="imageUrls[index-1]" :alt="imageUrls[index-1]" width="60%"><br>
+                <br>
+            </div>
+              </p>
       </div>
     </template>
 
@@ -128,20 +172,63 @@ Vue.component("bander",{
     */
     data(){
       return {
-        fileUrl:'<%=fileUrl%>',
+        pdfUrls:JSON.parse('<%-pdfUrls%>'),
+        imageUrls:JSON.parse('<%-imageUrls%>'),
+        dataneedname:'<%-dataneedname%>',
+        pdfno:'<%=pdfno%>',
+        imageno:'<%=imageno%>',
+        pdfvalue:0,
+        imagevalue:0,
+        itemresult:0,
+        resultname:"尚未查驗",
+        ispass:"",
+        isadopt1:[],
+        radioname1:[],
+        isadopt2:[],
+        radioname2:[],
+        pdfshow:false,
+        imageshow:false,
+        space:"|",
+        isTrue:"",
+        isFalse:"",
+        changeresult:"",
         result4thisurl:"#",
         inputerUIkey:0
       }
     },
     mounted:function(){
-      /*
-          for(imageUrl of this.imageUrls){
-        console.log("the name of a file:"+imageUrl)
-        imageUrl=this.bucketurl+imageUrl
-        console.log("the url of a file:"+imageUrl)
+        this.pdfvalue=parseInt(this.pdfno);
+        console.log("no of pdf:"+this.pdfvalue);
+        this.imagevalue=parseInt(this.imageno);
+        this.isadopt1=new Array(this.pdfno);
+        this.radioname1=new Array(this.pdfno);
+        this.isadopt2=new Array(this.imageno);
+        this.radioname2=new Array(this.imageno);
+        if(this.pdfvalue>0){
+            this.pdfshow=true
+        }
+        if(this.imagevalue>0){
+            this.imageshow=true
+        }
+    },
+    beforeUpdate:function(){
+        this.isTrue = (element) => element === true;
+      this.isFalse = (element) => element === false;
+        this.changeresult=function(){
+            if(this.isadopt1.some((element) => element === true)){
+                this.itemresult="1";
+                this.resultname="合格";
+            console.log("new resultname:"+this.resultname)
+        }else{
+            if(this.isadopt1.some((element) => element === false)&&!this.isadopt1.some((element) => element === true)){
+            this.resultname="需請繼續提供佐證";
+            console.log("new resultname:"+this.resultname)
+        }
       }
-      console.log("the bucket url:"+this.bucketurl);
-      */
+        }
+    },
+    updated:function(){
+        this.changeresult()
     },
     methods:{
         rerender:function() {

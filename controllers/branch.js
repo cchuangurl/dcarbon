@@ -168,53 +168,52 @@ async decomposerchoosecase(ctx, next){
   var loyalist1;
   let new_progress=new Progress({
     a05caseID:caseID,
-    a10stage:"disintegrate",
+    //a10stage:"disintegrate",
     a15when:Date.now(),
     a99footnote:"create after chose"
     })
-  await new_progress.save()
-      .then(async ()=>{
-        console.log("Saving new_progress....");
-      })
-      .catch((err)=>{
-        console.log("Progress.save() failed !!")
-        console.log(err)
-     })
-  await Case.findById({_id:caseID}).then(async casex=>{
-    console.log("type of casex:"+typeof(casex));
-    console.log("case found:"+casex);
-    casex.a40loyalistID.push(personID);
-    console.log("casex.a40loyalistID:"+casex.a40loyalistID.length);
-    new_case=new Case(casex);
-    //await new_case.updateOne().then(async ()=>{
-    await new_case.save().then(async ()=>{
-      await Case.find({'a40loyalistID.some(personID)':true}).then(async cases=>{
-        //await Case.find({'a40loyalistID.length':0}).then(async cases=>{
-          console.log("type of cases:"+typeof(cases));
-          console.log("1st case:"+cases[0]);
-          console.log("No. of case:"+cases.length)
-          for(casex of cases){
-            if(casex.a40loyalistID.some(personID)){
-            case2decompose.push(casex)
-            }
-        }
-        console.log("No. of case2decompose:"+case2decompose.length)
-          caselist=encodeURIComponent(JSON.stringify(case2decompose));
-          console.log("type of caselist:"+typeof(caselist))
-          })
-          .catch(err=>{
-            console.log("Case.find({}) failed !!");
+await new_progress.save()
+    .then(async ()=>{
+    console.log("Saving new_progress....");
+    })
+    .catch((err)=>{
+    console.log("Progress.save() failed !!")
+    console.log(err)
+})
+    await Case.findById({_id:caseID})
+    .then(async casex=>{
+        console.log("type of casex:"+typeof(casex));
+        console.log("case found:"+casex);
+        casex.a40loyalistID.push(personID);
+        console.log("no of in charge loyalist:"+casex.a40loyalistID.length);
+        let new_case=new Case(casex);
+        //await new_case.updateOne().then(async ()=>{
+        await new_case.save()
+            .catch(err=>{
+            console.log("Case.save({}) failed !!");
             console.log(err)
-          })
-      })
-      .catch(err=>{
-        console.log("Case.save({}) failed !!");
+            })
+        })
+    .catch(err=>{
+        console.log("Case.findById({}) failed !!");
         console.log(err)
-      })
+    })
+await Case.find({}).then(async cases=>{
+    console.log("type of cases:"+typeof(cases));
+    console.log("1st case:"+cases[0]);
+    console.log("No. of case:"+cases.length)
+    for(casex of cases){
+        if(casex.a40loyalistID.indexOf(personID)>-1){
+        case2decompose.push(casex)
+        }
+    }
+    console.log("No. of case2decompose:"+case2decompose.length)
+    caselist=encodeURIComponent(JSON.stringify(case2decompose));
+    console.log("type of caselist:"+typeof(caselist))
     })
     .catch(err=>{
-      console.log("Case.findById({}) failed !!");
-      console.log(err)
+        console.log("Case.find({}) failed !!");
+        console.log(err)
     })
 statusreport="以活動解構士身分進入本頁";
 await Loyalist.findOne({_id:personID})
@@ -252,7 +251,7 @@ async pass2methodor(ctx, next) {
   var loyalist1;
   let new_progress=new Progress({
     a05caseID:caseID,
-    a10stage:"disintegrated",
+    //a10stage:"disintegrated",
     a15when:Date.now(),
     a99footnote:"create after decomposed"
     })

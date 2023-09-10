@@ -117,9 +117,10 @@ async batchinput(ctx, next){
         input: fs.createReadStream(filepath+datafile+'.csv')
     });
     var lineno=0;
+    var columnno=10;
     var evidenceArray;
-    var tempstore=new Array(9);
-    for (let i=0;i<9;i++){
+    var tempstore=new Array(columnno);
+    for (let i=0;i<columnno;i++){
         tempstore[i]=new Array();
     };
     let readfile=(()=>{
@@ -128,7 +129,7 @@ async batchinput(ctx, next){
     //當讀入一行資料時
     lineReader.on('line', function(data) {
         var values = data.split(',');
-        for (let i=0;i<9;i++){
+        for (let i=0;i<columnno;i++){
             tempstore[i][lineno]=values[i].trim();
         }
         lineno++;
@@ -152,8 +153,8 @@ async batchinput(ctx, next){
                 })
         });//EOF saveone
         for (let k=0;k<lineno;k++){
-            evidenceArray[k]=new Array(9);
-            for (let m=0;m<9;m++){
+            evidenceArray[k]=new Array(columnno);
+            for (let m=0;m<columnno;m++){
                 evidenceArray[k][m]=tempstore[m][k]
                 //console.log(evidenceArray[k])
             }
@@ -173,7 +174,8 @@ async batchinput(ctx, next){
                   a30filename:evidencej[5],
                   a35datahash:evidencej[6],
                   a40datablock:evidencej[7],
-                  a99footnote:evidencej[8]
+                  a45score:evidencej[8],
+                  a99footnote:evidencej[9]
 
                 });//EOF new evidence
                     saveone(new_evidence)
@@ -345,6 +347,17 @@ async gocheckpage(ctx,next){
   console.log("got caseID:"+caseID);
   var fileno=ctx.query.fileno;
   console.log("got fileno:"+fileno);
+  var dataneedname;
+  await Dataneed.findById(dataneedID)
+  .then(async dataneedx=>{
+      console.log("nickname of dataneedx:"+dataneedx.a20dataname);
+      dataneedname=dataneedx.a20dataname+"("+dataneedx.a25describe+")";
+      console.log("dataneedname:"+dataneedname);
+      })
+    .catch(err=>{
+      console.log("Dataneed.findById(dataneedID) failed !!");
+      console.log(err)
+    })
   const storage = new Storage({
     projectId:"deep0-340312",
     keyFilename:"./public/json/deep0-340312-ac0308c9dc4b.json"
@@ -358,16 +371,27 @@ async gocheckpage(ctx,next){
   }
   */
   let bucketurl="https://storage.cloud.google.com/dcarbon-bucket1/";
-  const filteredFiles = files.filter(file => file.name.startsWith(dataneedID));
-
-  const imageUrl=filteredFiles.map(file=>file.name)[0];
+  const pdfFiles=files.filter(file => file.name.startsWith(dataneedID)&&file.name.endsWith(".pdf"));
+  const imageFiles = files.filter(file => file.name.startsWith(dataneedID)&&!(file.name.endsWith(".pdf")));
+  const temppdfUrls=pdfFiles.map(file=>bucketurl+file.name);
+  const tempimageUrls=imageFiles.map(file=>bucketurl+file.name);
+  const pdfno=temppdfUrls.length;
+  const imageno=tempimageUrls.length;
+  const pdfUrls=JSON.stringify(temppdfUrls);
+  const imageUrls=JSON.stringify(tempimageUrls);
+/*
   console.log("type of imageUrl:"+typeof(imageUrl));
   console.log("imageUrl:"+imageUrl);
   let dotlocate=imageUrl.indexOf(".");
   let alias=imageUrl.substring(dotlocate);
   let fileUrl=bucketurl+dataneedID+fileno+alias;
+*/
   await ctx.render("evidence/investigatepage",{
-    fileUrl,
+    pdfno,
+    imageno,
+    pdfUrls,
+    imageUrls,
+    dataneedname,
     dataneedID,
     caseID,
     personID,
